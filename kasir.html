@@ -9,9 +9,18 @@
     header { background: #3e2723; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { margin: 0; font-size: 1.3rem; }
     .logout-btn { background: #5d4037; color: #ffccbc; border: 1px solid #8d6e63; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-    .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1100px; margin: auto; }
+    .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1150px; margin: auto; }
     .menu-section { flex: 2; min-width: 300px; }
     .cart-section { flex: 1; min-width: 290px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
+    
+    /* Filter & Kategori Kasir */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .cat-btn { background: #fff; border: 1px solid #d7ccc8; color: #3e2723; padding: 7px 14px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: 0.15s; }
+    .cat-btn:hover { background: #efebe9; }
+    .cat-btn.active { background: #d84315; color: #fff; border-color: #d84315; }
+    .category-section { margin-bottom: 20px; }
+    .category-title { font-size: 1.05rem; font-weight: bold; color: #3e2723; margin: 0 0 10px; padding-bottom: 5px; border-bottom: 2px solid #d7ccc8; }
+
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
     .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
     .card:hover { border-color: #d84315; transform: translateY(-2px); }
@@ -20,7 +29,7 @@
     .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
     .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
     
-    /* Bagian Menu Tambahan di dalam Keranjang */
+    /* Menu Tambahan di dalam Keranjang */
     .addon-box { background: #fdfbf7; border: 1px dashed #d7ccc8; padding: 10px 12px; border-radius: 8px; margin-top: 14px; }
     .addon-title { font-size: 0.85rem; font-weight: bold; color: #5d4037; margin-bottom: 8px; display: block; }
     .addon-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -82,8 +91,13 @@
 
 <div class="container">
   <div class="menu-section">
-    <h3>Daftar Menu</h3>
-    <div id="menu-grid" class="grid">Memuat menu dari Spreadsheet...</div>
+    <div class="filter-bar">
+      <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua</button>
+      <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
+      <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
+      <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
+    </div>
+    <div id="menu-container">Memuat menu dari Spreadsheet...</div>
   </div>
 
   <div class="cart-section">
@@ -135,6 +149,7 @@
 
   let daftarMenu = [];
   let daftarTambahan = [];
+  let kategoriAktif = "Semua";
   let keranjang = {};
   let totalBelanja = 0;
 
@@ -204,7 +219,6 @@
     fetch(API_URL)
       .then(res => res.json())
       .then(data => {
-        // Mendukung format baru { menu: [...], tambahan: [...] } maupun format lama
         if (Array.isArray(data)) {
           daftarMenu = data;
           daftarTambahan = [];
@@ -212,23 +226,68 @@
           daftarMenu = data.menu || [];
           daftarTambahan = data.tambahan || [];
         }
-        renderMenu();
+        renderMenuTerkelompok();
         renderTambahan();
       })
       .catch(() => {
-        document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
+        document.getElementById("menu-container").innerHTML = "Gagal memuat menu. Periksa URL API.";
       });
   }
 
-  function renderMenu() {
-    const grid = document.getElementById("menu-grid");
-    grid.innerHTML = "";
-    daftarMenu.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `<h3>${item.nama}</h3><div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>`;
-      div.onclick = () => tambahItem(item);
-      grid.appendChild(div);
+  function pilihKategori(kat, btnEl) {
+    kategoriAktif = kat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+    btnEl.classList.add("active");
+    renderMenuTerkelompok();
+  }
+
+  function renderMenuTerkelompok() {
+    const container = document.getElementById("menu-container");
+    const hasil = daftarMenu.filter(item => {
+      const itemKat = (item.kategori || "").trim().toLowerCase();
+      return (kategoriAktif === "Semua") || (itemKat === kategoriAktif.toLowerCase());
+    });
+
+    if (hasil.length === 0) {
+      container.innerHTML = "<p style='color:#795548;'>Belum ada menu pada kategori ini.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+    const urutanKategori = ["Coffee", "Soft Drink", "Makanan Ringan"];
+    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Makanan Ringan": "🍟" };
+
+    const grup = {};
+    hasil.forEach(item => {
+      const kat = (item.kategori || "Lainnya").trim();
+      if (!grup[kat]) grup[kat] = [];
+      grup[kat].push(item);
+    });
+
+    const daftarKunci = [...new Set([...urutanKategori, ...Object.keys(grup)])];
+
+    daftarKunci.forEach(kat => {
+      if (!grup[kat] || grup[kat].length === 0) return;
+
+      const section = document.createElement("div");
+      section.className = "category-section";
+
+      const ikon = ikonKategori[kat] || "🍽️";
+      section.innerHTML = `<div class="category-title">${ikon} ${kat}</div>`;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      grup[kat].forEach(item => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<h3>${item.nama}</h3><div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>`;
+        div.onclick = () => tambahItem(item);
+        grid.appendChild(div);
+      });
+
+      section.appendChild(grid);
+      container.appendChild(section);
     });
   }
 
