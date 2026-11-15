@@ -15,6 +15,7 @@
     .card { background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; }
     .card h3 { margin: 0 0 8px; font-size: 1.05rem; color: #2c241e; }
     .card .price { color: #d84315; font-weight: bold; font-size: 1.1rem; }
+    .addon-info { background: #fff8e1; border: 1px solid #ffe082; padding: 12px 16px; border-radius: 10px; margin-top: 20px; font-size: 0.92rem; color: #5d4037; }
     footer { text-align: center; padding: 25px 15px; font-size: 0.85rem; color: #795548; }
     footer a { color: #5d4037; text-decoration: none; font-weight: bold; }
   </style>
@@ -27,8 +28,9 @@
 </header>
 
 <div class="container">
-  <input type="text" id="search-input" class="search-box" placeholder="🔍 Cari menu (misal: nasi, sate, es teh)..." oninput="filterMenu()">
+  <input type="text" id="search-input" class="search-box" placeholder="🔍 Cari menu (misal: kopi, matcha, americano)..." oninput="filterMenu()">
   <div id="menu-grid" class="grid">Memuat daftar menu...</div>
+  <div id="addon-box" class="addon-info" style="display:none;"></div>
 </div>
 
 <footer>
@@ -43,8 +45,18 @@
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
-      daftarMenu = data;
+      // Ambil array dari properti data.menu
+      daftarMenu = Array.isArray(data) ? data : (data.menu || []);
       renderMenu(daftarMenu);
+
+      // Tampilkan info menu tambahan (seperti ICE) jika ada
+      const tambahan = data.tambahan || [];
+      if (tambahan.length > 0) {
+        const addonBox = document.getElementById("addon-box");
+        const listStr = tambahan.map(t => `<strong>${t.nama}</strong> (+Rp ${t.harga.toLocaleString("id-ID")})`).join(", ");
+        addonBox.innerHTML = `🧊 <strong>Menu Tambahan Tersedia:</strong> ${listStr}`;
+        addonBox.style.display = "block";
+      }
     })
     .catch(() => {
       document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Silakan refresh halaman.";
