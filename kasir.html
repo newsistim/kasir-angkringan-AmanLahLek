@@ -24,7 +24,11 @@
       --accent-warm: #e65100;
       --accent-soft: #fff3e0;
       --accent-border: #ffccbc;
+      --process-bg: #fff8e1;
+      --process-border: #ffe082;
+      --process-text: #e65100;
       --success-bg: #e8f5e9;
+      --success-border: #a5d6a7;
       --success-text: #2e7d32;
       --danger-bg: #ffebee;
       --danger-text: #c62828;
@@ -61,6 +65,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -119,7 +125,44 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f5ebe6;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .nav-tab-btn.active {
+      background: linear-gradient(135deg, #ff7043 0%, #d84315 100%);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(216, 67, 21, 0.35);
+    }
+
+    .nav-badge {
+      background: rgba(0, 0, 0, 0.28);
+      color: #ffe082;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
     }
 
     .refresh-btn {
@@ -165,16 +208,16 @@
     /* ================= MAIN LAYOUT ================= */
     .container {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 380px;
+      grid-template-columns: minmax(0, 1fr) 390px;
       gap: 24px;
       padding: 24px 28px;
-      max-width: 1320px;
+      max-width: 1340px;
       width: 100%;
       margin: 0 auto;
       align-items: start;
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: 980px) {
       .container {
         grid-template-columns: 1fr;
         padding: 16px;
@@ -186,6 +229,60 @@
 
     .menu-section {
       min-width: 0;
+    }
+
+    /* ================= ACTIVE ORDERS MINI BANNER ================= */
+    .active-queue-bar {
+      background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+      border: 1.5px solid #ffe082;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .active-queue-bar.show {
+      display: flex;
+    }
+
+    .queue-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--espresso-800);
+    }
+
+    .pulse-amber {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-warm);
+      box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.2);
+      flex-shrink: 0;
+    }
+
+    .queue-jump-btn {
+      background: var(--espresso-900);
+      color: #fff;
+      border: none;
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .queue-jump-btn:hover {
+      background: var(--accent-primary);
     }
 
     /* ================= TOOLBAR: SEARCH & FILTER ================= */
@@ -483,8 +580,65 @@
       background: var(--danger-bg);
     }
 
+    /* ================= TABLE NUMBER INPUT BOX ================= */
+    .table-box {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .table-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .table-badge-preview {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      background: var(--accent-soft);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .quick-table-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .table-chip {
+      background: #fff;
+      border: 1px solid var(--espresso-200);
+      border-radius: 7px;
+      padding: 5px 4px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--espresso-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .table-chip:hover {
+      background: var(--espresso-100);
+      border-color: var(--espresso-400);
+    }
+
+    .table-chip.active {
+      background: var(--espresso-900);
+      color: #ffcc80;
+      border-color: var(--espresso-900);
+    }
+
     #cart-items {
-      max-height: 310px;
+      max-height: 270px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -500,7 +654,7 @@
 
     .empty-cart-state {
       text-align: center;
-      padding: 28px 16px;
+      padding: 24px 16px;
       background: var(--bg-subtle);
       border-radius: var(--radius-sm);
       border: 1.5px dashed var(--espresso-200);
@@ -508,7 +662,7 @@
     }
 
     .empty-cart-state .empty-icon {
-      font-size: 2rem;
+      font-size: 1.8rem;
       margin-bottom: 6px;
       display: block;
       opacity: 0.75;
@@ -807,6 +961,359 @@
       cursor: not-allowed;
     }
 
+    /* ================= ORDER HISTORY & STATUS SECTION ================= */
+    .history-wrapper {
+      max-width: 1340px;
+      width: 100%;
+      margin: 0 auto 40px;
+      padding: 0 28px;
+    }
+
+    @media (max-width: 980px) {
+      .history-wrapper {
+        padding: 0 16px;
+      }
+    }
+
+    .history-panel {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--espresso-200);
+      padding: 24px;
+    }
+
+    .history-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--espresso-100);
+    }
+
+    .history-title-group h2 {
+      margin: 0 0 4px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-title-group p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--espresso-600);
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kpi-card.process {
+      background: var(--process-bg);
+      border-color: var(--process-border);
+    }
+
+    .kpi-card.done {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--espresso-600);
+    }
+
+    .kpi-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+    }
+
+    .kpi-card.process .kpi-value {
+      color: var(--process-text);
+    }
+
+    .kpi-card.done .kpi-value {
+      color: var(--success-text);
+    }
+
+    .history-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .status-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-tab {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      color: var(--espresso-700);
+      padding: 8px 15px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .status-tab:hover {
+      background: var(--espresso-100);
+    }
+
+    .status-tab.active {
+      background: var(--espresso-900);
+      color: #fff;
+      border-color: var(--espresso-900);
+    }
+
+    .history-search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      max-width: 340px;
+      min-width: 220px;
+    }
+
+    #search-history {
+      padding: 9px 13px;
+      font-size: 0.86rem;
+    }
+
+    .clear-done-btn {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid #ffcdd2;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .clear-done-btn:hover {
+      background: #ffcdd2;
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 16px;
+    }
+
+    .order-card {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .order-card.status-diproses {
+      border-left: 5px solid var(--accent-warm);
+      background: #fffdf9;
+    }
+
+    .order-card.status-selesai {
+      border-left: 5px solid var(--success-text);
+      background: #fafdfb;
+    }
+
+    .order-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .order-meta-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .table-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--espresso-900);
+      color: #ffcc80;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      width: fit-content;
+    }
+
+    .order-id-time {
+      font-size: 0.76rem;
+      color: var(--espresso-600);
+      font-weight: 600;
+    }
+
+    .order-status-badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .order-status-badge.diproses {
+      background: var(--process-bg);
+      color: var(--process-text);
+      border: 1px solid var(--process-border);
+    }
+
+    .order-status-badge.selesai {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+
+    .order-items-box {
+      background: #fff;
+      border: 1px dashed var(--espresso-200);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      color: var(--espresso-900);
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .order-pay-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--espresso-700);
+      padding-top: 4px;
+    }
+
+    .order-pay-total {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--espresso-200);
+    }
+
+    .btn-status-toggle {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-status-toggle.mark-done {
+      background: var(--success-text);
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(46, 125, 50, 0.22);
+    }
+
+    .btn-status-toggle.mark-done:hover {
+      background: #1b5e20;
+    }
+
+    .btn-status-toggle.mark-process {
+      background: var(--espresso-100);
+      color: var(--espresso-800);
+      border: 1px solid var(--espresso-200);
+    }
+
+    .btn-status-toggle.mark-process:hover {
+      background: var(--process-bg);
+      color: var(--process-text);
+      border-color: var(--process-border);
+    }
+
+    .btn-order-secondary {
+      background: #fff;
+      border: 1px solid var(--espresso-200);
+      color: var(--espresso-700);
+      padding: 8px 11px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-order-secondary:hover {
+      background: var(--espresso-100);
+      color: var(--espresso-900);
+    }
+
+    .btn-order-delete {
+      background: #fff;
+      border: 1px solid #ffcdd2;
+      color: var(--danger-text);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-order-delete:hover {
+      background: var(--danger-bg);
+    }
+
     /* ================= LOGIN OVERLAY ================= */
     #login-overlay {
       position: fixed;
@@ -907,26 +1414,6 @@
       text-align: center;
     }
 
-    .demo-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px 14px;
-      background: var(--bg-subtle);
-      color: var(--espresso-700);
-      border: 1.5px dashed var(--espresso-200);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .demo-btn:hover {
-      background: var(--espresso-100);
-      border-color: var(--espresso-400);
-    }
-
     .back-link-wrap {
       text-align: center;
       margin-top: 18px;
@@ -969,7 +1456,7 @@
 
     .receipt-card {
       background: #fff;
-      max-width: 360px;
+      max-width: 380px;
       width: 100%;
       border-radius: 20px;
       padding: 26px 24px;
@@ -1024,6 +1511,7 @@
       justify-content: space-between;
       margin-bottom: 6px;
       color: var(--espresso-700);
+      gap: 10px;
     }
 
     .receipt-row.total {
@@ -1081,7 +1569,7 @@
     <h3 id="receipt-title">Transaksi Berhasil!</h3>
     <div id="receipt-subtitle" class="receipt-no">Tersimpan ke Google Spreadsheet</div>
     <div id="receipt-body" class="receipt-details"></div>
-    <button type="button" class="pay-btn" style="margin-top:0;" onclick="tutupModalStruk()">Selesai & Transaksi Baru</button>
+    <button type="button" class="pay-btn" style="margin-top:0;" onclick="tutupModalStruk()">Selesai &amp; Transaksi Baru</button>
   </div>
 </div>
 
@@ -1097,13 +1585,27 @@
     </div>
   </div>
   <div class="header-actions">
+    <button type="button" id="tab-pos-btn" class="nav-tab-btn active" onclick="scrollKeBagian('pos')">🍽️ Menu &amp; Kasir</button>
+    <button type="button" id="tab-history-btn" class="nav-tab-btn" onclick="scrollKeBagian('riwayat')">
+      📋 Riwayat &amp; Status
+      <span id="nav-process-badge" class="nav-badge">0 Diproses</span>
+    </button>
     <button type="button" class="refresh-btn" onclick="muatMenu()">↻ Muat Ulang</button>
     <button type="button" class="logout-btn" onclick="logoutAdmin()">Keluar</button>
   </div>
 </header>
 
-<div class="container">
+<div id="pos-section" class="container">
   <div class="menu-section">
+    <!-- Banner Antrean Pesanan yang Sedang Diproses -->
+    <div id="active-queue-banner" class="active-queue-bar">
+      <div class="queue-bar-left">
+        <span class="pulse-amber"></span>
+        <span id="active-queue-text">Ada 0 pesanan sedang diproses di dapur/bar</span>
+      </div>
+      <button type="button" class="queue-jump-btn" onclick="scrollKeBagian('riwayat')">Kelola Status Pesanan ↓</button>
+    </div>
+
     <div class="menu-toolbar">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
@@ -1131,6 +1633,27 @@
         <span id="cart-count-badge" class="cart-count-pill">0 item</span>
       </div>
       <button type="button" id="clear-cart-btn" class="clear-cart-btn" onclick="kosongkanKeranjang()" style="display:none;">Kosongkan</button>
+    </div>
+
+    <!-- Input Nomor / Angka Meja -->
+    <div class="table-box">
+      <div class="table-box-header">
+        <label class="field-label" for="table-number" style="margin-bottom:0;">🪑 Nomor / Angka Meja:</label>
+        <span id="table-preview-pill" class="table-badge-preview">Belum dipilih</span>
+      </div>
+      <input type="text" id="table-number" placeholder="Ketik angka meja (misal: 1, 12, atau Bungkus)..." oninput="sinkronInputMeja()">
+      <div class="quick-table-grid">
+        <button type="button" class="table-chip" data-meja="1" onclick="pilihMejaCepat('1')">Meja 1</button>
+        <button type="button" class="table-chip" data-meja="2" onclick="pilihMejaCepat('2')">Meja 2</button>
+        <button type="button" class="table-chip" data-meja="3" onclick="pilihMejaCepat('3')">Meja 3</button>
+        <button type="button" class="table-chip" data-meja="4" onclick="pilihMejaCepat('4')">Meja 4</button>
+        <button type="button" class="table-chip" data-meja="5" onclick="pilihMejaCepat('5')">Meja 5</button>
+        <button type="button" class="table-chip" data-meja="6" onclick="pilihMejaCepat('6')">Meja 6</button>
+        <button type="button" class="table-chip" data-meja="7" onclick="pilihMejaCepat('7')">Meja 7</button>
+        <button type="button" class="table-chip" data-meja="8" onclick="pilihMejaCepat('8')">Meja 8</button>
+        <button type="button" class="table-chip" data-meja="9" onclick="pilihMejaCepat('9')">Meja 9</button>
+        <button type="button" class="table-chip" data-meja="Bungkus" onclick="pilihMejaCepat('Bungkus')">🛍️ Bungkus</button>
+      </div>
     </div>
 
     <div id="cart-items">
@@ -1180,8 +1703,59 @@
   </div>
 </div>
 
+<!-- ================= BAGIAN RIWAYAT & STATUS PESANAN ================= -->
+<div id="riwayat-section" class="history-wrapper">
+  <div class="history-panel">
+    <div class="history-top-bar">
+      <div class="history-title-group">
+        <h2>📋 Riwayat &amp; Status Pesanan</h2>
+        <p>Pantau pesanan yang sedang diproses maupun yang sudah terselesaikan lengkap dengan nomor meja.</p>
+      </div>
+      <button type="button" id="clear-completed-btn" class="clear-done-btn" onclick="hapusPesananSelesai()" style="display:none;">
+        🗑️ Bersihkan yang Selesai
+      </button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card process">
+        <span class="kpi-label">⏳ Sedang Diproses</span>
+        <span id="kpi-diproses" class="kpi-value">0 Pesanan</span>
+      </div>
+      <div class="kpi-card done">
+        <span class="kpi-label">✅ Sudah Terselesaikan</span>
+        <span id="kpi-selesai" class="kpi-value">0 Pesanan</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">💰 Total Omzet Tercatat</span>
+        <span id="kpi-omzet" class="kpi-value">Rp 0</span>
+      </div>
+    </div>
+
+    <div class="history-controls">
+      <div class="status-tabs">
+        <button type="button" class="status-tab active" data-status="semua" onclick="filterStatusRiwayat('semua', this)">
+          Semua (<span id="count-all">0</span>)
+        </button>
+        <button type="button" class="status-tab" data-status="diproses" onclick="filterStatusRiwayat('diproses', this)">
+          ⏳ Sedang Diproses (<span id="count-diproses">0</span>)
+        </button>
+        <button type="button" class="status-tab" data-status="selesai" onclick="filterStatusRiwayat('selesai', this)">
+          ✅ Sudah Terselesaikan (<span id="count-selesai">0</span>)
+        </button>
+      </div>
+
+      <div class="history-search-wrap">
+        <input type="text" id="search-history" placeholder="🔍 Cari nomor meja, menu, atau No. Trx..." oninput="renderRiwayatPesanan()">
+      </div>
+    </div>
+
+    <div id="history-container"></div>
+  </div>
+</div>
+
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
+  const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
 
   // Data menu cadangan sesuai menu asli Angkringan AmanLahLek jika sedang pratinjau/offline
   const MENU_CADANGAN = [
@@ -1221,6 +1795,8 @@
   let kataKunciCari = "";
   let keranjang = [];
   let totalBelanja = 0;
+  let riwayatPesanan = [];
+  let filterStatusAktif = "semua";
 
   function simpanSession(key, val) {
     try {
@@ -1242,12 +1818,48 @@
     } catch (e) {}
   }
 
+  function muatRiwayatDariStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_RIWAYAT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          riwayatPesanan = parsed;
+        }
+      }
+    } catch (e) {
+      riwayatPesanan = [];
+    }
+  }
+
+  function simpanRiwayatKeStorage() {
+    try {
+      localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(riwayatPesanan));
+    } catch (e) {}
+  }
+
   window.addEventListener("DOMContentLoaded", () => {
+    muatRiwayatDariStorage();
+    renderRiwayatPesanan();
     const loggedUser = ambilSession("adminAngkringan");
     if (loggedUser) {
       bukaHalamanKasir(loggedUser);
     }
   });
+
+  function scrollKeBagian(target) {
+    const posBtn = document.getElementById("tab-pos-btn");
+    const histBtn = document.getElementById("tab-history-btn");
+    if (target === "riwayat") {
+      posBtn.classList.remove("active");
+      histBtn.classList.add("active");
+      document.getElementById("riwayat-section").scrollIntoView({ behavior: "smooth" });
+    } else {
+      histBtn.classList.remove("active");
+      posBtn.classList.add("active");
+      document.getElementById("pos-section").scrollIntoView({ behavior: "smooth" });
+    }
+  }
 
   function togglePasswordVisibility() {
     const input = document.getElementById("admin-pass");
@@ -1318,6 +1930,7 @@
     document.getElementById("login-overlay").style.display = "none";
     document.getElementById("admin-info").innerText = "Kasir aktif: " + username;
     muatMenu();
+    renderRiwayatPesanan();
   }
 
   function logoutAdmin() {
@@ -1354,6 +1967,37 @@
         renderMenuTerkelompok();
         renderKeranjang();
       });
+  }
+
+  function pilihMejaCepat(nilaiMeja) {
+    const input = document.getElementById("table-number");
+    input.value = nilaiMeja;
+    sinkronInputMeja();
+  }
+
+  function sinkronInputMeja() {
+    const val = document.getElementById("table-number").value.trim();
+    const preview = document.getElementById("table-preview-pill");
+
+    if (!val) {
+      preview.innerText = "Belum dipilih";
+    } else if (val.toLowerCase() === "bungkus") {
+      preview.innerText = "🛍️ Bungkus";
+    } else {
+      preview.innerText = `🪑 Meja ${val}`;
+    }
+
+    document.querySelectorAll(".table-chip").forEach(chip => {
+      chip.classList.toggle("active", chip.getAttribute("data-meja").toLowerCase() === val.toLowerCase());
+    });
+  }
+
+  function formatLabelMeja(nilaiMeja) {
+    const raw = (nilaiMeja || "").trim();
+    if (!raw) return "Tanpa Nomor Meja";
+    if (raw.toLowerCase() === "bungkus") return "Bungkus";
+    if (raw.toLowerCase().startsWith("meja")) return raw;
+    return `Meja ${raw}`;
   }
 
   function filterCariMenu() {
@@ -1519,6 +2163,8 @@
   function kosongkanKeranjang() {
     keranjang = [];
     document.getElementById("cash-received").value = "";
+    document.getElementById("table-number").value = "";
+    sinkronInputMeja();
     renderKeranjang();
     renderMenuTerkelompok();
   }
@@ -1675,26 +2321,200 @@
     document.getElementById("receipt-modal").classList.remove("show");
   }
 
+  function catatPesananBaru(dataPesanan) {
+    riwayatPesanan.unshift(dataPesanan);
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
+
+  function ubahStatusPesanan(idPesanan) {
+    const idx = riwayatPesanan.findIndex(p => p.id === idPesanan);
+    if (idx === -1) return;
+    riwayatPesanan[idx].status = (riwayatPesanan[idx].status === "diproses") ? "selesai" : "diproses";
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
+
+  function hapusSatuPesanan(idPesanan) {
+    riwayatPesanan = riwayatPesanan.filter(p => p.id !== idPesanan);
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
+
+  function hapusPesananSelesai() {
+    riwayatPesanan = riwayatPesanan.filter(p => p.status !== "selesai");
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
+
+  function lihatStrukRiwayat(idPesanan) {
+    const trx = riwayatPesanan.find(p => p.id === idPesanan);
+    if (!trx) return;
+
+    const statusText = trx.status === "selesai" ? "✅ Sudah Terselesaikan" : "⏳ Sedang Diproses";
+    const barisKembali = (trx.metode === "Tunai")
+      ? `<div class="receipt-row"><span>Tunai Diterima</span><span>Rp ${Number(trx.bayar).toLocaleString("id-ID")}</span></div>
+         <div class="receipt-row"><span>Kembalian</span><span>Rp ${Number(trx.kembali).toLocaleString("id-ID")}</span></div>`
+      : "";
+
+    tampilkanModalStruk({
+      sukses: true,
+      judul: "Detail Struk Pesanan",
+      subjudul: `No. Transaksi: ${trx.noTrx} • ${trx.waktu}`,
+      html: `
+        <div class="receipt-row"><span>Nomor Meja</span><strong>${trx.mejaLabel}</strong></div>
+        <div class="receipt-row"><span>Status Pesanan</span><strong>${statusText}</strong></div>
+        <div class="receipt-row"><span>Kasir</span><strong>${trx.kasir}</strong></div>
+        <div class="receipt-row"><span>Metode</span><strong>${trx.metode}</strong></div>
+        <div class="receipt-row"><span>Pesanan</span><span style="text-align:right; max-width:62%;">${trx.detailItems}</span></div>
+        ${barisKembali}
+        <div class="receipt-row total"><span>Total Bayar</span><span>Rp ${Number(trx.total).toLocaleString("id-ID")}</span></div>
+      `
+    });
+  }
+
+  function filterStatusRiwayat(status, btnEl) {
+    filterStatusAktif = status;
+    document.querySelectorAll(".status-tab").forEach(b => b.classList.remove("active"));
+    btnEl.classList.add("active");
+    renderRiwayatPesanan();
+  }
+
+  function renderRiwayatPesanan() {
+    const container = document.getElementById("history-container");
+    const jmlDiproses = riwayatPesanan.filter(p => p.status === "diproses").length;
+    const jmlSelesai = riwayatPesanan.filter(p => p.status === "selesai").length;
+    const totalOmzet = riwayatPesanan.reduce((sum, p) => sum + (Number(p.total) || 0), 0);
+
+    document.getElementById("kpi-diproses").innerText = `${jmlDiproses} Pesanan`;
+    document.getElementById("kpi-selesai").innerText = `${jmlSelesai} Pesanan`;
+    document.getElementById("kpi-omzet").innerText = `Rp ${totalOmzet.toLocaleString("id-ID")}`;
+
+    document.getElementById("count-all").innerText = riwayatPesanan.length;
+    document.getElementById("count-diproses").innerText = jmlDiproses;
+    document.getElementById("count-selesai").innerText = jmlSelesai;
+
+    document.getElementById("nav-process-badge").innerText = `${jmlDiproses} Diproses`;
+    document.getElementById("clear-completed-btn").style.display = jmlSelesai > 0 ? "inline-block" : "none";
+
+    const banner = document.getElementById("active-queue-banner");
+    const bannerText = document.getElementById("active-queue-text");
+    if (jmlDiproses > 0) {
+      bannerText.innerText = `⏳ Ada ${jmlDiproses} pesanan sedang diproses — klik untuk melihat nomor meja & mengubah status`;
+      banner.classList.add("show");
+    } else {
+      banner.classList.remove("show");
+    }
+
+    const keyword = (document.getElementById("search-history").value || "").trim().toLowerCase();
+    const hasil = riwayatPesanan.filter(p => {
+      const cocokStatus = (filterStatusAktif === "semua") || (p.status === filterStatusAktif);
+      const cocokKeyword = !keyword ||
+        (p.mejaLabel || "").toLowerCase().includes(keyword) ||
+        (p.noTrx || "").toLowerCase().includes(keyword) ||
+        (p.detailItems || "").toLowerCase().includes(keyword);
+      return cocokStatus && cocokKeyword;
+    });
+
+    if (hasil.length === 0) {
+      container.innerHTML = `
+        <div class="empty-cart-state" style="padding:36px 20px;">
+          <span class="empty-icon">📋</span>
+          <p>Belum ada riwayat pesanan pada kategori ini</p>
+          <small>Pesanan yang disimpan lewat tombol Simpan &amp; Bayar akan otomatis muncul di sini dengan status Sedang Diproses.</small>
+        </div>
+      `;
+      return;
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "history-grid";
+
+    hasil.forEach(order => {
+      const isProses = order.status === "diproses";
+      const card = document.createElement("div");
+      card.className = `order-card status-${order.status}`;
+
+      const badgeStatusHTML = isProses
+        ? `<span class="order-status-badge diproses">⏳ Sedang Diproses</span>`
+        : `<span class="order-status-badge selesai">✅ Selesai</span>`;
+
+      const tombolToggleHTML = isProses
+        ? `<button type="button" class="btn-status-toggle mark-done" data-action="toggle" data-id="${order.id}">✓ Tandai Selesai</button>`
+        : `<button type="button" class="btn-status-toggle mark-process" data-action="toggle" data-id="${order.id}">↺ Kembalikan Diproses</button>`;
+
+      const ikonMeja = (order.mejaLabel || "").toLowerCase().includes("bungkus") ? "🛍️" : "🪑";
+
+      card.innerHTML = `
+        <div>
+          <div class="order-card-head">
+            <div class="order-meta-left">
+              <span class="table-pill">${ikonMeja} ${order.mejaLabel}</span>
+              <span class="order-id-time">${order.noTrx} • ${order.waktu} • Kasir: ${order.kasir}</span>
+            </div>
+            ${badgeStatusHTML}
+          </div>
+          <div class="order-items-box" style="margin-top:10px;">
+            ${order.detailItems}
+          </div>
+        </div>
+        <div>
+          <div class="order-pay-info">
+            <span>Metode: <strong>${order.metode}</strong></span>
+            <span class="order-pay-total">Rp ${Number(order.total).toLocaleString("id-ID")}</span>
+          </div>
+          <div class="order-actions">
+            ${tombolToggleHTML}
+            <button type="button" class="btn-order-secondary" data-action="struk" data-id="${order.id}">🧾 Struk</button>
+            <button type="button" class="btn-order-delete" data-action="hapus" data-id="${order.id}" title="Hapus dari riwayat">🗑️</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector('[data-action="toggle"]').addEventListener("click", () => ubahStatusPesanan(order.id));
+      card.querySelector('[data-action="struk"]').addEventListener("click", () => lihatStrukRiwayat(order.id));
+      card.querySelector('[data-action="hapus"]').addEventListener("click", () => hapusSatuPesanan(order.id));
+
+      grid.appendChild(card);
+    });
+
+    container.innerHTML = "";
+    container.appendChild(grid);
+  }
+
+  function buatWaktuSekarang() {
+    const now = new Date();
+    return now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
+  }
+
   function prosesBayar() {
     const btn = document.getElementById("pay-btn");
     btn.innerText = "Menyimpan ke Spreadsheet...";
     btn.disabled = true;
 
-    const detailStr = keranjang.map(i => {
+    const rawMeja = document.getElementById("table-number").value.trim();
+    const mejaLabel = formatLabelMeja(rawMeja);
+
+    const detailItems = keranjang.map(i => {
       const addonText = i.addons.length > 0 ? ` + ${i.addons.map(a => a.nama).join(" + ")}` : "";
       return `${i.nama}${addonText} (${i.qty}x)`;
     }).join(", ");
+
+    // Sertakan info meja di dalam string detail agar tetap tercatat di kolom Detail Spreadsheet
+    const detailStr = `[${mejaLabel}] ${detailItems}`;
 
     const metode = document.getElementById("payment-method").value;
     const uangDiterima = parseFloat(document.getElementById("cash-received").value) || totalBelanja;
     const kembalian = (metode === "Tunai") ? (uangDiterima - totalBelanja) : 0;
     const kasir = ambilSession("adminAngkringan") || "Admin";
     const snapshotTotal = totalBelanja;
+    const waktuTrx = buatWaktuSekarang();
 
     fetch(API_URL, {
       method: "POST",
       body: JSON.stringify({
         action: "transaksi",
+        meja: rawMeja || "-",
         detail: detailStr,
         total: totalBelanja,
         metode: metode,
@@ -1705,6 +2525,24 @@
     })
     .then(res => res.json())
     .then(data => {
+      const noTrxFinal = data.noTrx || ("TRX-" + Date.now().toString().slice(-6));
+
+      catatPesananBaru({
+        id: "ord_" + Date.now(),
+        noTrx: noTrxFinal,
+        waktu: waktuTrx,
+        meja: rawMeja || "-",
+        mejaLabel: mejaLabel,
+        detailItems: detailItems,
+        detail: detailStr,
+        total: snapshotTotal,
+        metode: metode,
+        bayar: uangDiterima,
+        kembali: kembalian,
+        kasir: kasir,
+        status: "diproses"
+      });
+
       const barisKembali = (metode === "Tunai")
         ? `<div class="receipt-row"><span>Tunai Diterima</span><span>Rp ${uangDiterima.toLocaleString("id-ID")}</span></div>
            <div class="receipt-row"><span>Kembalian</span><span>Rp ${kembalian.toLocaleString("id-ID")}</span></div>`
@@ -1713,11 +2551,12 @@
       tampilkanModalStruk({
         sukses: true,
         judul: "Transaksi Berhasil!",
-        subjudul: `No. Transaksi: ${data.noTrx || "-"}`,
+        subjudul: `No. Transaksi: ${noTrxFinal} • Status: Sedang Diproses`,
         html: `
+          <div class="receipt-row"><span>Nomor Meja</span><strong>${mejaLabel}</strong></div>
           <div class="receipt-row"><span>Kasir</span><strong>${kasir}</strong></div>
           <div class="receipt-row"><span>Metode</span><strong>${metode}</strong></div>
-          <div class="receipt-row"><span>Pesanan</span><span style="text-align:right; max-width:60%;">${detailStr}</span></div>
+          <div class="receipt-row"><span>Pesanan</span><span style="text-align:right; max-width:60%;">${detailItems}</span></div>
           ${barisKembali}
           <div class="receipt-row total"><span>Total Bayar</span><span>Rp ${snapshotTotal.toLocaleString("id-ID")}</span></div>
         `
@@ -1725,19 +2564,50 @@
 
       keranjang = [];
       document.getElementById("cash-received").value = "";
+      document.getElementById("table-number").value = "";
+      sinkronInputMeja();
       renderKeranjang();
       renderMenuTerkelompok();
       btn.innerText = "Simpan & Bayar";
     })
     .catch(() => {
-      tampilkanModalStruk({
-        sukses: false,
-        judul: "Gagal Menyimpan",
-        subjudul: "Periksa koneksi internet atau URL Spreadsheet API",
-        html: `<div style="text-align:center; color:var(--espresso-700);">Transaksi senilai <strong>Rp ${snapshotTotal.toLocaleString("id-ID")}</strong> belum tersimpan. Silakan coba lagi.</div>`
+      const noTrxLokal = "TRX-" + Date.now().toString().slice(-5);
+
+      catatPesananBaru({
+        id: "ord_" + Date.now(),
+        noTrx: noTrxLokal,
+        waktu: waktuTrx,
+        meja: rawMeja || "-",
+        mejaLabel: mejaLabel,
+        detailItems: detailItems,
+        detail: detailStr,
+        total: snapshotTotal,
+        metode: metode,
+        bayar: uangDiterima,
+        kembali: kembalian,
+        kasir: kasir,
+        status: "diproses"
       });
+
+      tampilkanModalStruk({
+        sukses: true,
+        judul: "Tersimpan di Riwayat Kasir",
+        subjudul: `No: ${noTrxLokal} • Status: Sedang Diproses`,
+        html: `
+          <div class="receipt-row"><span>Nomor Meja</span><strong>${mejaLabel}</strong></div>
+          <div class="receipt-row"><span>Metode</span><strong>${metode}</strong></div>
+          <div class="receipt-row"><span>Pesanan</span><span style="text-align:right; max-width:60%;">${detailItems}</span></div>
+          <div class="receipt-row total"><span>Total Bayar</span><span>Rp ${snapshotTotal.toLocaleString("id-ID")}</span></div>
+        `
+      });
+
+      keranjang = [];
+      document.getElementById("cash-received").value = "";
+      document.getElementById("table-number").value = "";
+      sinkronInputMeja();
+      renderKeranjang();
+      renderMenuTerkelompok();
       btn.innerText = "Simpan & Bayar";
-      btn.disabled = false;
     });
   }
 </script>
