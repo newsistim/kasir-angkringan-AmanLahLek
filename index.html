@@ -3,258 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasir Angkringan AmanLahLek</title>
+  <title>Daftar Menu - Angkringan AmanLahLek</title>
   <style>
     body { font-family: system-ui, sans-serif; margin: 0; background: #f4f1ea; color: #2c241e; }
-    header { background: #3e2723; color: #fff; padding: 15px 20px; text-align: center; }
-    header h1 { margin: 0; font-size: 1.4rem; }
-    .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1100px; margin: auto; }
-    .menu-section { flex: 2; min-width: 300px; }
-    .cart-section { flex: 1; min-width: 280px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-    .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
-    .card:hover { border-color: #d84315; transform: translateY(-2px); }
-    .card h3 { margin: 0 0 6px; font-size: 1rem; }
-    .card .price { color: #d84315; font-weight: bold; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-    .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .total-box { font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: flex; justify-content: space-between; border-top: 2px solid #eee; padding-top: 12px; }
-    select, input[type="number"], button.pay-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 1rem; margin-top: 6px; box-sizing: border-box; }
-    select, input[type="number"] { border: 1px solid #ccc; background: #fff; }
-    .cash-box { background: #faf8f5; border: 1px solid #e6dfd5; padding: 12px; border-radius: 8px; margin-top: 12px; }
-    .quick-cash { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-    .quick-btn { flex: 1; min-width: 65px; background: #eee; border: 1px solid #ddd; padding: 6px 4px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: 600; color: #3e2723; }
-    .quick-btn:hover { background: #e0d7c6; }
-    .change-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px dashed #ccc; font-weight: bold; font-size: 1.05rem; }
-    .change-ok { color: #2e7d32; }
-    .change-kurang { color: #c62828; }
-    button.pay-btn { background: #d84315; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-top: 14px; }
-    button.pay-btn:disabled { background: #aaa; cursor: not-allowed; }
+    header { background: #3e2723; color: #fff; padding: 20px 15px; text-align: center; }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    header p { margin: 5px 0 0; font-size: 0.9rem; color: #e0d7c6; }
+    .container { max-width: 800px; margin: auto; padding: 16px; }
+    .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #d7ccc8; font-size: 1rem; margin-bottom: 16px; box-sizing: border-box; background: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; }
+    .card h3 { margin: 0 0 8px; font-size: 1.05rem; color: #2c241e; }
+    .card .price { color: #d84315; font-weight: bold; font-size: 1.1rem; }
+    footer { text-align: center; padding: 25px 15px; font-size: 0.85rem; color: #795548; }
+    footer a { color: #5d4037; text-decoration: none; font-weight: bold; }
   </style>
 </head>
 <body>
 
 <header>
   <h1>🍢 Angkringan AmanLahLek</h1>
-  <small>Sistem Kasir Online Terhubung Spreadsheet</small>
+  <p>Selamat Datang! Silakan lihat daftar menu & harga kami</p>
 </header>
 
 <div class="container">
-  <div class="menu-section">
-    <h3>Daftar Menu</h3>
-    <div id="menu-grid" class="grid">Memuat menu dari Spreadsheet...</div>
-  </div>
-
-  <div class="cart-section">
-    <h3>Pesanan Saat Ini</h3>
-    <div id="cart-items"><p style="color:#888;">Belum ada item dipilih.</p></div>
-    
-    <div class="total-box">
-      <span>Total:</span>
-      <span id="total-price">Rp 0</span>
-    </div>
-
-    <label for="payment-method"><strong>Metode Pembayaran:</strong></label>
-    <select id="payment-method" onchange="aturTampilanTunai()">
-      <option value="Tunai">Tunai / Cash</option>
-      <option value="QRIS">QRIS</option>
-      <option value="Transfer">Transfer Bank</option>
-    </select>
-
-    <div id="cash-section" class="cash-box">
-      <label for="cash-received"><strong>Uang Diterima (Rp):</strong></label>
-      <input type="number" id="cash-received" placeholder="Masukkan nominal uang..." min="0" step="500" oninput="hitungKembalian()">
-      
-      <div class="quick-cash">
-        <button type="button" class="quick-btn" onclick="setUangPas()">Uang Pas</button>
-        <button type="button" class="quick-btn" onclick="setUang(10000)">10rb</button>
-        <button type="button" class="quick-btn" onclick="setUang(20000)">20rb</button>
-        <button type="button" class="quick-btn" onclick="setUang(50000)">50rb</button>
-        <button type="button" class="quick-btn" onclick="setUang(100000)">100rb</button>
-      </div>
-
-      <div class="change-row">
-        <span>Kembalian:</span>
-        <span id="change-amount" class="change-ok">Rp 0</span>
-      </div>
-    </div>
-
-    <button id="pay-btn" class="pay-btn" onclick="prosesBayar()" disabled>Simpan & Bayar</button>
-  </div>
+  <input type="text" id="search-input" class="search-box" placeholder="🔍 Cari menu (misal: nasi, sate, es teh)..." oninput="filterMenu()">
+  <div id="menu-grid" class="grid">Memuat daftar menu...</div>
 </div>
+
+<footer>
+  Silakan pesan langsung di kasir.<br><br>
+  <a href="kasir.html">🔒 Login Kasir</a>
+</footer>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
-
   let daftarMenu = [];
-  let keranjang = {};
-  let totalBelanja = 0;
 
-  // Ambil data menu saat halaman dibuka
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
       daftarMenu = data;
-      renderMenu();
+      renderMenu(daftarMenu);
     })
     .catch(() => {
-      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
+      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Silakan refresh halaman.";
     });
 
-  function renderMenu() {
+  function renderMenu(items) {
     const grid = document.getElementById("menu-grid");
+    if (items.length === 0) {
+      grid.innerHTML = "<p>Menu tidak ditemukan.</p>";
+      return;
+    }
     grid.innerHTML = "";
-    daftarMenu.forEach(item => {
+    items.forEach(item => {
       const div = document.createElement("div");
       div.className = "card";
-      div.innerHTML = `<h3>${item.nama}</h3><div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>`;
-      div.onclick = () => tambahItem(item);
+      div.innerHTML = `
+        <h3>${item.nama}</h3>
+        <div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>
+      `;
       grid.appendChild(div);
     });
   }
 
-  function tambahItem(item) {
-    if (!keranjang[item.id]) {
-      keranjang[item.id] = { ...item, qty: 1 };
-    } else {
-      keranjang[item.id].qty++;
-    }
-    renderKeranjang();
-  }
-
-  function ubahQty(id, delta) {
-    keranjang[id].qty += delta;
-    if (keranjang[id].qty <= 0) delete keranjang[id];
-    renderKeranjang();
-  }
-
-  function renderKeranjang() {
-    const container = document.getElementById("cart-items");
-    const keys = Object.keys(keranjang);
-    totalBelanja = 0;
-
-    if (keys.length === 0) {
-      container.innerHTML = `<p style="color:#888;">Belum ada item dipilih.</p>`;
-      document.getElementById("total-price").innerText = "Rp 0";
-      document.getElementById("cash-received").value = "";
-      hitungKembalian();
-      return;
-    }
-
-    container.innerHTML = "";
-    keys.forEach(id => {
-      const item = keranjang[id];
-      const subtotal = item.harga * item.qty;
-      totalBelanja += subtotal;
-      container.innerHTML += `
-        <div class="cart-item">
-          <div>
-            <strong>${item.nama}</strong><br>
-            <small>Rp ${subtotal.toLocaleString("id-ID")}</small>
-          </div>
-          <div>
-            <button class="qty-btn" onclick="ubahQty('${id}', -1)">-</button>
-            <span style="margin:0 8px;">${item.qty}</span>
-            <button class="qty-btn" onclick="ubahQty('${id}', 1)">+</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById("total-price").innerText = "Rp " + totalBelanja.toLocaleString("id-ID");
-    hitungKembalian();
-  }
-
-  function aturTampilanTunai() {
-    const metode = document.getElementById("payment-method").value;
-    const cashSection = document.getElementById("cash-section");
-    cashSection.style.display = (metode === "Tunai") ? "block" : "none";
-    hitungKembalian();
-  }
-
-  function setUangPas() {
-    if (totalBelanja > 0) {
-      document.getElementById("cash-received").value = totalBelanja;
-      hitungKembalian();
-    }
-  }
-
-  function setUang(nominal) {
-    document.getElementById("cash-received").value = nominal;
-    hitungKembalian();
-  }
-
-  function hitungKembalian() {
-    const payBtn = document.getElementById("pay-btn");
-    const metode = document.getElementById("payment-method").value;
-    const changeEl = document.getElementById("change-amount");
-
-    if (totalBelanja === 0) {
-      changeEl.innerText = "Rp 0";
-      changeEl.className = "change-ok";
-      payBtn.disabled = true;
-      return;
-    }
-
-    if (metode !== "Tunai") {
-      payBtn.disabled = false;
-      return;
-    }
-
-    const uangDiterima = parseFloat(document.getElementById("cash-received").value) || 0;
-    const selisih = uangDiterima - totalBelanja;
-
-    if (uangDiterima === 0) {
-      changeEl.innerText = "Rp 0";
-      changeEl.className = "change-ok";
-      payBtn.disabled = true;
-    } else if (selisih < 0) {
-      changeEl.innerText = `Kurang Rp ${Math.abs(selisih).toLocaleString("id-ID")}`;
-      changeEl.className = "change-kurang";
-      payBtn.disabled = true;
-    } else {
-      changeEl.innerText = `Rp ${selisih.toLocaleString("id-ID")}`;
-      changeEl.className = "change-ok";
-      payBtn.disabled = false;
-    }
-  }
-
-  function prosesBayar() {
-    const btn = document.getElementById("pay-btn");
-    btn.innerText = "Menyimpan ke Spreadsheet...";
-    btn.disabled = true;
-
-    const itemsArray = Object.values(keranjang);
-    const detailStr = itemsArray.map(i => `${i.nama} (${i.qty}x)`).join(", ");
-    const metode = document.getElementById("payment-method").value;
-    const uangDiterima = parseFloat(document.getElementById("cash-received").value) || totalBelanja;
-    const kembalian = (metode === "Tunai") ? (uangDiterima - totalBelanja) : 0;
-
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ 
-        detail: detailStr, 
-        total: totalBelanja, 
-        metode: metode,
-        bayar: uangDiterima,
-        kembali: kembalian
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      let infoKembali = (metode === "Tunai") ? `\nKembalian: Rp ${kembalian.toLocaleString("id-ID")}` : "";
-      alert(`Transaksi Berhasil!\nNo: ${data.noTrx}\nTotal: Rp ${totalBelanja.toLocaleString("id-ID")}${infoKembali}`);
-      
-      keranjang = {};
-      document.getElementById("cash-received").value = "";
-      renderKeranjang();
-      btn.innerText = "Simpan & Bayar";
-    })
-    .catch(() => {
-      alert("Terjadi kesalahan saat menyimpan transaksi.");
-      btn.innerText = "Simpan & Bayar";
-      btn.disabled = false;
-    });
+  function filterMenu() {
+    const keyword = document.getElementById("search-input").value.toLowerCase();
+    const hasil = daftarMenu.filter(item => item.nama.toLowerCase().includes(keyword));
+    renderMenu(hasil);
   }
 </script>
 
