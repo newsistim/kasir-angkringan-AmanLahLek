@@ -92,9 +92,10 @@
 <div class="container">
   <div class="menu-section">
     <div class="filter-bar">
-      <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua</button>
+      <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua</button>  
       <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
       <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
+      <button class="cat-btn" onclick="pilihKategori('Tea', this)">🍵 Tea</button>
       <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
     </div>
     <div id="menu-container">Memuat menu dari Spreadsheet...</div>
@@ -248,8 +249,8 @@
     }
 
     container.innerHTML = "";
-    const urutanKategori = ["Coffee", "Soft Drink", "Makanan Ringan"];
-    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Makanan Ringan": "🍟" };
+    const urutanKategori = ["Coffee", "Soft Drink", "Tea", "Makanan Ringan"];
+    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" };
 
     const grup = {};
     hasil.forEach(item => {
