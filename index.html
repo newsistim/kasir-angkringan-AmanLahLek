@@ -46,6 +46,7 @@
     <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua Menu</button>
     <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
     <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
+    <button class="cat-btn" onclick="pilihKategori('Tea', this)"> 🍵 Tea</button>
     <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
   </div>
 
@@ -108,7 +109,7 @@
 
     container.innerHTML = "";
     const urutanKategori = ["Coffee", "Soft Drink", "Makanan Ringan"];
-    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Makanan Ringan": "🍟" };
+    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" };
 
     // Kelompokkan item berdasarkan kategori
     const grup = {};
