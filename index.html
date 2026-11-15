@@ -529,7 +529,7 @@
 
     .modal-card {
       background: #fff;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
       border-radius: 20px;
       padding: 22px;
@@ -563,34 +563,84 @@
     }
 
     .est-list {
-      max-height: 260px;
+      max-height: 310px;
       overflow-y: auto;
       margin-bottom: 14px;
+      padding-right: 2px;
     }
 
     .est-row {
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--espresso-200);
+      font-size: 0.88rem;
+    }
+
+    .est-row-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--espresso-200);
-      font-size: 0.88rem;
+      gap: 10px;
     }
 
     .est-qty-box {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      flex-shrink: 0;
     }
 
     .est-step-btn {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
       border: 1px solid var(--espresso-200);
       background: var(--bg-subtle);
       font-weight: 800;
       cursor: pointer;
+      color: var(--espresso-900);
+      transition: all 0.15s ease;
+    }
+
+    .est-step-btn:hover {
+      background: var(--espresso-100);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Tombol Tambahan ICE di dalam Modal Catatan Pesanan */
+    .est-addons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .est-addon-chip {
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--espresso-200);
+      background: var(--bg-subtle);
+      color: var(--espresso-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .est-addon-chip:hover {
+      background: var(--espresso-100);
+      border-color: var(--espresso-400);
+    }
+
+    .est-addon-chip.selected {
+      background: var(--accent-warm);
+      color: #fff;
+      border-color: var(--accent-warm);
+      box-shadow: 0 2px 6px rgba(230, 81, 0, 0.25);
     }
 
     .modal-note {
@@ -763,8 +813,9 @@
   ];
 
   let daftarMenu = [];
+  let daftarTambahan = [...TAMBAHAN_CADANGAN];
   let kategoriAktif = "Semua";
-  let catatanPesanan = {};
+  let catatanPesanan = []; // Array item agar tiap minuman bisa diatur tambahan ICE secara fleksibel
 
   function tampilkanInfoTambahan(tambahan) {
     if (tambahan && tambahan.length > 0) {
@@ -773,7 +824,7 @@
         .map(t => `<span class="addon-pill">+ ${t.nama} (Rp ${Number(t.harga).toLocaleString("id-ID")})</span>`)
         .join(" ");
       addonBox.innerHTML = `
-        <div>🧊 <strong>Menu Tambahan Tersedia:</strong> minta di kasir saat memesan</div>
+        <div>🧊 <strong>Menu Tambahan Tersedia:</strong> bisa diatur di Catatan Pesanan</div>
         <div>${listStr}</div>
       `;
       addonBox.style.display = "flex";
@@ -785,17 +836,18 @@
     .then(data => {
       const menuData = Array.isArray(data) ? data : (data.menu || []);
       daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
-      terapkanFilter();
-
-      const tambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
+      daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
         ? data.tambahan
         : TAMBAHAN_CADANGAN;
-      tampilkanInfoTambahan(tambahan);
+
+      terapkanFilter();
+      tampilkanInfoTambahan(daftarTambahan);
     })
     .catch(() => {
       daftarMenu = MENU_CADANGAN;
+      daftarTambahan = TAMBAHAN_CADANGAN;
       terapkanFilter();
-      tampilkanInfoTambahan(TAMBAHAN_CADANGAN);
+      tampilkanInfoTambahan(daftarTambahan);
     });
 
   function bukaLoginKasir() {
@@ -832,21 +884,68 @@
     renderMenuTerkelompok(hasil);
   }
 
+  function hitungQtyMenu(namaMenu) {
+    return catatanPesanan
+      .filter(i => i.nama === namaMenu)
+      .reduce((sum, i) => sum + i.qty, 0);
+  }
+
   function tambahKeEstimasi(item) {
-    const key = item.nama;
-    if (!catatanPesanan[key]) {
-      catatanPesanan[key] = { nama: item.nama, harga: Number(item.harga), qty: 0 };
+    const existingIdx = catatanPesanan.findIndex(
+      i => i.nama === item.nama && i.addons.length === 0
+    );
+
+    if (existingIdx !== -1) {
+      catatanPesanan[existingIdx].qty++;
+    } else {
+      catatanPesanan.push({
+        id: item.id || item.nama,
+        nama: item.nama,
+        kategori: item.kategori || "",
+        hargaDasar: Number(item.harga),
+        qty: 1,
+        addons: []
+      });
     }
-    catatanPesanan[key].qty++;
     perbaruiBarEstimasi();
     terapkanFilter();
   }
 
-  function ubahQtyEstimasi(nama, delta) {
-    if (!catatanPesanan[nama]) return;
-    catatanPesanan[nama].qty += delta;
-    if (catatanPesanan[nama].qty <= 0) {
-      delete catatanPesanan[nama];
+  function toggleAddonEstimasi(rowIndex, addonIndex) {
+    const item = catatanPesanan[rowIndex];
+    const addon = daftarTambahan[addonIndex];
+    if (!item || !addon) return;
+
+    const existIdx = item.addons.findIndex(a => a.nama === addon.nama);
+    if (existIdx !== -1) {
+      item.addons.splice(existIdx, 1);
+    } else {
+      item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
+    }
+
+    // Gabungkan baris jika setelah diubah variannya sama dengan baris lain
+    const sigSekarang = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
+    const duplikatIdx = catatanPesanan.findIndex((k, idx) => {
+      if (idx === rowIndex) return false;
+      const sigLain = k.nama + "|" + k.addons.map(a => a.nama).sort().join(",");
+      return sigSekarang === sigLain;
+    });
+
+    if (duplikatIdx !== -1) {
+      catatanPesanan[duplikatIdx].qty += item.qty;
+      catatanPesanan.splice(rowIndex, 1);
+    }
+
+    perbaruiBarEstimasi();
+    renderIsiModalEstimasi();
+    terapkanFilter();
+  }
+
+  function ubahQtyEstimasi(rowIndex, delta) {
+    if (!catatanPesanan[rowIndex]) return;
+    catatanPesanan[rowIndex].qty += delta;
+    if (catatanPesanan[rowIndex].qty <= 0) {
+      catatanPesanan.splice(rowIndex, 1);
     }
     perbaruiBarEstimasi();
     renderIsiModalEstimasi();
@@ -854,10 +953,17 @@
   }
 
   function resetEstimasi() {
-    catatanPesanan = {};
+    catatanPesanan = [];
     perbaruiBarEstimasi();
     tutupModalEstimasi();
     terapkanFilter();
+  }
+
+  function hitungTotalSemuaEstimasi() {
+    return catatanPesanan.reduce((total, item) => {
+      const hargaAddon = item.addons.reduce((s, a) => s + Number(a.harga), 0);
+      return total + ((item.hargaDasar + hargaAddon) * item.qty);
+    }, 0);
   }
 
   function perbaruiBarEstimasi() {
@@ -865,9 +971,8 @@
     const countEl = document.getElementById("estimator-count");
     const totalEl = document.getElementById("estimator-total");
 
-    const items = Object.values(catatanPesanan);
-    const totalQty = items.reduce((s, i) => s + i.qty, 0);
-    const totalHarga = items.reduce((s, i) => s + (i.harga * i.qty), 0);
+    const totalQty = catatanPesanan.reduce((s, i) => s + i.qty, 0);
+    const totalHarga = hitungTotalSemuaEstimasi();
 
     if (totalQty > 0) {
       countEl.innerText = `${totalQty} Menu Dipilih (Estimasi)`;
@@ -890,37 +995,65 @@
   function renderIsiModalEstimasi() {
     const listEl = document.getElementById("est-list-container");
     const modalTotalEl = document.getElementById("modal-est-total");
-    const items = Object.values(catatanPesanan);
 
-    if (items.length === 0) {
+    if (catatanPesanan.length === 0) {
       tutupModalEstimasi();
       return;
     }
 
     let total = 0;
     listEl.innerHTML = "";
-    items.forEach(item => {
-      const sub = item.harga * item.qty;
+
+    catatanPesanan.forEach((item, rowIdx) => {
+      const hargaAddon = item.addons.reduce((s, a) => s + Number(a.harga), 0);
+      const hargaSatuan = item.hargaDasar + hargaAddon;
+      const sub = hargaSatuan * item.qty;
       total += sub;
+
+      const labelTambahan = item.addons.length > 0
+        ? ` <span style="color:var(--accent-warm); font-size:0.8rem; font-weight:700;">(+ ${item.addons.map(a => a.nama).join(", ")})</span>`
+        : "";
+
+      const isMakanan = (item.kategori || "").toLowerCase().includes("makanan");
+      let addonChipsHTML = "";
+      if (!isMakanan && daftarTambahan.length > 0) {
+        const chips = daftarTambahan.map((addon, aIdx) => {
+          const isSelected = item.addons.some(a => a.nama === addon.nama);
+          const hargaRb = Number(addon.harga) >= 1000 ? `${Number(addon.harga) / 1000}rb` : Number(addon.harga);
+          return `<button type="button" class="est-addon-chip ${isSelected ? 'selected' : ''}" data-row="${rowIdx}" data-addon="${aIdx}">🧊 ${isSelected ? '✓ ' : '+ '}${addon.nama} (+${hargaRb})</button>`;
+        }).join("");
+        addonChipsHTML = `<div class="est-addons">${chips}</div>`;
+      }
 
       const row = document.createElement("div");
       row.className = "est-row";
       row.innerHTML = `
-        <div>
-          <strong>${item.nama}</strong><br>
-          <small style="color:var(--espresso-600);">Rp ${sub.toLocaleString("id-ID")}</small>
+        <div class="est-row-top">
+          <div>
+            <strong>${item.nama}</strong>${labelTambahan}<br>
+            <small style="color:var(--espresso-600); font-weight:600;">Rp ${sub.toLocaleString("id-ID")}</small>
+          </div>
+          <div class="est-qty-box">
+            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="-1">−</button>
+            <span style="min-width:20px; text-align:center; font-weight:800;">${item.qty}</span>
+            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="1">+</button>
+          </div>
         </div>
-        <div class="est-qty-box">
-          <button type="button" class="est-step-btn" data-nama="${item.nama}" data-delta="-1">−</button>
-          <span style="min-width:20px; text-align:center; font-weight:800;">${item.qty}</span>
-          <button type="button" class="est-step-btn" data-nama="${item.nama}" data-delta="1">+</button>
-        </div>
+        ${addonChipsHTML}
       `;
+
       row.querySelectorAll(".est-step-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-          ubahQtyEstimasi(btn.getAttribute("data-nama"), Number(btn.getAttribute("data-delta")));
+          ubahQtyEstimasi(Number(btn.getAttribute("data-row")), Number(btn.getAttribute("data-delta")));
         });
       });
+
+      row.querySelectorAll(".est-addon-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          toggleAddonEstimasi(Number(chip.getAttribute("data-row")), Number(chip.getAttribute("data-addon")));
+        });
+      });
+
       listEl.appendChild(row);
     });
 
@@ -974,7 +1107,7 @@
       grid.className = "grid";
 
       listKategori.forEach(item => {
-        const pickedQty = catatanPesanan[item.nama] ? catatanPesanan[item.nama].qty : 0;
+        const pickedQty = hitungQtyMenu(item.nama);
         const card = document.createElement("div");
         card.className = "card" + (pickedQty > 0 ? " selected-card" : "");
 
