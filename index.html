@@ -1,167 +1,166 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasir Angkringan AmanLahLek</title>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 0; background: #f4f1ea; color: #2c241e; }
-    header { background: #3e2723; color: #fff; padding: 15px 20px; text-align: center; }
-    header h1 { margin: 0; font-size: 1.4rem; }
-    .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1100px; margin: auto; }
-    .menu-section { flex: 2; min-width: 300px; }
-    .cart-section { flex: 1; min-width: 280px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-    .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
-    .card:hover { border-color: #d84315; transform: translateY(-2px); }
-    .card h3 { margin: 0 0 6px; font-size: 1rem; }
-    .card .price { color: #d84315; font-weight: bold; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-    .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .total-box { font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: flex; justify-content: space-between; }
-    select, button.pay-btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 1rem; margin-top: 10px; }
-    button.pay-btn { background: #d84315; color: #fff; border: none; font-weight: bold; cursor: pointer; }
-    button.pay-btn:disabled { background: #aaa; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasir Angkringan AmanLahLek</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f4f1ea; color: #2c241e; }
+    header { background: #3e2723; color: #fff; padding: 15px 20px; text-align: center; }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1100px; margin: auto; }
+    .menu-section { flex: 2; min-width: 300px; }
+    .cart-section { flex: 1; min-width: 280px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+    .card:hover { border-color: #d84315; transform: translateY(-2px); }
+    .card h3 { margin: 0 0 6px; font-size: 1rem; }
+    .card .price { color: #d84315; font-weight: bold; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
+    .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .total-box { font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: flex; justify-content: space-between; }
+    select, button.pay-btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 1rem; margin-top: 10px; }
+    button.pay-btn { background: #d84315; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+    button.pay-btn:disabled { background: #aaa; }
+  </style>
 </head>
 <body>
 
 <header>
-  <h1>🍢 Angkringan AmanLahLek</h1>
-  <small>Sistem Kasir Online Terhubung Spreadsheet</small>
+  <h1>🍢 Angkringan AmanLahLek</h1>
+  <small>Sistem Kasir Online Terhubung Spreadsheet</small>
 </header>
 
 <div class="container">
-  <div class="menu-section">
-    <h3>Daftar Menu</h3>
-    <div id="menu-grid" class="grid">Memuat menu dari Spreadsheet...</div>
-  </div>
+  <div class="menu-section">
+    <h3>Daftar Menu</h3>
+    <div id="menu-grid" class="grid">Memuat menu dari Spreadsheet...</div>
+  </div>
 
-  <div class="cart-section">
-    <h3>Pesanan Saat Ini</h3>
-    <div id="cart-items"><p style="color:#888;">Belum ada item dipilih.</p></div>
-    <div class="total-box">
-      <span>Total:</span>
-      <span id="total-price">Rp 0</span>
-    </div>
-    <label for="payment-method">Metode Pembayaran:</label>
-    <select id="payment-method">
-      <option value="Tunai">Tunai / Cash</option>
-      <option value="QRIS">QRIS</option>
-      <option value="Transfer">Transfer Bank</option>
-    </select>
-    <button id="pay-btn" class="pay-btn" onclick="prosesBayar()" disabled>Simpan & Bayar</button>
-  </div>
+  <div class="cart-section">
+    <h3>Pesanan Saat Ini</h3>
+    <div id="cart-items"><p style="color:#888;">Belum ada item dipilih.</p></div>
+    <div class="total-box">
+      <span>Total:</span>
+      <span id="total-price">Rp 0</span>
+    </div>
+    <label for="payment-method">Metode Pembayaran:</label>
+    <select id="payment-method">
+      <option value="Tunai">Tunai / Cash</option>
+      <option value="QRIS">QRIS</option>
+      <option value="Transfer">Transfer Bank</option>
+    </select>
+    <button id="pay-btn" class="pay-btn" onclick="prosesBayar()" disabled>Simpan & Bayar</button>
+  </div>
 </div>
 
 <script>
-  // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-  const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
 
-  let daftarMenu = [];
-  let keranjang = {};
+  let daftarMenu = [];
+  let keranjang = {};
 
-  // Ambil data menu saat halaman dibuka
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      daftarMenu = data;
-      renderMenu();
-    })
-    .catch(() => {
-      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
-    });
+  // Ambil data menu saat halaman dibuka
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      daftarMenu = data;
+      renderMenu();
+    })
+    .catch(() => {
+      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
+    });
 
-  function renderMenu() {
-    const grid = document.getElementById("menu-grid");
-    grid.innerHTML = "";
-    daftarMenu.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `<h3>${item.nama}</h3><div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>`;
-      div.onclick = () => tambahItem(item);
-      grid.appendChild(div);
-    });
-  }
+  function renderMenu() {
+    const grid = document.getElementById("menu-grid");
+    grid.innerHTML = "";
+    daftarMenu.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `<h3>${item.nama}</h3><div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>`;
+      div.onclick = () => tambahItem(item);
+      grid.appendChild(div);
+    });
+  }
 
-  function tambahItem(item) {
-    if (!keranjang[item.id]) {
-      keranjang[item.id] = { ...item, qty: 1 };
-    } else {
-      keranjang[item.id].qty++;
-    }
-    renderKeranjang();
-  }
+  function tambahItem(item) {
+    if (!keranjang[item.id]) {
+      keranjang[item.id] = { ...item, qty: 1 };
+    } else {
+      keranjang[item.id].qty++;
+    }
+    renderKeranjang();
+  }
 
-  function ubahQty(id, delta) {
-    keranjang[id].qty += delta;
-    if (keranjang[id].qty <= 0) delete keranjang[id];
-    renderKeranjang();
-  }
+  function ubahQty(id, delta) {
+    keranjang[id].qty += delta;
+    if (keranjang[id].qty <= 0) delete keranjang[id];
+    renderKeranjang();
+  }
 
-  function renderKeranjang() {
-    const container = document.getElementById("cart-items");
-    const keys = Object.keys(keranjang);
-    let total = 0;
+  function renderKeranjang() {
+    const container = document.getElementById("cart-items");
+    const keys = Object.keys(keranjang);
+    let total = 0;
 
-    if (keys.length === 0) {
-      container.innerHTML = `<p style="color:#888;">Belum ada item dipilih.</p>`;
-      document.getElementById("total-price").innerText = "Rp 0";
-      document.getElementById("pay-btn").disabled = true;
-      return;
-    }
+    if (keys.length === 0) {
+      container.innerHTML = `<p style="color:#888;">Belum ada item dipilih.</p>`;
+      document.getElementById("total-price").innerText = "Rp 0";
+      document.getElementById("pay-btn").disabled = true;
+      return;
+    }
 
-    container.innerHTML = "";
-    keys.forEach(id => {
-      const item = keranjang[id];
-      const subtotal = item.harga * item.qty;
-      total += subtotal;
-      container.innerHTML += `
-        <div class="cart-item">
-          <div>
-            <strong>${item.nama}</strong><br>
-            <small>Rp ${subtotal.toLocaleString("id-ID")}</small>
-          </div>
-          <div>
-            <button class="qty-btn" onclick="ubahQty('${id}', -1)">-</button>
-            <span style="margin:0 8px;">${item.qty}</span>
-            <button class="qty-btn" onclick="ubahQty('${id}', 1)">+</button>
-          </div>
-        </div>
-      `;
-    });
+    container.innerHTML = "";
+    keys.forEach(id => {
+      const item = keranjang[id];
+      const subtotal = item.harga * item.qty;
+      total += subtotal;
+      container.innerHTML += `
+        <div class="cart-item">
+          <div>
+            <strong>${item.nama}</strong><br>
+            <small>Rp ${subtotal.toLocaleString("id-ID")}</small>
+          </div>
+          <div>
+            <button class="qty-btn" onclick="ubahQty('${id}', -1)">-</button>
+            <span style="margin:0 8px;">${item.qty}</span>
+            <button class="qty-btn" onclick="ubahQty('${id}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    });
 
-    document.getElementById("total-price").innerText = "Rp " + total.toLocaleString("id-ID");
-    document.getElementById("pay-btn").disabled = false;
-  }
+    document.getElementById("total-price").innerText = "Rp " + total.toLocaleString("id-ID");
+    document.getElementById("pay-btn").disabled = false;
+  }
 
-  function prosesBayar() {
-    const btn = document.getElementById("pay-btn");
-    btn.innerText = "Menyimpan ke Spreadsheet...";
-    btn.disabled = true;
+  function prosesBayar() {
+    const btn = document.getElementById("pay-btn");
+    btn.innerText = "Menyimpan ke Spreadsheet...";
+    btn.disabled = true;
 
-    const itemsArray = Object.values(keranjang);
-    const detailStr = itemsArray.map(i => `${i.nama} (${i.qty}x)`).join(", ");
-    const totalBayar = itemsArray.reduce((sum, i) => sum + (i.harga * i.qty), 0);
-    const metode = document.getElementById("payment-method").value;
+    const itemsArray = Object.values(keranjang);
+    const detailStr = itemsArray.map(i => `${i.nama} (${i.qty}x)`).join(", ");
+    const totalBayar = itemsArray.reduce((sum, i) => sum + (i.harga * i.qty), 0);
+    const metode = document.getElementById("payment-method").value;
 
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ detail: detailStr, total: totalBayar, metode: metode })
-    })
-    .then(res => res.json())
-    .then(data => {
-      alert(`Transaksi Berhasil!\nNo: ${data.noTrx}\nData telah masuk ke Google Sheets.`);
-      keranjang = {};
-      renderKeranjang();
-      btn.innerText = "Simpan & Bayar";
-    })
-    .catch(() => {
-      alert("Terjadi kesalahan saat menyimpan transaksi.");
-      btn.innerText = "Simpan & Bayar";
-      btn.disabled = false;
-    });
-  }
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ detail: detailStr, total: totalBayar, metode: metode })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(`Transaksi Berhasil!\nNo: ${data.noTrx}\nData telah masuk ke Google Sheets.`);
+      keranjang = {};
+      renderKeranjang();
+      btn.innerText = "Simpan & Bayar";
+    })
+    .catch(() => {
+      alert("Terjadi kesalahan saat menyimpan transaksi.");
+      btn.innerText = "Simpan & Bayar";
+      btn.disabled = false;
+    });
+  }
 </script>
 
 </body>
