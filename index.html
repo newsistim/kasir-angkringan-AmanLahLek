@@ -9,8 +9,19 @@
     header { background: #3e2723; color: #fff; padding: 20px 15px; text-align: center; }
     header h1 { margin: 0; font-size: 1.5rem; }
     header p { margin: 5px 0 0; font-size: 0.9rem; color: #e0d7c6; }
-    .container { max-width: 800px; margin: auto; padding: 16px; }
-    .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #d7ccc8; font-size: 1rem; margin-bottom: 16px; box-sizing: border-box; background: #fff; }
+    .container { max-width: 850px; margin: auto; padding: 16px; }
+    .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #d7ccc8; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box; background: #fff; }
+    
+    /* Tab Kategori */
+    .cat-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; }
+    .cat-btn { background: #fff; border: 1px solid #d7ccc8; color: #3e2723; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .cat-btn:hover { background: #efebe9; }
+    .cat-btn.active { background: #d84315; color: #fff; border-color: #d84315; }
+
+    /* Judul Bagian Kategori */
+    .category-section { margin-bottom: 24px; }
+    .category-title { font-size: 1.15rem; font-weight: bold; color: #3e2723; margin: 0 0 12px; padding-bottom: 6px; border-bottom: 2px solid #d7ccc8; display: flex; align-items: center; gap: 6px; }
+    
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
     .card { background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; }
     .card h3 { margin: 0 0 8px; font-size: 1.05rem; color: #2c241e; }
@@ -28,8 +39,17 @@
 </header>
 
 <div class="container">
-  <input type="text" id="search-input" class="search-box" placeholder="🔍 Cari menu (misal: kopi, matcha, americano)..." oninput="filterMenu()">
-  <div id="menu-grid" class="grid">Memuat daftar menu...</div>
+  <input type="text" id="search-input" class="search-box" placeholder="🔍 Cari menu (misal: kopi, matcha, americano)..." oninput="terapkanFilter()">
+  
+  <!-- Tombol Filter Kategori -->
+  <div class="cat-tabs">
+    <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua Menu</button>
+    <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
+    <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
+    <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
+  </div>
+
+  <div id="menu-container">Memuat daftar menu...</div>
   <div id="addon-box" class="addon-info" style="display:none;"></div>
 </div>
 
@@ -41,15 +61,14 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   let daftarMenu = [];
+  let kategoriAktif = "Semua";
 
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
-      // Ambil array dari properti data.menu
       daftarMenu = Array.isArray(data) ? data : (data.menu || []);
-      renderMenu(daftarMenu);
+      terapkanFilter();
 
-      // Tampilkan info menu tambahan (seperti ICE) jika ada
       const tambahan = data.tambahan || [];
       if (tambahan.length > 0) {
         const addonBox = document.getElementById("addon-box");
@@ -59,31 +78,74 @@
       }
     })
     .catch(() => {
-      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Silakan refresh halaman.";
+      document.getElementById("menu-container").innerHTML = "Gagal memuat menu. Silakan refresh halaman.";
     });
 
-  function renderMenu(items) {
-    const grid = document.getElementById("menu-grid");
-    if (items.length === 0) {
-      grid.innerHTML = "<p>Menu tidak ditemukan.</p>";
-      return;
-    }
-    grid.innerHTML = "";
-    items.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <h3>${item.nama}</h3>
-        <div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>
-      `;
-      grid.appendChild(div);
-    });
+  function pilihKategori(kat, btnEl) {
+    kategoriAktif = kat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+    btnEl.classList.add("active");
+    terapkanFilter();
   }
 
-  function filterMenu() {
+  function terapkanFilter() {
     const keyword = document.getElementById("search-input").value.toLowerCase();
-    const hasil = daftarMenu.filter(item => item.nama.toLowerCase().includes(keyword));
-    renderMenu(hasil);
+    const hasil = daftarMenu.filter(item => {
+      const cocokNama = item.nama.toLowerCase().includes(keyword);
+      const itemKat = (item.kategori || "").trim().toLowerCase();
+      const cocokKat = (kategoriAktif === "Semua") || (itemKat === kategoriAktif.toLowerCase());
+      return cocokNama && cocokKat;
+    });
+    renderMenuTerkelompok(hasil);
+  }
+
+  function renderMenuTerkelompok(items) {
+    const container = document.getElementById("menu-container");
+    if (items.length === 0) {
+      container.innerHTML = "<p style='color:#795548;'>Menu tidak ditemukan pada kategori ini.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+    const urutanKategori = ["Coffee", "Soft Drink", "Makanan Ringan"];
+    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Makanan Ringan": "🍟" };
+
+    // Kelompokkan item berdasarkan kategori
+    const grup = {};
+    items.forEach(item => {
+      const kat = (item.kategori || "Lainnya").trim();
+      if (!grup[kat]) grup[kat] = [];
+      grup[kat].push(item);
+    });
+
+    // Tampilkan sesuai urutan yang diinginkan + kategori lain jika ada di spreadsheet
+    const daftarKunci = [...new Set([...urutanKategori, ...Object.keys(grup)])];
+
+    daftarKunci.forEach(kat => {
+      if (!grup[kat] || grup[kat].length === 0) return;
+
+      const section = document.createElement("div");
+      section.className = "category-section";
+
+      const ikon = ikonKategori[kat] || "🍽️";
+      section.innerHTML = `<h2 class="category-title">${ikon} ${kat}</h2>`;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      grup[kat].forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${item.nama}</h3>
+          <div class="price">Rp ${item.harga.toLocaleString("id-ID")}</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      container.appendChild(section);
+    });
   }
 </script>
 
