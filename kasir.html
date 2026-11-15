@@ -11,7 +11,7 @@
     .logout-btn { background: #5d4037; color: #ffccbc; border: 1px solid #8d6e63; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
     .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1150px; margin: auto; }
     .menu-section { flex: 2; min-width: 300px; }
-    .cart-section { flex: 1; min-width: 290px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
+    .cart-section { flex: 1; min-width: 300px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
     
     /* Filter & Kategori Kasir */
     .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -26,15 +26,15 @@
     .card:hover { border-color: #d84315; transform: translateY(-2px); }
     .card h3 { margin: 0 0 6px; font-size: 1rem; }
     .card .price { color: #d84315; font-weight: bold; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
+
+    /* Item Keranjang & Tombol Tambahan Per Item */
+    .cart-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .cart-item-top { display: flex; justify-content: space-between; align-items: center; }
     .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    
-    /* Menu Tambahan di dalam Keranjang */
-    .addon-box { background: #fdfbf7; border: 1px dashed #d7ccc8; padding: 10px 12px; border-radius: 8px; margin-top: 14px; }
-    .addon-title { font-size: 0.85rem; font-weight: bold; color: #5d4037; margin-bottom: 8px; display: block; }
-    .addon-list { display: flex; flex-wrap: wrap; gap: 6px; }
-    .addon-chip { background: #fff3e0; border: 1px solid #ffb74d; color: #e65100; padding: 6px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: 0.15s; }
-    .addon-chip:hover { background: #ffe0b2; }
+    .item-addons { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .addon-toggle { font-size: 0.78rem; padding: 3px 9px; border-radius: 14px; border: 1px solid #d7ccc8; background: #faf8f5; color: #5d4037; cursor: pointer; font-weight: 600; transition: 0.15s; }
+    .addon-toggle:hover { background: #efebe9; }
+    .addon-toggle.selected { background: #e65100; color: #fff; border-color: #e65100; }
 
     .total-box { font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: flex; justify-content: space-between; border-top: 2px solid #eee; padding-top: 12px; }
     select, input[type="number"], input[type="text"], input[type="password"], button.pay-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 1rem; margin-top: 6px; box-sizing: border-box; }
@@ -103,12 +103,6 @@
   <div class="cart-section">
     <h3>Pesanan Saat Ini</h3>
     <div id="cart-items"><p style="color:#888;">Belum ada item dipilih.</p></div>
-
-    <!-- Menu Tambahan (Add-on seperti ICE) -->
-    <div id="addon-section" class="addon-box" style="display:none;">
-      <span class="addon-title">🧊 Menu Tambahan:</span>
-      <div id="addon-buttons" class="addon-list"></div>
-    </div>
     
     <div class="total-box">
       <span>Total:</span>
@@ -150,7 +144,7 @@
   let daftarMenu = [];
   let daftarTambahan = [];
   let kategoriAktif = "Semua";
-  let keranjang = {};
+  let keranjang = []; // Array objek agar tiap varian (misal tanpa ICE vs pakai ICE) terpisah rapi
   let totalBelanja = 0;
 
   window.addEventListener("DOMContentLoaded", () => {
@@ -227,7 +221,7 @@
           daftarTambahan = data.tambahan || [];
         }
         renderMenuTerkelompok();
-        renderTambahan();
+        renderKeranjang();
       })
       .catch(() => {
         document.getElementById("menu-container").innerHTML = "Gagal memuat menu. Periksa URL API.";
@@ -291,48 +285,65 @@
     });
   }
 
-  function renderTambahan() {
-    const box = document.getElementById("addon-section");
-    const container = document.getElementById("addon-buttons");
-    
-    if (daftarTambahan.length === 0) {
-      box.style.display = "none";
-      return;
-    }
-
-    box.style.display = "block";
-    container.innerHTML = "";
-    daftarTambahan.forEach(addon => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "addon-chip";
-      btn.innerText = `+ ${addon.nama} (Rp ${addon.harga.toLocaleString("id-ID")})`;
-      btn.onclick = () => tambahItem(addon);
-      container.appendChild(btn);
-    });
-  }
-
+  // Tambah menu baru (default tanpa tambahan, sehingga varian dengan tambahan tetap terpisah)
   function tambahItem(item) {
-    if (!keranjang[item.id]) {
-      keranjang[item.id] = { ...item, qty: 1 };
+    const existingIndex = keranjang.findIndex(k => k.id === item.id && k.addons.length === 0);
+    if (existingIndex !== -1) {
+      keranjang[existingIndex].qty++;
     } else {
-      keranjang[item.id].qty++;
+      keranjang.push({
+        id: item.id,
+        nama: item.nama,
+        kategori: item.kategori || "",
+        hargaDasar: item.harga,
+        qty: 1,
+        addons: []
+      });
     }
     renderKeranjang();
   }
 
-  function ubahQty(id, delta) {
-    keranjang[id].qty += delta;
-    if (keranjang[id].qty <= 0) delete keranjang[id];
+  // Aktifkan / nonaktifkan menu tambahan (misal ICE) khusus pada baris pesanan tertentu
+  function toggleAddon(cartIndex, addonIndex) {
+    const item = keranjang[cartIndex];
+    const addon = daftarTambahan[addonIndex];
+    const existIdx = item.addons.findIndex(a => a.nama === addon.nama);
+
+    if (existIdx !== -1) {
+      item.addons.splice(existIdx, 1);
+    } else {
+      item.addons.push({ nama: addon.nama, harga: addon.harga });
+    }
+
+    // Gabungkan jika setelah diubah ternyata identik dengan baris lain di keranjang
+    const sigSekarang = item.id + "|" + item.addons.map(a => a.nama).sort().join(",");
+    const duplikatIdx = keranjang.findIndex((k, idx) => {
+      if (idx === cartIndex) return false;
+      const sigLain = k.id + "|" + k.addons.map(a => a.nama).sort().join(",");
+      return sigSekarang === sigLain;
+    });
+
+    if (duplikatIdx !== -1) {
+      keranjang[duplikatIdx].qty += item.qty;
+      keranjang.splice(cartIndex, 1);
+    }
+
+    renderKeranjang();
+  }
+
+  function ubahQty(index, delta) {
+    keranjang[index].qty += delta;
+    if (keranjang[index].qty <= 0) {
+      keranjang.splice(index, 1);
+    }
     renderKeranjang();
   }
 
   function renderKeranjang() {
     const container = document.getElementById("cart-items");
-    const keys = Object.keys(keranjang);
     totalBelanja = 0;
 
-    if (keys.length === 0) {
+    if (keranjang.length === 0) {
       container.innerHTML = `<p style="color:#888;">Belum ada item dipilih.</p>`;
       document.getElementById("total-price").innerText = "Rp 0";
       document.getElementById("cash-received").value = "";
@@ -341,21 +352,41 @@
     }
 
     container.innerHTML = "";
-    keys.forEach(id => {
-      const item = keranjang[id];
-      const subtotal = item.harga * item.qty;
+    keranjang.forEach((item, index) => {
+      const hargaTambahan = item.addons.reduce((sum, a) => sum + a.harga, 0);
+      const hargaSatuanTotal = item.hargaDasar + hargaTambahan;
+      const subtotal = hargaSatuanTotal * item.qty;
       totalBelanja += subtotal;
+
+      const labelTambahan = item.addons.length > 0 
+        ? ` <span style="color:#e65100; font-size:0.88rem;">(+ ${item.addons.map(a => a.nama).join(", ")})</span>` 
+        : "";
+
+      // Tampilkan tombol pilihan tambahan hanya untuk kategori minuman (bukan Makanan Ringan)
+      let tombolTambahanHTML = "";
+      const isMakanan = item.kategori.toLowerCase().includes("makanan");
+      if (!isMakanan && daftarTambahan.length > 0) {
+        const chips = daftarTambahan.map((addon, aIdx) => {
+          const isSelected = item.addons.some(a => a.nama === addon.nama);
+          return `<button type="button" class="addon-toggle ${isSelected ? 'selected' : ''}" onclick="toggleAddon(${index}, ${aIdx})">${isSelected ? '✓ ' : '+ '}${addon.nama} (+${(addon.harga/1000)}rb)</button>`;
+        }).join("");
+        tombolTambahanHTML = `<div class="item-addons">${chips}</div>`;
+      }
+
       container.innerHTML += `
         <div class="cart-item">
-          <div>
-            <strong>${item.nama}</strong><br>
-            <small>Rp ${subtotal.toLocaleString("id-ID")}</small>
+          <div class="cart-item-top">
+            <div>
+              <strong>${item.nama}</strong>${labelTambahan}<br>
+              <small>Rp ${subtotal.toLocaleString("id-ID")}</small>
+            </div>
+            <div>
+              <button class="qty-btn" onclick="ubahQty(${index}, -1)">-</button>
+              <span style="margin:0 8px;">${item.qty}</span>
+              <button class="qty-btn" onclick="ubahQty(${index}, 1)">+</button>
+            </div>
           </div>
-          <div>
-            <button class="qty-btn" onclick="ubahQty('${id}', -1)">-</button>
-            <span style="margin:0 8px;">${item.qty}</span>
-            <button class="qty-btn" onclick="ubahQty('${id}', 1)">+</button>
-          </div>
+          ${tombolTambahanHTML}
         </div>
       `;
     });
@@ -423,8 +454,11 @@
     btn.innerText = "Menyimpan ke Spreadsheet...";
     btn.disabled = true;
 
-    const itemsArray = Object.values(keranjang);
-    const detailStr = itemsArray.map(i => `${i.nama} (${i.qty}x)`).join(", ");
+    const detailStr = keranjang.map(i => {
+      const addonText = i.addons.length > 0 ? ` + ${i.addons.map(a => a.nama).join(" + ")}` : "";
+      return `${i.nama}${addonText} (${i.qty}x)`;
+    }).join(", ");
+
     const metode = document.getElementById("payment-method").value;
     const uangDiterima = parseFloat(document.getElementById("cash-received").value) || totalBelanja;
     const kembalian = (metode === "Tunai") ? (uangDiterima - totalBelanja) : 0;
@@ -447,7 +481,7 @@
       let infoKembali = (metode === "Tunai") ? `\nKembalian: Rp ${kembalian.toLocaleString("id-ID")}` : "";
       alert(`Transaksi Berhasil!\nNo: ${data.noTrx}\nTotal: Rp ${totalBelanja.toLocaleString("id-ID")}${infoKembali}`);
       
-      keranjang = {};
+      keranjang = [];
       document.getElementById("cash-received").value = "";
       renderKeranjang();
       btn.innerText = "Simpan & Bayar";
