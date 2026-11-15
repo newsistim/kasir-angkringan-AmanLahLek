@@ -6,8 +6,9 @@
   <title>Kasir Angkringan AmanLahLek</title>
   <style>
     body { font-family: system-ui, sans-serif; margin: 0; background: #f4f1ea; color: #2c241e; }
-    header { background: #3e2723; color: #fff; padding: 15px 20px; text-align: center; }
-    header h1 { margin: 0; font-size: 1.4rem; }
+    header { background: #3e2723; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 1.3rem; }
+    .logout-btn { background: #5d4037; color: #ffccbc; border: 1px solid #8d6e63; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
     .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1100px; margin: auto; }
     .menu-section { flex: 2; min-width: 300px; }
     .cart-section { flex: 1; min-width: 280px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: fit-content; }
@@ -19,8 +20,8 @@
     .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
     .qty-btn { background: #eee; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
     .total-box { font-size: 1.2rem; font-weight: bold; margin: 15px 0; display: flex; justify-content: space-between; border-top: 2px solid #eee; padding-top: 12px; }
-    select, input[type="number"], button.pay-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 1rem; margin-top: 6px; box-sizing: border-box; }
-    select, input[type="number"] { border: 1px solid #ccc; background: #fff; }
+    select, input[type="number"], input[type="text"], input[type="password"], button.pay-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 1rem; margin-top: 6px; box-sizing: border-box; }
+    select, input[type="number"], input[type="text"], input[type="password"] { border: 1px solid #ccc; background: #fff; }
     .cash-box { background: #faf8f5; border: 1px solid #e6dfd5; padding: 12px; border-radius: 8px; margin-top: 12px; }
     .quick-cash { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
     .quick-btn { flex: 1; min-width: 65px; background: #eee; border: 1px solid #ddd; padding: 6px 4px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: 600; color: #3e2723; }
@@ -30,13 +31,45 @@
     .change-kurang { color: #c62828; }
     button.pay-btn { background: #d84315; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-top: 14px; }
     button.pay-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* Layar Login Admin */
+    #login-overlay { position: fixed; inset: 0; background: #3e2723; display: flex; justify-content: center; align-items: center; z-index: 999; padding: 20px; }
+    .login-box { background: #fff; padding: 28px 24px; border-radius: 14px; max-width: 340px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .login-box h2 { margin: 0 0 6px; color: #3e2723; text-align: center; }
+    .login-box p.sub { margin: 0 0 18px; font-size: 0.88rem; color: #666; text-align: center; }
+    .form-group { margin-bottom: 12px; text-align: left; }
+    .form-group label { font-size: 0.9rem; font-weight: 600; color: #3e2723; }
   </style>
 </head>
 <body>
 
+<!-- Layar Login Admin (Terhubung ke tab "Admin login" Spreadsheet) -->
+<div id="login-overlay">
+  <div class="login-box">
+    <h2>🔒 Login Kasir Admin</h2>
+    <p class="sub">Angkringan AmanLahLek</p>
+    <div class="form-group">
+      <label for="admin-user">Username</label>
+      <input type="text" id="admin-user" placeholder="Masukkan Username..." autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="admin-pass">Password</label>
+      <input type="password" id="admin-pass" placeholder="Masukkan Password..." onkeyup="if(event.key==='Enter') prosesLogin()">
+    </div>
+    <button id="login-btn" class="pay-btn" onclick="prosesLogin()">Masuk ke Kasir</button>
+    <p id="login-error" style="color:#c62828; font-size:0.85rem; display:none; margin-top:12px; text-align:center;"></p>
+    <div style="text-align:center; margin-top:16px;">
+      <a href="index.html" style="color:#795548; font-size:0.85rem; text-decoration:none;">← Kembali ke Menu Pelanggan</a>
+    </div>
+  </div>
+</div>
+
 <header>
-  <h1>🍢 Angkringan AmanLahLek</h1>
-  <small>Sistem Kasir Online Terhubung Spreadsheet</small>
+  <div>
+    <h1>🍢 Kasir Angkringan AmanLahLek</h1>
+    <small id="admin-info">Sistem Kasir Online</small>
+  </div>
+  <button class="logout-btn" onclick="logoutAdmin()">Keluar</button>
 </header>
 
 <div class="container">
@@ -90,16 +123,80 @@
   let keranjang = {};
   let totalBelanja = 0;
 
-  // Ambil data menu saat halaman dibuka
-  fetch(API_URL)
+  // Cek apakah admin sudah login sebelumnya di sesi browser ini
+  window.addEventListener("DOMContentLoaded", () => {
+    const loggedUser = sessionStorage.getItem("adminAngkringan");
+    if (loggedUser) {
+      bukaHalamanKasir(loggedUser);
+    }
+  });
+
+  function prosesLogin() {
+    const username = document.getElementById("admin-user").value.trim();
+    const password = document.getElementById("admin-pass").value.trim();
+    const btn = document.getElementById("login-btn");
+    const errEl = document.getElementById("login-error");
+
+    if (!username || !password) {
+      errEl.innerText = "Username dan Password wajib diisi.";
+      errEl.style.display = "block";
+      return;
+    }
+
+    btn.innerText = "Memeriksa akun...";
+    btn.disabled = true;
+    errEl.style.display = "none";
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "login",
+        username: username,
+        password: password
+      })
+    })
     .then(res => res.json())
     .then(data => {
-      daftarMenu = data;
-      renderMenu();
+      if (data.success) {
+        sessionStorage.setItem("adminAngkringan", username);
+        bukaHalamanKasir(username);
+      } else {
+        errEl.innerText = "Username atau Password salah!";
+        errEl.style.display = "block";
+        btn.innerText = "Masuk ke Kasir";
+        btn.disabled = false;
+      }
     })
     .catch(() => {
-      document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
+      errEl.innerText = "Gagal terhubung ke server Spreadsheet.";
+      errEl.style.display = "block";
+      btn.innerText = "Masuk ke Kasir";
+      btn.disabled = false;
     });
+  }
+
+  function bukaHalamanKasir(username) {
+    document.getElementById("login-overlay").style.display = "none";
+    document.getElementById("admin-info").innerText = "Kasir aktif: " + username;
+    muatMenu();
+  }
+
+  function logoutAdmin() {
+    sessionStorage.removeItem("adminAngkringan");
+    location.reload();
+  }
+
+  function muatMenu() {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        daftarMenu = data;
+        renderMenu();
+      })
+      .catch(() => {
+        document.getElementById("menu-grid").innerHTML = "Gagal memuat menu. Periksa URL API.";
+      });
+  }
 
   function renderMenu() {
     const grid = document.getElementById("menu-grid");
@@ -229,15 +326,18 @@
     const metode = document.getElementById("payment-method").value;
     const uangDiterima = parseFloat(document.getElementById("cash-received").value) || totalBelanja;
     const kembalian = (metode === "Tunai") ? (uangDiterima - totalBelanja) : 0;
+    const kasir = sessionStorage.getItem("adminAngkringan") || "Admin";
 
     fetch(API_URL, {
       method: "POST",
       body: JSON.stringify({ 
+        action: "transaksi",
         detail: detailStr, 
         total: totalBelanja, 
         metode: metode,
         bayar: uangDiterima,
-        kembali: kembalian
+        kembali: kembalian,
+        kasir: kasir
       })
     })
     .then(res => res.json())
