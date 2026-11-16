@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar Menu &amp; Promo - Angkringan AmanLahLek</title>
+  <title>Daftar Menu &amp; Pesan - Angkringan AmanLahLek</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,17 +28,16 @@
       --success-bg: #e8f5e9;
       --success-border: #a5d6a7;
       --success-text: #2e7d32;
+      --review-bg: #e3f2fd;
+      --review-border: #90caf9;
+      --review-text: #1565c0;
       --shadow-sm: 0 2px 10px rgba(36, 20, 14, 0.05);
       --shadow-md: 0 10px 28px rgba(36, 20, 14, 0.09);
       --radius-sm: 10px;
       --radius-md: 16px;
-      --radius-lg: 22px;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -53,7 +52,6 @@
       padding-bottom: 95px;
     }
 
-    /* ================= HERO HEADER ================= */
     header {
       background: linear-gradient(135deg, var(--espresso-900) 0%, var(--espresso-800) 60%, #4a281b 100%);
       color: #fff;
@@ -61,19 +59,6 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    header::before {
-      content: "";
-      position: absolute;
-      width: 280px;
-      height: 280px;
-      background: radial-gradient(circle, rgba(255, 112, 67, 0.16) 0%, transparent 70%);
-      top: -80px;
-      right: -60px;
-      border-radius: 50%;
-      pointer-events: none;
     }
 
     .header-top-row {
@@ -84,8 +69,6 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      position: relative;
-      z-index: 2;
     }
 
     .hero-badge {
@@ -101,13 +84,7 @@
       color: #ffccbc;
     }
 
-    .hero-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #66bb6a;
-      box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25);
-    }
+    .hero-dot { width: 7px; height: 7px; border-radius: 50%; background: #66bb6a; }
 
     .member-header-btn {
       background: linear-gradient(135deg, #ff7043 0%, #d84315 100%);
@@ -119,65 +96,20 @@
       font-size: 0.8rem;
       font-weight: 800;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(216, 67, 21, 0.35);
-      transition: transform 0.15s ease;
     }
 
-    .member-header-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .brand-title-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
+    .brand-title-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
     .brand-emblem {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+      width: 46px; height: 46px; border-radius: 14px;
       background: linear-gradient(135deg, #ff7043 0%, #d84315 100%);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 6px 16px rgba(216, 67, 21, 0.38);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.75rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #fff;
-    }
+    header h1 { margin: 0; font-size: 1.75rem; font-weight: 800; color: #fff; }
+    header p { margin: 0 auto; max-width: 480px; font-size: 0.94rem; color: #e6d7cf; font-weight: 500; }
 
-    header p {
-      margin: 0 auto;
-      max-width: 480px;
-      font-size: 0.94rem;
-      color: #e6d7cf;
-      font-weight: 500;
-    }
+    .container { max-width: 980px; width: 100%; margin: -24px auto 0; padding: 0 18px; position: relative; z-index: 10; flex: 1; }
 
-    /* ================= MAIN CONTAINER ================= */
-    .container {
-      max-width: 980px;
-      width: 100%;
-      margin: -24px auto 0;
-      padding: 0 18px;
-      position: relative;
-      z-index: 10;
-      flex: 1;
-    }
-
-    /* ================= STICKY SEARCH & FILTER PANEL ================= */
     .filter-panel {
       background: var(--bg-surface);
       padding: 16px;
@@ -190,757 +122,152 @@
       z-index: 50;
     }
 
-    .search-wrapper {
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.98rem;
-      color: var(--espresso-400);
-      pointer-events: none;
-    }
-
+    .search-wrapper { position: relative; margin-bottom: 12px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--espresso-400); pointer-events: none; }
     .search-box {
-      width: 100%;
-      padding: 12px 40px 12px 42px;
-      border-radius: 12px;
-      border: 1.5px solid var(--espresso-200);
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 500;
-      background: var(--bg-subtle);
-      color: var(--espresso-900);
-      transition: all 0.2s ease;
+      width: 100%; padding: 12px 40px 12px 42px; border-radius: 12px;
+      border: 1.5px solid var(--espresso-200); font-family: inherit; font-size: 0.95rem;
+      background: var(--bg-subtle); color: var(--espresso-900);
     }
-
-    .search-box:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(216, 67, 21, 0.12);
-    }
-
     .clear-search-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: none;
-      background: var(--espresso-200);
-      color: var(--espresso-700);
-      font-size: 0.75rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      width: 24px; height: 24px; border-radius: 50%; border: none; background: var(--espresso-200);
+      font-size: 0.75rem; font-weight: 800; cursor: pointer; display: none; align-items: center; justify-content: center;
     }
 
-    .cat-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-      scrollbar-width: none;
-    }
-
-    .cat-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
+    .cat-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+    .cat-tabs::-webkit-scrollbar { display: none; }
     .cat-btn {
-      background: var(--bg-subtle);
-      border: 1.5px solid var(--espresso-200);
-      color: var(--espresso-700);
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-family: inherit;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.18s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); color: var(--espresso-700);
+      padding: 8px 16px; border-radius: 999px; font-family: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; white-space: nowrap;
     }
+    .cat-btn.active { background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; border-color: transparent; }
 
-    .cat-btn:hover {
-      background: var(--espresso-100);
-      border-color: var(--espresso-400);
-      transform: translateY(-1px);
-    }
-
-    .cat-btn.active {
-      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 12px rgba(216, 67, 21, 0.28);
-    }
-
-    /* ================= PROMO & KLAIM VOUCHER SECTION ================= */
     .promo-section {
-      background: var(--bg-surface);
-      border: 1.5px solid var(--espresso-200);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow-sm);
+      background: var(--bg-surface); border: 1.5px solid var(--espresso-200);
+      border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
     }
-
-    .promo-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .promo-header h2 {
-      margin: 0;
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--espresso-900);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
+    .promo-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .promo-header h2 { margin: 0; font-size: 1.05rem; font-weight: 800; }
     .my-vouchers-btn {
-      background: var(--accent-soft);
-      color: var(--accent-primary);
-      border: 1px solid #ffccbc;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-family: inherit;
-      font-size: 0.78rem;
-      font-weight: 800;
-      cursor: pointer;
+      background: var(--accent-soft); color: var(--accent-primary); border: 1px solid #ffccbc;
+      padding: 6px 12px; border-radius: 999px; font-family: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer;
     }
-
-    .promo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 12px;
-    }
-
+    .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
     .voucher-card {
       background: linear-gradient(135deg, #fffdf9 0%, #fff3e0 100%);
-      border: 1.5px dashed #ffb74d;
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
+      border: 1.5px dashed #ffb74d; border-radius: 14px; padding: 14px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
     }
-
-    .voucher-code-pill {
-      display: inline-block;
-      background: var(--espresso-900);
-      color: #ffcc80;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 3px 9px;
-      border-radius: 6px;
-      letter-spacing: 0.04em;
-    }
-
-    .voucher-title {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: var(--espresso-900);
-      margin: 4px 0 2px;
-    }
-
-    .voucher-meta {
-      font-size: 0.76rem;
-      color: var(--espresso-600);
-      font-weight: 600;
-    }
-
+    .voucher-code-pill { display: inline-block; background: var(--espresso-900); color: #ffcc80; font-size: 0.75rem; font-weight: 800; padding: 3px 9px; border-radius: 6px; }
+    .voucher-title { font-size: 0.92rem; font-weight: 800; margin: 4px 0 2px; }
+    .voucher-meta { font-size: 0.76rem; color: var(--espresso-600); font-weight: 600; }
     .claim-btn {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 9px;
-      border: none;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 800;
-      cursor: pointer;
-      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
-      color: #fff;
-      transition: all 0.15s ease;
+      width: 100%; padding: 8px 12px; border-radius: 9px; border: none; font-family: inherit; font-size: 0.82rem; font-weight: 800;
+      cursor: pointer; background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff;
     }
+    .claim-btn.claimed { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); cursor: default; }
+    .claim-btn.used { background: var(--espresso-100); color: var(--espresso-600); cursor: default; }
 
-    .claim-btn.claimed {
-      background: var(--success-bg);
-      color: var(--success-text);
-      border: 1px solid var(--success-border);
-      cursor: default;
-    }
-
-    .claim-btn.used {
-      background: var(--espresso-100);
-      color: var(--espresso-600);
-      cursor: default;
-    }
-
-    /* ================= INFO TAMBAHAN BANNER ================= */
     .addon-info {
       background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
-      border: 1.5px solid #ffe082;
-      padding: 13px 16px;
-      border-radius: 14px;
-      margin-bottom: 22px;
-      font-size: 0.9rem;
-      color: var(--espresso-800);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      box-shadow: var(--shadow-sm);
+      border: 1.5px solid #ffe082; padding: 13px 16px; border-radius: 14px; margin-bottom: 22px;
+      font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
     }
+    .addon-pill { background: #fff; border: 1px solid #ffcc80; color: var(--accent-warm); padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 800; }
 
-    .addon-pill {
-      background: #fff;
-      border: 1px solid #ffcc80;
-      color: var(--accent-warm);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .category-section { margin-bottom: 28px; }
+    .category-header { display: flex; align-items: center; justify-content: space-between; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--espresso-200); }
+    .category-title { font-size: 1.15rem; font-weight: 800; color: var(--espresso-800); margin: 0; }
+    .category-count { font-size: 0.78rem; font-weight: 700; color: var(--espresso-600); background: var(--espresso-100); padding: 3px 10px; border-radius: 999px; }
 
-    /* ================= KATEGORI & KARTU MENU ================= */
-    .category-section {
-      margin-bottom: 28px;
-    }
-
-    .category-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 0 0 14px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid var(--espresso-200);
-    }
-
-    .category-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--espresso-800);
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .category-count {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--espresso-600);
-      background: var(--espresso-100);
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-      gap: 14px;
-    }
-
-    @media (max-width: 480px) {
-      .grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      header h1 {
-        font-size: 1.4rem;
-      }
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; }
+    @media (max-width: 480px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } header h1 { font-size: 1.4rem; } }
 
     .card {
-      background: var(--bg-surface);
-      padding: 16px;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
-      border: 1.5px solid var(--espresso-200);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 118px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      cursor: pointer;
-      user-select: none;
+      background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--espresso-200); display: flex; flex-direction: column; justify-content: space-between; min-height: 118px;
+      cursor: pointer; user-select: none; transition: all 0.2s ease;
     }
+    .card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+    .card.selected-card { border-color: var(--accent-warm); background: linear-gradient(180deg, #ffffff 0%, #fff8f3 100%); }
+    .card.out-of-stock { background: #f5f2ed; border: 1.5px dashed #d7ccc8; cursor: not-allowed; opacity: 0.82; }
+    .card.out-of-stock h3 { color: var(--espresso-600); text-decoration: line-through; }
+    .soldout-badge { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; }
+    .soldout-footer-label { font-size: 0.74rem; font-weight: 800; color: var(--danger-text); background: var(--danger-bg); padding: 4px 8px; border-radius: 6px; }
 
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: var(--accent-primary);
-      box-shadow: 0 10px 22px rgba(216, 67, 21, 0.1);
-    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 12px; }
+    .card h3 { margin: 0; font-size: 0.98rem; font-weight: 700; }
+    .card-cat-tag { font-size: 0.72rem; font-weight: 600; color: var(--espresso-600); margin-top: 3px; display: block; }
+    .qty-badge { background: var(--accent-primary); color: #fff; font-size: 0.74rem; font-weight: 800; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--espresso-100); }
+    .card .price { color: var(--accent-primary); font-weight: 800; font-size: 1.02rem; }
+    .pick-btn { width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-primary); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
 
-    .card.selected-card {
-      border-color: var(--accent-warm);
-      background: linear-gradient(180deg, #ffffff 0%, #fff8f3 100%);
-    }
-
-    .card.out-of-stock {
-      background: #f5f2ed;
-      border: 1.5px dashed #d7ccc8;
-      cursor: not-allowed;
-      opacity: 0.82;
-      box-shadow: none;
-    }
-
-    .card.out-of-stock:hover {
-      transform: none;
-      border-color: #ef9a9a;
-      box-shadow: none;
-    }
-
-    .card.out-of-stock h3 {
-      color: var(--espresso-600);
-      text-decoration: line-through;
-      text-decoration-color: rgba(198, 40, 40, 0.45);
-    }
-
-    .card.out-of-stock .price {
-      color: var(--espresso-400);
-    }
-
-    .soldout-badge {
-      background: var(--danger-bg);
-      color: var(--danger-text);
-      border: 1px solid var(--danger-border);
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 999px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .soldout-footer-label {
-      font-size: 0.74rem;
-      font-weight: 800;
-      color: var(--danger-text);
-      background: var(--danger-bg);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--espresso-900);
-      line-height: 1.35;
-    }
-
-    .card-cat-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--espresso-600);
-      margin-top: 3px;
-      display: block;
-    }
-
-    .qty-badge {
-      background: var(--accent-primary);
-      color: #fff;
-      font-size: 0.74rem;
-      font-weight: 800;
-      min-width: 24px;
-      height: 24px;
-      padding: 0 7px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .card-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: auto;
-      padding-top: 8px;
-      border-top: 1px dashed var(--espresso-100);
-    }
-
-    .card .price {
-      color: var(--accent-primary);
-      font-weight: 800;
-      font-size: 1.02rem;
-    }
-
-    .pick-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--accent-soft);
-      color: var(--accent-primary);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1rem;
-    }
-
-    /* ================= TOAST NOTIFICATION ================= */
     .toast-notice {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      background: var(--espresso-900);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-      z-index: 400;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.22s ease;
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+      background: var(--espresso-900); color: #fff; padding: 10px 18px; border-radius: 999px;
+      font-size: 0.84rem; font-weight: 700; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25); z-index: 400; opacity: 0; pointer-events: none; transition: all 0.22s ease;
     }
+    .toast-notice.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .toast-notice.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ================= FLOATING ESTIMATOR BAR ================= */
     .estimator-bar {
-      position: fixed;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 32px);
-      max-width: 620px;
-      background: var(--espresso-900);
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 16px;
-      box-shadow: 0 14px 34px rgba(20, 10, 6, 0.35);
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      z-index: 95;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 620px;
+      background: var(--espresso-900); color: #fff; padding: 12px 18px; border-radius: 16px;
+      box-shadow: 0 14px 34px rgba(20, 10, 6, 0.35); display: none; align-items: center; justify-content: space-between; gap: 12px; z-index: 95;
     }
+    .estimator-bar.show { display: flex; }
+    .estimator-label { font-size: 0.76rem; color: #ebd9d0; font-weight: 600; display: block; }
+    .estimator-total { font-size: 1.08rem; font-weight: 800; color: #ffcc80; }
+    .estimator-actions { display: flex; align-items: center; gap: 8px; }
+    .btn-detail-est { background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; border: none; padding: 9px 14px; border-radius: 10px; font-family: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; }
+    .btn-reset-est { background: rgba(255, 255, 255, 0.1); color: #ffccbc; border: none; padding: 9px 11px; border-radius: 10px; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
-    .estimator-bar.show {
-      display: flex;
-    }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(36, 20, 14, 0.62); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 250; padding: 16px; }
+    .modal-backdrop.show { display: flex; }
+    .modal-card { background: #fff; max-width: 450px; width: 100%; max-height: 92vh; overflow-y: auto; border-radius: 20px; padding: 22px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--espresso-200); }
+    .modal-header h3 { margin: 0; font-size: 1.08rem; }
+    .close-modal-btn { background: var(--espresso-100); border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; cursor: pointer; }
 
-    .estimator-label {
-      font-size: 0.76rem;
-      color: #ebd9d0;
-      font-weight: 600;
-      display: block;
-    }
+    .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .auth-tab { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); padding: 9px; border-radius: 10px; font-family: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; }
+    .auth-tab.active { background: var(--espresso-900); color: #fff; border-color: var(--espresso-900); }
 
-    .estimator-total {
-      font-size: 1.08rem;
-      font-weight: 800;
-      color: #ffcc80;
-    }
+    .form-field { margin-bottom: 11px; }
+    .form-field label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--espresso-800); margin-bottom: 5px; }
+    .form-field input, .est-voucher-select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--espresso-200); font-family: inherit; font-size: 0.92rem; font-weight: 600; }
 
-    .estimator-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .quick-table-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 7px; }
+    .table-chip { background: var(--bg-subtle); border: 1px solid var(--espresso-200); border-radius: 7px; padding: 6px 4px; font-family: inherit; font-size: 0.74rem; font-weight: 700; cursor: pointer; }
+    .table-chip.active { background: var(--espresso-900); color: #ffcc80; border-color: var(--espresso-900); }
 
-    .btn-detail-est {
-      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
-      color: #fff;
-      border: none;
-      padding: 9px 14px;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
+    .primary-btn { width: 100%; padding: 12px 14px; border-radius: 11px; border: none; font-family: inherit; font-size: 0.94rem; font-weight: 800; background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; cursor: pointer; }
+    .primary-btn:disabled { background: #cfc6be; cursor: not-allowed; }
+    .auth-msg { font-size: 0.82rem; font-weight: 700; margin-top: 10px; text-align: center; display: none; }
 
-    .btn-reset-est {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffccbc;
-      border: none;
-      padding: 9px 11px;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
+    .est-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; padding-right: 2px; }
+    .est-row { padding: 9px 0; border-bottom: 1px dashed var(--espresso-200); font-size: 0.88rem; }
+    .est-row-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .est-qty-box { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .est-step-btn { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--espresso-200); background: var(--bg-subtle); font-weight: 800; cursor: pointer; }
+    .est-addons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+    .est-addon-chip { font-family: inherit; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--espresso-200); background: var(--bg-subtle); cursor: pointer; }
+    .est-addon-chip.selected { background: var(--accent-warm); color: #fff; border-color: var(--accent-warm); }
+    .est-voucher-box { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
 
-    /* ================= MODALS ================= */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(36, 20, 14, 0.62);
-      backdrop-filter: blur(4px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 250;
-      padding: 20px;
+    .order-sent-card { text-align: center; padding: 10px 4px; }
+    .review-status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--review-bg); color: var(--review-text); border: 1px solid var(--review-border);
+      padding: 6px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 800; margin: 8px 0 12px;
     }
+    .sent-summary-box { background: var(--bg-subtle); border: 1px dashed var(--espresso-200); border-radius: 12px; padding: 12px; text-align: left; font-size: 0.84rem; margin-bottom: 14px; }
+    .sent-row { display: flex; justify-content: space-between; margin-bottom: 5px; gap: 10px; }
 
-    .modal-backdrop.show {
-      display: flex;
-    }
-
-    .modal-card {
-      background: #fff;
-      max-width: 430px;
-      width: 100%;
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--espresso-200);
-    }
-
-    .modal-header h3 {
-      margin: 0;
-      font-size: 1.08rem;
-      color: var(--espresso-900);
-    }
-
-    .close-modal-btn {
-      background: var(--espresso-100);
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      font-weight: 800;
-      cursor: pointer;
-      color: var(--espresso-800);
-    }
-
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .auth-tab {
-      background: var(--bg-subtle);
-      border: 1.5px solid var(--espresso-200);
-      padding: 9px;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--espresso-700);
-      cursor: pointer;
-    }
-
-    .auth-tab.active {
-      background: var(--espresso-900);
-      color: #fff;
-      border-color: var(--espresso-900);
-    }
-
-    .form-field {
-      margin-bottom: 12px;
-    }
-
-    .form-field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--espresso-800);
-      margin-bottom: 5px;
-    }
-
-    .form-field input,
-    .est-voucher-select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1.5px solid var(--espresso-200);
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 600;
-    }
-
-    .primary-btn {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 11px;
-      border: none;
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .auth-msg {
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-top: 10px;
-      text-align: center;
-      display: none;
-    }
-
-    .est-list {
-      max-height: 250px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-      padding-right: 2px;
-    }
-
-    .est-row {
-      padding: 10px 0;
-      border-bottom: 1px dashed var(--espresso-200);
-      font-size: 0.88rem;
-    }
-
-    .est-row-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .est-qty-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .est-step-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 7px;
-      border: 1px solid var(--espresso-200);
-      background: var(--bg-subtle);
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .est-addons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .est-addon-chip {
-      font-family: inherit;
-      font-size: 0.76rem;
-      font-weight: 700;
-      padding: 4px 11px;
-      border-radius: 999px;
-      border: 1px solid var(--espresso-200);
-      background: var(--bg-subtle);
-      color: var(--espresso-700);
-      cursor: pointer;
-    }
-
-    .est-addon-chip.selected {
-      background: var(--accent-warm);
-      color: #fff;
-      border-color: var(--accent-warm);
-    }
-
-    .est-voucher-box {
-      background: var(--bg-subtle);
-      border: 1.5px solid var(--espresso-200);
-      border-radius: 12px;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-    }
-
-    .modal-note {
-      background: var(--accent-soft);
-      color: var(--espresso-800);
-      font-size: 0.8rem;
-      padding: 10px 12px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 600;
-      line-height: 1.45;
-    }
-
-    .state-box {
-      background: var(--bg-surface);
-      border: 1.5px dashed var(--espresso-200);
-      border-radius: var(--radius-md);
-      padding: 36px 20px;
-      text-align: center;
-      color: var(--espresso-600);
-      font-weight: 600;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 16px 24px;
-      font-size: 0.86rem;
-      color: var(--espresso-600);
-      margin-top: 20px;
-      border-top: 1px solid var(--espresso-200);
-    }
-
-    .kasir-link-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-surface);
-      color: var(--espresso-800);
-      border: 1.5px solid var(--espresso-200);
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+    .state-box { background: var(--bg-surface); border: 1.5px dashed var(--espresso-200); border-radius: var(--radius-md); padding: 36px 20px; text-align: center; color: var(--espresso-600); font-weight: 600; }
+    footer { text-align: center; padding: 30px 16px 24px; font-size: 0.86rem; color: var(--espresso-600); margin-top: 20px; border-top: 1px solid var(--espresso-200); }
+    .kasir-link-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-surface); color: var(--espresso-800); border: 1.5px solid var(--espresso-200); padding: 8px 16px; border-radius: 999px; font-family: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -951,7 +278,7 @@
   <div class="header-top-row">
     <div class="hero-badge">
       <span class="hero-dot"></span>
-      <span>Buka • Pesan Langsung di Kasir</span>
+      <span>Buka • Pesan Langsung dari Meja</span>
     </div>
     <button type="button" id="member-header-btn" class="member-header-btn" onclick="bukaModalMember()">
       👤 Masuk / Daftar Member
@@ -961,7 +288,7 @@
     <div class="brand-emblem">🍢</div>
     <h1>Angkringan AmanLahLek</h1>
   </div>
-  <p>Lihat menu &amp; harga kami, klaim voucher promo member, atau ketuk menu untuk menghitung estimasi pesanan Anda.</p>
+  <p>Pilih menu favorit Anda, klaim voucher promo, isi nama &amp; nomor meja, lalu kirim pesanan langsung ke kasir.</p>
 </header>
 
 <div class="container">
@@ -981,7 +308,6 @@
     </div>
   </div>
 
-  <!-- Bagian Promo & Klaim Voucher -->
   <section class="promo-section">
     <div class="promo-header">
       <h2>🎟️ Promo &amp; Voucher Member</h2>
@@ -998,63 +324,93 @@
   </div>
 </div>
 
-<!-- Bar Estimasi Pesanan Pelanggan -->
+<!-- Bar Pesanan Pelanggan -->
 <div id="estimator-bar" class="estimator-bar">
   <div class="estimator-info">
-    <span id="estimator-count" class="estimator-label">0 Menu Dipilih (Estimasi)</span>
+    <span id="estimator-count" class="estimator-label">0 Menu Dipilih</span>
     <span id="estimator-total" class="estimator-total">Rp 0</span>
   </div>
   <div class="estimator-actions">
-    <button type="button" class="btn-detail-est" onclick="bukaModalEstimasi()">Lihat Catatan</button>
+    <button type="button" class="btn-detail-est" onclick="bukaModalEstimasi()">Pesan Sekarang →</button>
     <button type="button" class="btn-reset-est" onclick="resetEstimasi()">Reset</button>
   </div>
 </div>
 
-<!-- Modal Catatan Pesanan Pelanggan -->
+<!-- Modal Kirim Pesanan ke Kasir -->
 <div id="estimator-modal" class="modal-backdrop">
   <div class="modal-card">
     <div class="modal-header">
-      <h3>📝 Catatan Pesanan Anda</h3>
+      <h3 id="order-modal-title">🛒 Konfirmasi Pesanan Anda</h3>
       <button type="button" class="close-modal-btn" onclick="tutupModalEstimasi()">✕</button>
     </div>
-    <div id="est-list-container" class="est-list"></div>
 
-    <div id="est-voucher-box" class="est-voucher-box" style="display:none;">
-      <label for="est-voucher-select" style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:6px; color:var(--espresso-800);">
-        🎟️ Pakai Voucher Member yang Sudah Diklaim:
-      </label>
-      <select id="est-voucher-select" class="est-voucher-select" onchange="renderIsiModalEstimasi()"></select>
-      <div id="est-discount-line" style="display:none; justify-content:space-between; font-size:0.84rem; color:var(--success-text); font-weight:700; margin-top:8px;">
-        <span>Potongan Voucher</span>
-        <span id="est-discount-val">-Rp 0</span>
+    <!-- Form Pengisian Pesanan -->
+    <div id="order-form-view">
+      <div id="est-list-container" class="est-list"></div>
+
+      <div class="form-field">
+        <label for="cust-order-name">👤 Atas Nama Pemesan *</label>
+        <input type="text" id="cust-order-name" placeholder="Masukkan nama Anda...">
       </div>
+
+      <div class="form-field">
+        <label for="cust-table-number">🪑 Nomor / Angka Meja *</label>
+        <input type="text" id="cust-table-number" placeholder="Ketik angka meja (misal: 3 atau Bungkus)..." oninput="sinkronMejaPelanggan()">
+        <div class="quick-table-grid">
+          <button type="button" class="table-chip" data-meja="1" onclick="pilihMejaPelanggan('1')">Meja 1</button>
+          <button type="button" class="table-chip" data-meja="2" onclick="pilihMejaPelanggan('2')">Meja 2</button>
+          <button type="button" class="table-chip" data-meja="3" onclick="pilihMejaPelanggan('3')">Meja 3</button>
+          <button type="button" class="table-chip" data-meja="4" onclick="pilihMejaPelanggan('4')">Meja 4</button>
+          <button type="button" class="table-chip" data-meja="Bungkus" onclick="pilihMejaPelanggan('Bungkus')">Bungkus</button>
+        </div>
+      </div>
+
+      <div id="est-voucher-box" class="est-voucher-box" style="display:none;">
+        <label for="est-voucher-select" style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:6px;">
+          🎟️ Pakai Voucher Member:
+        </label>
+        <select id="est-voucher-select" class="est-voucher-select" onchange="renderIsiModalEstimasi()"></select>
+        <div id="est-discount-line" style="display:none; justify-content:space-between; font-size:0.84rem; color:var(--success-text); font-weight:700; margin-top:8px;">
+          <span>Potongan Voucher</span>
+          <span id="est-discount-val">-Rp 0</span>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; margin-bottom:12px;">
+        <span>Total Pembayaran:</span>
+        <span id="modal-est-total" style="color:var(--accent-primary);">Rp 0</span>
+      </div>
+
+      <button type="button" id="submit-order-btn" class="primary-btn" onclick="kirimPesananKeKasir()">🚀 Kirim Pesanan ke Kasir</button>
     </div>
 
-    <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; margin-bottom:12px; color:var(--espresso-900);">
-      <span>Estimasi Total:</span>
-      <span id="modal-est-total" style="color:var(--accent-primary);">Rp 0</span>
-    </div>
-    <div id="modal-kasir-hint" class="modal-note">
-      Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.
+    <!-- Tampilan Setelah Pesanan Terkirim ("Sedang Ditinjau") -->
+    <div id="order-sent-view" class="order-sent-card" style="display:none;">
+      <div style="font-size:2.2rem;">📩</div>
+      <h3 style="margin:6px 0 4px;">Pesanan Terkirim ke Kasir!</h3>
+      <div class="review-status-pill">🔍 Status: Sedang Ditinjau Kasir</div>
+      <div id="sent-summary-box" class="sent-summary-box"></div>
+      <p style="font-size:0.82rem; color:var(--espresso-600); line-height:1.45; margin:0 0 14px;">
+        Silakan menuju kasir atau tunggu kasir meninjau pesanan dan mengonfirmasi metode pembayaran Anda (Tunai / QRIS / Transfer).
+      </p>
+      <button type="button" class="primary-btn" onclick="selesaiKirimPesanan()">Tutup &amp; Kembali ke Menu</button>
     </div>
   </div>
 </div>
 
-<!-- Modal Akun Pelanggan (Login / Daftar / Dompet Voucher) -->
+<!-- Modal Akun Pelanggan -->
 <div id="member-modal" class="modal-backdrop">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 id="member-modal-title">👤 Akun Member AmanLahLek</h3>
+      <h3>👤 Akun Member AmanLahLek</h3>
       <button type="button" class="close-modal-btn" onclick="tutupModalMember()">✕</button>
     </div>
 
-    <!-- Tampilan Saat Belum Login -->
     <div id="member-auth-view">
       <div class="auth-tabs">
         <button type="button" id="tab-login-member" class="auth-tab active" onclick="ubahTabAuth('login')">Masuk</button>
         <button type="button" id="tab-register-member" class="auth-tab" onclick="ubahTabAuth('register')">Daftar Baru</button>
       </div>
-
       <div id="register-name-group" class="form-field" style="display:none;">
         <label for="member-name">Nama Panggilan</label>
         <input type="text" id="member-name" placeholder="Contoh: Budi">
@@ -1071,21 +427,20 @@
       <p id="member-auth-msg" class="auth-msg"></p>
     </div>
 
-    <!-- Tampilan Saat Sudah Login -->
     <div id="member-profile-view" style="display:none;">
       <div style="background:var(--bg-subtle); border:1px solid var(--espresso-200); border-radius:12px; padding:12px; margin-bottom:14px;">
-        <div style="font-size:0.95rem; font-weight:800; color:var(--espresso-900);" id="profile-name-label">Member</div>
+        <div style="font-size:0.95rem; font-weight:800;" id="profile-name-label">Member</div>
         <div style="font-size:0.8rem; color:var(--espresso-600); font-weight:600;" id="profile-phone-label">08xxx</div>
       </div>
-      <div style="font-size:0.84rem; font-weight:800; margin-bottom:8px; color:var(--espresso-800);">🎟️ Voucher Saya:</div>
-      <div id="profile-voucher-list" class="est-list" style="max-height:200px;"></div>
+      <div style="font-size:0.84rem; font-weight:800; margin-bottom:8px;">🎟️ Voucher Saya:</div>
+      <div id="profile-voucher-list" class="est-list"></div>
       <button type="button" class="claim-btn used" style="margin-top:6px;" onclick="logoutPelanggan()">Keluar dari Akun Member</button>
     </div>
   </div>
 </div>
 
 <footer>
-  <div>Silakan pesan langsung di kasir.</div>
+  <div>Pilih menu lalu kirim pesanan langsung ke kasir.</div>
   <button type="button" class="kasir-link-btn" onclick="bukaLoginKasir()">🔒 Login Kasir</button>
 </footer>
 
@@ -1093,7 +448,7 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
   const STORAGE_MEMBER_KEY = "memberAngkringanAmanLahLek";
-  const STORAGE_VOUCHERS_LOCAL = "klaimVoucherLokalAmanLahLek";
+  const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
 
   const MENU_CADANGAN = [
     { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000, status: "Tersedia" },
@@ -1135,7 +490,7 @@
   let kategoriAktif = "Semua";
   let catatanPesanan = [];
   let stokHabisMap = {};
-  let memberAktif = null; // { noHp, nama, claimedVouchers: [] }
+  let memberAktif = null;
   let modeAuth = "login";
   let toastTimer = null;
 
@@ -1148,47 +503,23 @@
   }
 
   function muatStokHabisLokal() {
-    try {
-      const raw = localStorage.getItem(STORAGE_STOK_KEY);
-      stokHabisMap = raw ? (JSON.parse(raw) || {}) : {};
-    } catch (e) {
-      stokHabisMap = {};
-    }
+    try { const raw = localStorage.getItem(STORAGE_STOK_KEY); stokHabisMap = raw ? (JSON.parse(raw) || {}) : {}; } catch (e) { stokHabisMap = {}; }
   }
-
   function muatMemberLokal() {
-    try {
-      const raw = localStorage.getItem(STORAGE_MEMBER_KEY);
-      if (raw) memberAktif = JSON.parse(raw);
-    } catch (e) {
-      memberAktif = null;
-    }
+    try { const raw = localStorage.getItem(STORAGE_MEMBER_KEY); if (raw) memberAktif = JSON.parse(raw); } catch (e) { memberAktif = null; }
   }
-
   function simpanMemberLokal() {
-    try {
-      if (memberAktif) {
-        localStorage.setItem(STORAGE_MEMBER_KEY, JSON.stringify(memberAktif));
-      } else {
-        localStorage.removeItem(STORAGE_MEMBER_KEY);
-      }
-    } catch (e) {}
+    try { if (memberAktif) localStorage.setItem(STORAGE_MEMBER_KEY, JSON.stringify(memberAktif)); else localStorage.removeItem(STORAGE_MEMBER_KEY); } catch (e) {}
   }
 
-  function bersihkanNamaMenu(namaAsli) {
-    return String(namaAsli || "")
-      .replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "")
-      .trim();
-  }
+  function bersihkanNamaMenu(namaAsli) { return String(namaAsli || "").replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "").trim(); }
 
   function apakahStokHabis(item) {
     const namaBersih = bersihkanNamaMenu(item.nama);
     if (stokHabisMap[namaBersih] === true) return true;
     if (stokHabisMap[namaBersih] === false) return false;
-
     const namaRaw = String(item.nama || "").toLowerCase();
     if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) return true;
-
     const statusRaw = String(item.status || item.stok || "").toLowerCase().trim();
     return statusRaw === "habis" || statusRaw === "kosong" || statusRaw === "tidak tersedia" || statusRaw === "0" || item.habis === true;
   }
@@ -1200,13 +531,8 @@
       .then(data => {
         const menuData = Array.isArray(data) ? data : (data.menu || []);
         daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
-        daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
-          ? data.tambahan
-          : TAMBAHAN_CADANGAN;
-        daftarVoucher = (!Array.isArray(data) && data.vouchers && data.vouchers.length > 0)
-          ? data.vouchers
-          : VOUCHER_CADANGAN;
-
+        daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0) ? data.tambahan : TAMBAHAN_CADANGAN;
+        daftarVoucher = (!Array.isArray(data) && data.vouchers && data.vouchers.length > 0) ? data.vouchers : VOUCHER_CADANGAN;
         bersihkanPesananYangHabis();
         terapkanFilter();
         renderPromoVoucher();
@@ -1222,20 +548,10 @@
   }
 
   window.addEventListener("storage", (e) => {
-    if (!e.key || e.key === STORAGE_STOK_KEY) {
-      muatStokHabisLokal();
-      bersihkanPesananYangHabis();
-      terapkanFilter();
-    }
+    if (!e.key || e.key === STORAGE_STOK_KEY) { muatStokHabisLokal(); bersihkanPesananYangHabis(); terapkanFilter(); }
   });
-
   window.addEventListener("focus", muatDataMenuDariServer);
-
-  window.addEventListener("DOMContentLoaded", () => {
-    muatMemberLokal();
-    perbaruiUIMember();
-    muatDataMenuDariServer();
-  });
+  window.addEventListener("DOMContentLoaded", () => { muatMemberLokal(); perbaruiUIMember(); muatDataMenuDariServer(); });
 
   function perbaruiUIMember() {
     const headerBtn = document.getElementById("member-header-btn");
@@ -1254,146 +570,59 @@
   function renderPromoVoucher() {
     const grid = document.getElementById("promo-grid");
     grid.innerHTML = "";
-    if (daftarVoucher.length === 0) {
-      grid.innerHTML = `<div style="color:var(--espresso-600); font-size:0.85rem;">Belum ada promo aktif saat ini.</div>`;
-      return;
-    }
-
     const klaimList = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers : [];
-
     daftarVoucher.forEach(v => {
       const match = klaimList.find(c => c.kode === v.kode);
       const labelDiskon = v.jenis === "PERSEN" ? `Diskon ${v.nilai}%` : `Potongan Rp ${Number(v.nilai).toLocaleString("id-ID")}`;
       const minText = v.minBelanja > 0 ? `Min. belanja Rp ${Number(v.minBelanja).toLocaleString("id-ID")}` : "Tanpa minimal belanja";
-
-      let btnClass = "claim-btn";
-      let btnText = "🎟️ Klaim Voucher";
-      let disabled = false;
-
+      let btnClass = "claim-btn", btnText = "🎟️ Klaim Voucher", disabled = false;
       if (match) {
-        if (match.statusPakai === "Terpakai") {
-          btnClass = "claim-btn used";
-          btnText = "Sudah Dipakai";
-          disabled = true;
-        } else {
-          btnClass = "claim-btn claimed";
-          btnText = "✓ Sudah Diklaim";
-          disabled = true;
-        }
+        if (match.statusPakai === "Terpakai") { btnClass = "claim-btn used"; btnText = "Sudah Dipakai"; disabled = true; }
+        else { btnClass = "claim-btn claimed"; btnText = "✓ Sudah Diklaim"; disabled = true; }
       }
-
       const card = document.createElement("div");
       card.className = "voucher-card";
-      card.innerHTML = `
-        <div>
-          <span class="voucher-code-pill">${v.kode}</span>
-          <div class="voucher-title">${v.judul}</div>
-          <div class="voucher-meta">${labelDiskon} • ${minText} • Sisa kuota: ${v.kuota}</div>
-        </div>
-        <button type="button" class="${btnClass}" ${disabled ? "disabled" : ""}>${btnText}</button>
-      `;
-      if (!disabled) {
-        card.querySelector("button").addEventListener("click", () => klaimVoucher(v));
-      }
+      card.innerHTML = `<div><span class="voucher-code-pill">${v.kode}</span><div class="voucher-title">${v.judul}</div><div class="voucher-meta">${labelDiskon} • ${minText} • Kuota: ${v.kuota}</div></div><button type="button" class="${btnClass}" ${disabled ? "disabled" : ""}>${btnText}</button>`;
+      if (!disabled) card.querySelector("button").addEventListener("click", () => klaimVoucher(v));
       grid.appendChild(card);
     });
   }
 
   function klaimVoucher(voucherObj) {
-    if (!memberAktif) {
-      tampilkanToast("👤 Masuk atau daftar akun member dulu untuk klaim voucher");
-      bukaModalMember();
-      return;
-    }
-
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "klaimVoucher",
-        noHp: memberAktif.noHp,
-        kodeVoucher: voucherObj.kode
+    if (!memberAktif) { tampilkanToast("👤 Masuk atau daftar akun member dulu untuk klaim voucher"); bukaModalMember(); return; }
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "klaimVoucher", noHp: memberAktif.noHp, kodeVoucher: voucherObj.kode }) })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) { memberAktif.claimedVouchers = data.claimedVouchers || []; simpanMemberLokal(); perbaruiUIMember(); tampilkanToast(`✓ Voucher ${voucherObj.kode} diklaim!`); }
+        else tampilkanToast(data.message || "Gagal mengklaim voucher.");
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        memberAktif.claimedVouchers = data.claimedVouchers || [];
-        simpanMemberLokal();
-        perbaruiUIMember();
-        tampilkanToast(`✓ Voucher ${voucherObj.kode} berhasil diklaim!`);
-      } else {
-        tampilkanToast(data.message || "Gagal mengklaim voucher.");
-      }
-    })
-    .catch(() => {
-      // Fallback simulasi lokal bila offline/preview
-      if (!memberAktif.claimedVouchers) memberAktif.claimedVouchers = [];
-      if (!memberAktif.claimedVouchers.some(c => c.kode === voucherObj.kode)) {
-        memberAktif.claimedVouchers.push({
-          kode: voucherObj.kode,
-          judul: voucherObj.judul,
-          jenis: voucherObj.jenis,
-          nilai: voucherObj.nilai,
-          minBelanja: voucherObj.minBelanja,
-          statusPakai: "Tersedia"
-        });
-        simpanMemberLokal();
-        perbaruiUIMember();
-        tampilkanToast(`✓ Voucher ${voucherObj.kode} diklaim!`);
-      }
-    });
+      .catch(() => tampilkanToast("Gagal terhubung ke server."));
   }
 
   function bukaModalMember() {
-    const authView = document.getElementById("member-auth-view");
-    const profileView = document.getElementById("member-profile-view");
-    const msg = document.getElementById("member-auth-msg");
-    msg.style.display = "none";
-
+    document.getElementById("member-auth-msg").style.display = "none";
     if (memberAktif) {
-      authView.style.display = "none";
-      profileView.style.display = "block";
+      document.getElementById("member-auth-view").style.display = "none";
+      document.getElementById("member-profile-view").style.display = "block";
       document.getElementById("profile-name-label").innerText = `Halo, ${memberAktif.nama}`;
       document.getElementById("profile-phone-label").innerText = `No. WhatsApp: ${memberAktif.noHp}`;
-      renderDompetVoucherProfil();
+      const list = document.getElementById("profile-voucher-list");
+      const items = memberAktif.claimedVouchers || [];
+      list.innerHTML = items.length === 0 ? `<div style="font-size:0.84rem; color:var(--espresso-600); padding:10px 0;">Belum ada voucher diklaim.</div>` :
+        items.map(v => `<div class="est-row"><div class="est-row-top"><div><strong>${v.kode}</strong> — ${v.judul}</div><span class="addon-pill">${v.statusPakai}</span></div></div>`).join("");
     } else {
-      profileView.style.display = "none";
-      authView.style.display = "block";
+      document.getElementById("member-profile-view").style.display = "none";
+      document.getElementById("member-auth-view").style.display = "block";
     }
     document.getElementById("member-modal").classList.add("show");
   }
-
-  function tutupModalMember() {
-    document.getElementById("member-modal").classList.remove("show");
-  }
-
-  function renderDompetVoucherProfil() {
-    const list = document.getElementById("profile-voucher-list");
-    const items = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers : [];
-    if (items.length === 0) {
-      list.innerHTML = `<div style="font-size:0.84rem; color:var(--espresso-600); padding:12px 0;">Belum ada voucher diklaim. Pilih promo di halaman menu!</div>`;
-      return;
-    }
-    list.innerHTML = items.map(v => `
-      <div class="est-row">
-        <div class="est-row-top">
-          <div>
-            <strong>${v.kode}</strong> — ${v.judul}<br>
-            <small style="color:var(--espresso-600);">Tunjukkan kode &amp; No. WA di kasir</small>
-          </div>
-          <span class="addon-pill" style="${v.statusPakai === 'Terpakai' ? 'opacity:0.5;' : ''}">${v.statusPakai}</span>
-        </div>
-      </div>
-    `).join("");
-  }
-
+  function tutupModalMember() { document.getElementById("member-modal").classList.remove("show"); }
   function ubahTabAuth(mode) {
     modeAuth = mode;
     document.getElementById("tab-login-member").classList.toggle("active", mode === "login");
     document.getElementById("tab-register-member").classList.toggle("active", mode === "register");
     document.getElementById("register-name-group").style.display = mode === "register" ? "block" : "none";
     document.getElementById("auth-submit-btn").innerText = mode === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
-    document.getElementById("member-auth-msg").style.display = "none";
   }
 
   function prosesAuthPelanggan() {
@@ -1402,380 +631,283 @@
     const pin = document.getElementById("member-pin").value.trim();
     const msg = document.getElementById("member-auth-msg");
     const btn = document.getElementById("auth-submit-btn");
-
     if (!noHp || pin.length < 4 || (modeAuth === "register" && !nama)) {
-      msg.innerText = "Lengkapi semua kolom (PIN minimal 4 angka).";
-      msg.style.color = "var(--danger-text)";
-      msg.style.display = "block";
-      return;
+      msg.innerText = "Lengkapi semua kolom (PIN minimal 4 angka)."; msg.style.color = "var(--danger-text)"; msg.style.display = "block"; return;
     }
-
-    btn.disabled = true;
-    btn.innerText = "Memproses...";
-    const action = modeAuth === "register" ? "registerPelanggan" : "loginPelanggan";
-
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: action, nama: nama, noHp: noHp, pin: pin })
-    })
-    .then(res => res.json())
-    .then(data => {
-      btn.disabled = false;
-      btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
-      if (data.success) {
-        memberAktif = {
-          noHp: data.pelanggan.noHp,
-          nama: data.pelanggan.nama,
-          claimedVouchers: data.claimedVouchers || []
-        };
-        simpanMemberLokal();
-        perbaruiUIMember();
-        bukaModalMember();
-        tampilkanToast(`✓ Selamat datang, ${memberAktif.nama}!`);
-      } else {
-        msg.innerText = data.message || "Gagal memproses akun.";
-        msg.style.color = "var(--danger-text)";
-        msg.style.display = "block";
-      }
-    })
-    .catch(() => {
-      btn.disabled = false;
-      btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
-      msg.innerText = "Gagal terhubung ke server Spreadsheet.";
-      msg.style.color = "var(--danger-text)";
-      msg.style.display = "block";
-    });
+    btn.disabled = true; btn.innerText = "Memproses...";
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: modeAuth === "register" ? "registerPelanggan" : "loginPelanggan", nama: nama, noHp: noHp, pin: pin }) })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false; btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+        if (data.success) {
+          memberAktif = { noHp: data.pelanggan.noHp, nama: data.pelanggan.nama, claimedVouchers: data.claimedVouchers || [] };
+          simpanMemberLokal(); perbaruiUIMember(); bukaModalMember(); tampilkanToast(`✓ Selamat datang, ${memberAktif.nama}!`);
+        } else { msg.innerText = data.message || "Gagal memproses akun."; msg.style.color = "var(--danger-text)"; msg.style.display = "block"; }
+      })
+      .catch(() => { btn.disabled = false; btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member"; msg.innerText = "Gagal terhubung ke server."; msg.style.display = "block"; });
   }
 
-  function logoutPelanggan() {
-    memberAktif = null;
-    simpanMemberLokal();
-    perbaruiUIMember();
-    tutupModalMember();
-    tampilkanToast("Anda telah keluar dari akun member.");
-  }
-
+  function logoutPelanggan() { memberAktif = null; simpanMemberLokal(); perbaruiUIMember(); tutupModalMember(); }
   function tampilkanInfoTambahan(tambahan) {
     if (tambahan && tambahan.length > 0) {
       const addonBox = document.getElementById("addon-box");
-      const listStr = tambahan
-        .map(t => `<span class="addon-pill">+ ${t.nama} (Rp ${Number(t.harga).toLocaleString("id-ID")})</span>`)
-        .join(" ");
-      addonBox.innerHTML = `
-        <div>🧊 <strong>Menu Tambahan Tersedia:</strong> bisa diatur di Catatan Pesanan</div>
-        <div>${listStr}</div>
-      `;
+      addonBox.innerHTML = `<div>🧊 <strong>Menu Tambahan Tersedia:</strong> bisa diatur sebelum kirim pesanan</div><div>${tambahan.map(t => `<span class="addon-pill">+ ${t.nama} (Rp ${Number(t.harga).toLocaleString("id-ID")})</span>`).join(" ")}</div>`;
       addonBox.style.display = "flex";
     }
   }
 
   function bersihkanPesananYangHabis() {
-    catatanPesanan = catatanPesanan.filter(pesanan => {
-      const itemMenu = daftarMenu.find(m => bersihkanNamaMenu(m.nama) === pesanan.nama);
-      return !(itemMenu && apakahStokHabis(itemMenu));
-    });
+    catatanPesanan = catatanPesanan.filter(p => !(daftarMenu.find(m => bersihkanNamaMenu(m.nama) === p.nama && apakahStokHabis(m))));
     perbaruiBarEstimasi();
   }
-
-  function bukaLoginKasir() {
-    window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/kasir.html";
-  }
-
-  function pilihKategori(kat, btnEl) {
-    kategoriAktif = kat;
-    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-    btnEl.classList.add("active");
-    terapkanFilter();
-  }
-
-  function resetCari() {
-    document.getElementById("search-input").value = "";
-    document.getElementById("clear-search-btn").style.display = "none";
-    terapkanFilter();
-  }
-
+  function bukaLoginKasir() { window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/kasir.html"; }
+  function pilihKategori(kat, btnEl) { kategoriAktif = kat; document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btnEl.classList.add("active"); terapkanFilter(); }
+  function resetCari() { document.getElementById("search-input").value = ""; document.getElementById("clear-search-btn").style.display = "none"; terapkanFilter(); }
   function terapkanFilter() {
     const keyword = document.getElementById("search-input").value.toLowerCase();
-    const clearBtn = document.getElementById("clear-search-btn");
-    if (clearBtn) clearBtn.style.display = keyword.length > 0 ? "inline-flex" : "none";
-
-    const hasil = daftarMenu.filter(item => {
-      const namaBersih = bersihkanNamaMenu(item.nama).toLowerCase();
-      const cocokNama = namaBersih.includes(keyword);
-      const itemKat = (item.kategori || "").trim().toLowerCase();
-      const cocokKat = (kategoriAktif === "Semua") || (itemKat === kategoriAktif.toLowerCase());
-      return cocokNama && cocokKat;
-    });
+    document.getElementById("clear-search-btn").style.display = keyword.length > 0 ? "inline-flex" : "none";
+    const hasil = daftarMenu.filter(item => bersihkanNamaMenu(item.nama).toLowerCase().includes(keyword) && ((kategoriAktif === "Semua") || ((item.kategori || "").trim().toLowerCase() === kategoriAktif.toLowerCase())));
     renderMenuTerkelompok(hasil);
   }
-
-  function hitungQtyMenu(namaMenuBersih) {
-    return catatanPesanan.filter(i => i.nama === namaMenuBersih).reduce((sum, i) => sum + i.qty, 0);
-  }
+  function hitungQtyMenu(namaMenuBersih) { return catatanPesanan.filter(i => i.nama === namaMenuBersih).reduce((sum, i) => sum + i.qty, 0); }
 
   function tambahKeEstimasi(item) {
     const namaBersih = bersihkanNamaMenu(item.nama);
-    if (apakahStokHabis(item)) {
-      tampilkanToast(`🚫 Maaf, stok ${namaBersih} sedang habis & tidak dapat dipilih`);
-      return;
-    }
-
+    if (apakahStokHabis(item)) { tampilkanToast(`🚫 Maaf, stok ${namaBersih} sedang habis`); return; }
     const existingIdx = catatanPesanan.findIndex(i => i.nama === namaBersih && i.addons.length === 0);
-    if (existingIdx !== -1) {
-      catatanPesanan[existingIdx].qty++;
-    } else {
-      catatanPesanan.push({
-        id: item.id || namaBersih,
-        nama: namaBersih,
-        kategori: item.kategori || "",
-        hargaDasar: Number(item.harga),
-        qty: 1,
-        addons: []
-      });
-    }
-    perbaruiBarEstimasi();
-    terapkanFilter();
+    if (existingIdx !== -1) catatanPesanan[existingIdx].qty++;
+    else catatanPesanan.push({ id: item.id || namaBersih, nama: namaBersih, kategori: item.kategori || "", hargaDasar: Number(item.harga), qty: 1, addons: [] });
+    perbaruiBarEstimasi(); terapkanFilter();
   }
 
   function toggleAddonEstimasi(rowIndex, addonIndex) {
-    const item = catatanPesanan[rowIndex];
-    const addon = daftarTambahan[addonIndex];
+    const item = catatanPesanan[rowIndex], addon = daftarTambahan[addonIndex];
     if (!item || !addon) return;
-
     const existIdx = item.addons.findIndex(a => a.nama === addon.nama);
-    if (existIdx !== -1) item.addons.splice(existIdx, 1);
-    else item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
-
-    const sigSekarang = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
-    const duplikatIdx = catatanPesanan.findIndex((k, idx) => idx !== rowIndex && (k.nama + "|" + k.addons.map(a => a.nama).sort().join(",")) === sigSekarang);
-    if (duplikatIdx !== -1) {
-      catatanPesanan[duplikatIdx].qty += item.qty;
-      catatanPesanan.splice(rowIndex, 1);
-    }
-
-    perbaruiBarEstimasi();
-    renderIsiModalEstimasi();
-    terapkanFilter();
+    if (existIdx !== -1) item.addons.splice(existIdx, 1); else item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
+    const sig = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
+    const dupIdx = catatanPesanan.findIndex((k, idx) => idx !== rowIndex && (k.nama + "|" + k.addons.map(a => a.nama).sort().join(",")) === sig);
+    if (dupIdx !== -1) { catatanPesanan[dupIdx].qty += item.qty; catatanPesanan.splice(rowIndex, 1); }
+    perbaruiBarEstimasi(); renderIsiModalEstimasi(); terapkanFilter();
   }
 
   function ubahQtyEstimasi(rowIndex, delta) {
     if (!catatanPesanan[rowIndex]) return;
     catatanPesanan[rowIndex].qty += delta;
     if (catatanPesanan[rowIndex].qty <= 0) catatanPesanan.splice(rowIndex, 1);
-    perbaruiBarEstimasi();
-    renderIsiModalEstimasi();
-    terapkanFilter();
+    perbaruiBarEstimasi(); renderIsiModalEstimasi(); terapkanFilter();
   }
 
-  function resetEstimasi() {
-    catatanPesanan = [];
-    perbaruiBarEstimasi();
-    tutupModalEstimasi();
-    terapkanFilter();
-  }
-
-  function hitungTotalSemuaEstimasi() {
-    return catatanPesanan.reduce((total, item) => {
-      const hargaAddon = item.addons.reduce((s, a) => s + Number(a.harga), 0);
-      return total + ((item.hargaDasar + hargaAddon) * item.qty);
-    }, 0);
-  }
+  function resetEstimasi() { catatanPesanan = []; perbaruiBarEstimasi(); tutupModalEstimasi(); terapkanFilter(); }
+  function hitungTotalSemuaEstimasi() { return catatanPesanan.reduce((total, item) => total + ((item.hargaDasar + item.addons.reduce((s, a) => s + Number(a.harga), 0)) * item.qty), 0); }
 
   function perbaruiBarEstimasi() {
     const bar = document.getElementById("estimator-bar");
     const totalQty = catatanPesanan.reduce((s, i) => s + i.qty, 0);
     const totalHarga = hitungTotalSemuaEstimasi();
     if (totalQty > 0) {
-      document.getElementById("estimator-count").innerText = `${totalQty} Menu Dipilih (Estimasi)`;
+      document.getElementById("estimator-count").innerText = `${totalQty} Menu Dipilih`;
       document.getElementById("estimator-total").innerText = `Rp ${totalHarga.toLocaleString("id-ID")}`;
       bar.classList.add("show");
-    } else {
-      bar.classList.remove("show");
-    }
+    } else bar.classList.remove("show");
+  }
+
+  function pilihMejaPelanggan(val) { document.getElementById("cust-table-number").value = val; sinkronMejaPelanggan(); }
+  function sinkronMejaPelanggan() {
+    const val = document.getElementById("cust-table-number").value.trim().toLowerCase();
+    document.querySelectorAll("#estimator-modal .table-chip").forEach(c => c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === val));
   }
 
   function bukaModalEstimasi() {
+    document.getElementById("order-modal-title").innerText = "🛒 Konfirmasi Pesanan Anda";
+    document.getElementById("order-form-view").style.display = "block";
+    document.getElementById("order-sent-view").style.display = "none";
+    if (memberAktif && !document.getElementById("cust-order-name").value.trim()) {
+      document.getElementById("cust-order-name").value = memberAktif.nama;
+    }
     isiDropdownVoucherEstimasi();
     renderIsiModalEstimasi();
     document.getElementById("estimator-modal").classList.add("show");
   }
 
-  function tutupModalEstimasi() {
-    document.getElementById("estimator-modal").classList.remove("show");
-  }
+  function tutupModalEstimasi() { document.getElementById("estimator-modal").classList.remove("show"); }
 
   function isiDropdownVoucherEstimasi() {
     const box = document.getElementById("est-voucher-box");
     const sel = document.getElementById("est-voucher-select");
-    const tersedia = (memberAktif && memberAktif.claimedVouchers)
-      ? memberAktif.claimedVouchers.filter(v => v.statusPakai === "Tersedia")
-      : [];
-
-    if (!memberAktif || tersedia.length === 0) {
-      box.style.display = "none";
-      sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>`;
-      return;
-    }
-
+    const tersedia = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers.filter(v => v.statusPakai === "Tersedia") : [];
+    if (!memberAktif || tersedia.length === 0) { box.style.display = "none"; sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>`; return; }
     box.style.display = "block";
-    sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>` +
-      tersedia.map(v => `<option value="${v.kode}">${v.kode} (${v.judul})</option>`).join("");
+    sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>` + tersedia.map(v => `<option value="${v.kode}">${v.kode} (${v.judul})</option>`).join("");
   }
 
-  function renderIsiModalEstimasi() {
-    const listEl = document.getElementById("est-list-container");
-    const modalTotalEl = document.getElementById("modal-est-total");
-    const discountLine = document.getElementById("est-discount-line");
-    const discountValEl = document.getElementById("est-discount-val");
-    const hintEl = document.getElementById("modal-kasir-hint");
-
-    if (catatanPesanan.length === 0) {
-      tutupModalEstimasi();
-      return;
-    }
-
-    let subtotal = 0;
-    listEl.innerHTML = "";
-
-    catatanPesanan.forEach((item, rowIdx) => {
-      const hargaAddon = item.addons.reduce((s, a) => s + Number(a.harga), 0);
-      const sub = (item.hargaDasar + hargaAddon) * item.qty;
-      subtotal += sub;
-
-      const labelTambahan = item.addons.length > 0
-        ? ` <span style="color:var(--accent-warm); font-size:0.8rem; font-weight:700;">(+ ${item.addons.map(a => a.nama).join(", ")})</span>`
-        : "";
-
-      const isMakanan = (item.kategori || "").toLowerCase().includes("makanan");
-      let addonChipsHTML = "";
-      if (!isMakanan && daftarTambahan.length > 0) {
-        const chips = daftarTambahan.map((addon, aIdx) => {
-          const isSelected = item.addons.some(a => a.nama === addon.nama);
-          const hargaRb = Number(addon.harga) >= 1000 ? `${Number(addon.harga) / 1000}rb` : Number(addon.harga);
-          return `<button type="button" class="est-addon-chip ${isSelected ? 'selected' : ''}" data-row="${rowIdx}" data-addon="${aIdx}">🧊 ${isSelected ? '✓ ' : '+ '}${addon.nama} (+${hargaRb})</button>`;
-        }).join("");
-        addonChipsHTML = `<div class="est-addons">${chips}</div>`;
-      }
-
-      const row = document.createElement("div");
-      row.className = "est-row";
-      row.innerHTML = `
-        <div class="est-row-top">
-          <div>
-            <strong>${item.nama}</strong>${labelTambahan}<br>
-            <small style="color:var(--espresso-600); font-weight:600;">Rp ${sub.toLocaleString("id-ID")}</small>
-          </div>
-          <div class="est-qty-box">
-            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="-1">−</button>
-            <span style="min-width:20px; text-align:center; font-weight:800;">${item.qty}</span>
-            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="1">+</button>
-          </div>
-        </div>
-        ${addonChipsHTML}
-      `;
-
-      row.querySelectorAll(".est-step-btn").forEach(btn => {
-        btn.addEventListener("click", () => ubahQtyEstimasi(Number(btn.getAttribute("data-row")), Number(btn.getAttribute("data-delta"))));
-      });
-      row.querySelectorAll(".est-addon-chip").forEach(chip => {
-        chip.addEventListener("click", () => toggleAddonEstimasi(Number(chip.getAttribute("data-row")), Number(chip.getAttribute("data-addon"))));
-      });
-      listEl.appendChild(row);
-    });
-
+  function hitungRincianOrder() {
+    const subtotal = hitungTotalSemuaEstimasi();
     const selectedKode = document.getElementById("est-voucher-select").value;
     let diskon = 0;
     if (selectedKode && memberAktif) {
       const vObj = (memberAktif.claimedVouchers || []).find(v => v.kode === selectedKode);
       if (vObj && subtotal >= Number(vObj.minBelanja || 0)) {
         diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round((subtotal * vObj.nilai) / 100)) : Math.min(subtotal, vObj.nilai);
-        discountLine.style.display = "flex";
-        discountValEl.innerText = `-Rp ${diskon.toLocaleString("id-ID")}`;
-        hintEl.innerHTML = `Sebutkan No. WA <strong>${memberAktif.noHp}</strong> &amp; kode voucher <strong>${vObj.kode}</strong> ke kasir saat membayar.`;
-      } else if (vObj) {
-        discountLine.style.display = "flex";
-        discountValEl.innerText = `Min. belanja Rp ${Number(vObj.minBelanja).toLocaleString("id-ID")}`;
-        hintEl.innerHTML = `Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.`;
       }
-    } else {
-      discountLine.style.display = "none";
-      hintEl.innerHTML = `Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.`;
     }
+    return { subtotal, kodeVoucher: selectedKode, diskon, totalAkhir: Math.max(0, subtotal - diskon) };
+  }
 
-    modalTotalEl.innerText = `Rp ${Math.max(0, subtotal - diskon).toLocaleString("id-ID")}`;
+  function renderIsiModalEstimasi() {
+    const listEl = document.getElementById("est-list-container");
+    if (catatanPesanan.length === 0) { tutupModalEstimasi(); return; }
+    listEl.innerHTML = "";
+
+    catatanPesanan.forEach((item, rowIdx) => {
+      const sub = (item.hargaDasar + item.addons.reduce((s, a) => s + Number(a.harga), 0)) * item.qty;
+      const labelTambahan = item.addons.length > 0 ? ` <span style="color:var(--accent-warm); font-size:0.8rem; font-weight:700;">(+ ${item.addons.map(a => a.nama).join(", ")})</span>` : "";
+      let addonChipsHTML = "";
+      if (!item.kategori.toLowerCase().includes("makanan") && daftarTambahan.length > 0) {
+        addonChipsHTML = `<div class="est-addons">` + daftarTambahan.map((addon, aIdx) => {
+          const isSelected = item.addons.some(a => a.nama === addon.nama);
+          return `<button type="button" class="est-addon-chip ${isSelected ? 'selected' : ''}" data-row="${rowIdx}" data-addon="${aIdx}">🧊 ${isSelected ? '✓ ' : '+ '}${addon.nama} (+${Number(addon.harga) >= 1000 ? (addon.harga / 1000) + 'rb' : addon.harga})</button>`;
+        }).join("") + `</div>`;
+      }
+
+      const row = document.createElement("div");
+      row.className = "est-row";
+      row.innerHTML = `
+        <div class="est-row-top">
+          <div><strong>${item.nama}</strong>${labelTambahan}<br><small style="color:var(--espresso-600); font-weight:600;">Rp ${sub.toLocaleString("id-ID")}</small></div>
+          <div class="est-qty-box">
+            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="-1">−</button>
+            <span style="min-width:20px; text-align:center; font-weight:800;">${item.qty}</span>
+            <button type="button" class="est-step-btn" data-row="${rowIdx}" data-delta="1">+</button>
+          </div>
+        </div>${addonChipsHTML}`;
+      row.querySelectorAll(".est-step-btn").forEach(b => b.addEventListener("click", () => ubahQtyEstimasi(Number(b.getAttribute("data-row")), Number(b.getAttribute("data-delta")))));
+      row.querySelectorAll(".est-addon-chip").forEach(c => c.addEventListener("click", () => toggleAddonEstimasi(Number(c.getAttribute("data-row")), Number(c.getAttribute("data-addon")))));
+      listEl.appendChild(row);
+    });
+
+    const rincian = hitungRincianOrder();
+    const discountLine = document.getElementById("est-discount-line");
+    if (rincian.diskon > 0) {
+      discountLine.style.display = "flex";
+      document.getElementById("est-discount-val").innerText = `-Rp ${rincian.diskon.toLocaleString("id-ID")}`;
+    } else discountLine.style.display = "none";
+    document.getElementById("modal-est-total").innerText = `Rp ${rincian.totalAkhir.toLocaleString("id-ID")}`;
+  }
+
+  function kirimPesananKeKasir() {
+    const atasNama = document.getElementById("cust-order-name").value.trim();
+    const rawMeja = document.getElementById("cust-table-number").value.trim();
+    if (!atasNama) { tampilkanToast("Isi Atas Nama Pemesan terlebih dahulu."); return; }
+    if (!rawMeja) { tampilkanToast("Isi Nomor Meja atau pilih Bungkus."); return; }
+
+    const mejaLabel = rawMeja.toLowerCase() === "bungkus" ? "Bungkus" : (rawMeja.toLowerCase().startsWith("meja") ? rawMeja : `Meja ${rawMeja}`);
+    const detailItems = catatanPesanan.map(i => `${i.nama}${i.addons.length > 0 ? " + " + i.addons.map(a => a.nama).join(" + ") : ""} (${i.qty}x)`).join(", ");
+    const rincian = hitungRincianOrder();
+    const noHp = memberAktif ? memberAktif.noHp : "";
+
+    const btn = document.getElementById("submit-order-btn");
+    btn.disabled = true;
+    btn.innerText = "Mengirim ke kasir...";
+
+    const simpanLokalDanTampilkanSukses = (idOrder, waktuOrder) => {
+      try {
+        const raw = localStorage.getItem(STORAGE_RIWAYAT_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        list.unshift({
+          id: idOrder, noTrx: "-", waktu: waktuOrder, atasNama: atasNama, mejaLabel: mejaLabel,
+          noHp: noHp, detailItems: detailItems, subtotal: rincian.subtotal,
+          kodeVoucher: rincian.kodeVoucher, diskon: rincian.diskon, total: rincian.totalAkhir,
+          metode: "-", kasir: "-", status: "Sedang Ditinjau"
+        });
+        localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(list));
+      } catch (e) {}
+
+      document.getElementById("order-modal-title").innerText = "✅ Pesanan Masuk Antrean";
+      document.getElementById("order-form-view").style.display = "none";
+      document.getElementById("order-sent-view").style.display = "block";
+      document.getElementById("sent-summary-box").innerHTML = `
+        <div class="sent-row"><span>ID Pesanan</span><strong>${idOrder}</strong></div>
+        <div class="sent-row"><span>Atas Nama</span><strong>${atasNama}</strong></div>
+        <div class="sent-row"><span>Nomor Meja</span><strong>${mejaLabel}</strong></div>
+        <div class="sent-row"><span>Menu</span><span style="text-align:right; max-width:60%;">${detailItems}</span></div>
+        ${rincian.diskon > 0 ? `<div class="sent-row"><span>Voucher (${rincian.kodeVoucher})</span><span style="color:var(--success-text); font-weight:700;">-Rp ${rincian.diskon.toLocaleString("id-ID")}</span></div>` : ""}
+        <div class="sent-row" style="border-top:1px solid var(--espresso-200); padding-top:6px; margin-top:6px; font-weight:800;"><span>Total Tagihan</span><span style="color:var(--accent-primary);">Rp ${rincian.totalAkhir.toLocaleString("id-ID")}</span></div>
+      `;
+    };
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "kirimPesananPelanggan",
+        atasNama: atasNama,
+        meja: mejaLabel,
+        noHp: noHp,
+        detail: detailItems,
+        subtotal: rincian.subtotal,
+        kodeVoucher: rincian.kodeVoucher,
+        diskon: rincian.diskon,
+        total: rincian.totalAkhir
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled = false; btn.innerText = "🚀 Kirim Pesanan ke Kasir";
+      const waktuNow = (data && data.waktu) || (new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB");
+      simpanLokalDanTampilkanSukses((data && data.idPesanan) || ("ORD-" + Date.now().toString().slice(-6)), waktuNow);
+    })
+    .catch(() => {
+      btn.disabled = false; btn.innerText = "🚀 Kirim Pesanan ke Kasir";
+      const waktuNow = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
+      simpanLokalDanTampilkanSukses("ORD-" + Date.now().toString().slice(-6), waktuNow);
+    });
+  }
+
+  function selesaiKirimPesanan() {
+    catatanPesanan = [];
+    perbaruiBarEstimasi();
+    tutupModalEstimasi();
+    terapkanFilter();
   }
 
   function renderMenuTerkelompok(items) {
     const container = document.getElementById("menu-container");
-    if (items.length === 0) {
-      container.innerHTML = `<div class="state-box">Menu tidak ditemukan pada kategori ini.</div>`;
-      return;
-    }
-
+    if (items.length === 0) { container.innerHTML = `<div class="state-box">Menu tidak ditemukan pada kategori ini.</div>`; return; }
     container.innerHTML = "";
     const urutanKategori = ["Coffee", "Soft Drink", "Tea", "Makanan Ringan"];
     const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" };
     const grup = {};
+    items.forEach(item => { const kat = (item.kategori || "Lainnya").trim(); if (!grup[kat]) grup[kat] = []; grup[kat].push(item); });
 
-    items.forEach(item => {
-      const kat = (item.kategori || "Lainnya").trim();
-      if (!grup[kat]) grup[kat] = [];
-      grup[kat].push(item);
-    });
-
-    const daftarKunci = [...new Set([...urutanKategori, ...Object.keys(grup)])];
-    daftarKunci.forEach(kat => {
+    [...new Set([...urutanKategori, ...Object.keys(grup)])].forEach(kat => {
       const keyMatch = Object.keys(grup).find(k => k.toLowerCase() === kat.toLowerCase()) || kat;
       if (!grup[keyMatch] || grup[keyMatch].length === 0) return;
-
-      const listKategori = grup[keyMatch];
-      delete grup[keyMatch];
-
-      const section = document.createElement("div");
-      section.className = "category-section";
+      const listKategori = grup[keyMatch]; delete grup[keyMatch];
+      const section = document.createElement("div"); section.className = "category-section";
       const ikon = ikonKategori[kat] || "🍽️";
-      section.innerHTML = `
-        <div class="category-header">
-          <h2 class="category-title">${ikon} ${keyMatch}</h2>
-          <span class="category-count">${listKategori.length} menu</span>
-        </div>
-      `;
-
-      const grid = document.createElement("div");
-      grid.className = "grid";
+      section.innerHTML = `<div class="category-header"><h2 class="category-title">${ikon} ${keyMatch}</h2><span class="category-count">${listKategori.length} menu</span></div>`;
+      const grid = document.createElement("div"); grid.className = "grid";
 
       listKategori.forEach(item => {
         const namaBersih = bersihkanNamaMenu(item.nama);
         const isHabis = apakahStokHabis(item);
         const pickedQty = hitungQtyMenu(namaBersih);
-
         const card = document.createElement("div");
         card.className = "card" + (isHabis ? " out-of-stock" : (pickedQty > 0 ? " selected-card" : ""));
-
         const isMinuman = !keyMatch.toLowerCase().includes("makanan");
-        const subTag = isHabis ? "Stok sedang kosong" : (isMinuman ? "Bisa +ICE" : "Siap Saji");
-        const topBadgeHTML = isHabis ? `<span class="soldout-badge">🚫 STOK HABIS</span>` : (pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "");
-        const bottomActionHTML = isHabis ? `<span class="soldout-footer-label">Tidak Tersedia</span>` : `<span class="pick-btn" title="Tambah ke catatan estimasi">+</span>`;
-
         card.innerHTML = `
           <div class="card-top">
-            <div>
-              <h3>${namaBersih}</h3>
-              <span class="card-cat-tag">${ikon} ${subTag}</span>
-            </div>
-            ${topBadgeHTML}
+            <div><h3>${namaBersih}</h3><span class="card-cat-tag">${ikon} ${isHabis ? "Stok sedang kosong" : (isMinuman ? "Bisa +ICE" : "Siap Saji")}</span></div>
+            ${isHabis ? `<span class="soldout-badge">🚫 STOK HABIS</span>` : (pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "")}
           </div>
           <div class="card-bottom">
             <div class="price">Rp ${Number(item.harga).toLocaleString("id-ID")}</div>
-            ${bottomActionHTML}
-          </div>
-        `;
+            ${isHabis ? `<span class="soldout-footer-label">Tidak Tersedia</span>` : `<span class="pick-btn">+</span>`}
+          </div>`;
         card.addEventListener("click", () => tambahKeEstimasi(item));
         grid.appendChild(card);
       });
-
-      section.appendChild(grid);
-      container.appendChild(section);
+      section.appendChild(grid); container.appendChild(section);
     });
   }
 </script>
