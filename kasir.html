@@ -31,6 +31,7 @@
       --success-border: #a5d6a7;
       --success-text: #2e7d32;
       --danger-bg: #ffebee;
+      --danger-border: #ffcdd2;
       --danger-text: #c62828;
       --shadow-sm: 0 2px 8px rgba(36, 20, 14, 0.05);
       --shadow-md: 0 8px 24px rgba(36, 20, 14, 0.08);
@@ -55,6 +56,34 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    /* ================= TOAST NOTIFICATION ================= */
+    .toast-notice {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--espresso-900);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      z-index: 1200;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* ================= HEADER ================= */
@@ -163,6 +192,11 @@
       border-radius: 999px;
       font-size: 0.74rem;
       font-weight: 800;
+    }
+
+    .nav-badge.danger {
+      background: rgba(198, 40, 40, 0.35);
+      color: #ffcdd2;
     }
 
     .refresh-btn {
@@ -349,6 +383,14 @@
       font-weight: 700;
     }
 
+    .filter-bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .filter-bar {
       display: flex;
       gap: 8px;
@@ -383,6 +425,28 @@
       color: #fff;
       border-color: transparent;
       box-shadow: 0 4px 12px rgba(216, 67, 21, 0.28);
+    }
+
+    .toolbar-stock-btn {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      color: var(--espresso-800);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .toolbar-stock-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      background: var(--accent-soft);
     }
 
     /* ================= MENU CATEGORIES & GRID ================= */
@@ -421,13 +485,13 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 14px;
     }
 
     .card {
       background: var(--bg-surface);
-      padding: 16px;
+      padding: 15px;
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-sm);
       cursor: pointer;
@@ -437,7 +501,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 112px;
+      min-height: 122px;
       overflow: hidden;
       user-select: none;
     }
@@ -457,17 +521,84 @@
       background: linear-gradient(180deg, #ffffff 0%, #fff8f3 100%);
     }
 
+    /* Tampilan Khusus Menu Stok Habis di Kasir */
+    .card.out-of-stock {
+      background: #f5f2ed;
+      border: 1.5px dashed #d7ccc8;
+      cursor: not-allowed;
+      opacity: 0.85;
+      box-shadow: none;
+    }
+
+    .card.out-of-stock:hover {
+      transform: none;
+      border-color: #ef9a9a;
+      box-shadow: none;
+    }
+
+    .card.out-of-stock h3 {
+      color: var(--espresso-600);
+      text-decoration: line-through;
+      text-decoration-color: rgba(198, 40, 40, 0.45);
+    }
+
+    .card.out-of-stock .price {
+      color: var(--espresso-400);
+    }
+
+    .soldout-badge {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card-stock-quick-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--espresso-200);
+      color: var(--espresso-600);
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .card-stock-quick-btn:hover {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border-color: var(--danger-border);
+    }
+
+    .card-stock-quick-btn.restore {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border-color: var(--success-border);
+      font-weight: 800;
+    }
+
+    .card-stock-quick-btn.restore:hover {
+      background: #c8e6c9;
+    }
+
     .card-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .card h3 {
       margin: 0;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--espresso-900);
       line-height: 1.35;
@@ -494,12 +625,21 @@
       align-items: center;
       justify-content: space-between;
       margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px dashed var(--espresso-100);
+      gap: 6px;
     }
 
     .card .price {
       color: var(--accent-primary);
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
+    }
+
+    .card-bottom-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .card-add-icon {
@@ -516,7 +656,7 @@
       transition: all 0.2s ease;
     }
 
-    .card:hover .card-add-icon {
+    .card:not(.out-of-stock):hover .card-add-icon {
       background: var(--accent-primary);
       color: #fff;
     }
@@ -1437,7 +1577,7 @@
       color: var(--accent-primary);
     }
 
-    /* ================= RECEIPT & FEEDBACK MODAL ================= */
+    /* ================= RECEIPT & STOCK MANAGEMENT MODALS ================= */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -1456,13 +1596,113 @@
 
     .receipt-card {
       background: #fff;
-      max-width: 380px;
+      max-width: 400px;
       width: 100%;
       border-radius: 20px;
       padding: 26px 24px;
       box-shadow: var(--shadow-lg);
       text-align: center;
       animation: popIn 0.22s ease-out;
+    }
+
+    .stock-modal-card {
+      background: #fff;
+      max-width: 480px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      text-align: left;
+      animation: popIn 0.22s ease-out;
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--espresso-200);
+    }
+
+    .modal-header-row h3 {
+      margin: 0;
+      font-size: 1.12rem;
+      color: var(--espresso-900);
+    }
+
+    .close-modal-btn {
+      background: var(--espresso-100);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--espresso-800);
+    }
+
+    .stock-list-scroll {
+      max-height: 320px;
+      overflow-y: auto;
+      margin: 12px 0 16px;
+      padding-right: 4px;
+    }
+
+    .stock-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--espresso-100);
+      gap: 10px;
+    }
+
+    .stock-switch-btn {
+      border: none;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .stock-switch-btn.tersedia {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+
+    .stock-switch-btn.habis {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    .stock-modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reset-stock-btn {
+      background: var(--bg-subtle);
+      color: var(--espresso-700);
+      border: 1px solid var(--espresso-200);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .reset-stock-btn:hover {
+      background: var(--espresso-100);
     }
 
     @keyframes popIn {
@@ -1537,6 +1777,8 @@
 </head>
 <body>
 
+<div id="toast-notice" class="toast-notice">🚫 Stok menu ini sedang habis</div>
+
 <!-- Layar Login Admin -->
 <div id="login-overlay">
   <div class="login-box">
@@ -1573,6 +1815,25 @@
   </div>
 </div>
 
+<!-- Modal Pengaturan / Uji Status Stok Habis (Khusus Kasir) -->
+<div id="stock-modal" class="modal-backdrop">
+  <div class="stock-modal-card">
+    <div class="modal-header-row">
+      <h3>📦 Atur / Uji Stok Habis Menu</h3>
+      <button type="button" class="close-modal-btn" onclick="tutupModalStok()">✕</button>
+    </div>
+    <p style="margin:0 0 10px; font-size:0.8rem; color:var(--espresso-600); line-height:1.45;">
+      Ubah status menu menjadi <strong>Stok Habis</strong> agar terkunci di kasir dan tampil berlabel <strong>🚫 STOK HABIS</strong> di halaman menu pelanggan. Untuk sinkron ke semua HP pelanggan, Anda juga dapat menambahkan kata <code>(Habis)</code> di belakang nama menu pada Google Spreadsheet.
+    </p>
+    <input type="text" id="search-stock-modal" placeholder="🔍 Cari nama menu untuk atur stok..." oninput="renderDaftarPengaturanStok()">
+    <div id="stock-list-container" class="stock-list-scroll"></div>
+    <div class="stock-modal-footer">
+      <button type="button" class="reset-stock-btn" onclick="resetSemuaStokTersedia()">↺ Aktifkan Semua Stok</button>
+      <button type="button" class="pay-btn" style="margin-top:0; width:auto; padding:10px 22px;" onclick="tutupModalStok()">Selesai</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="brand-wrap">
     <div class="brand-icon">🍢</div>
@@ -1586,6 +1847,10 @@
   </div>
   <div class="header-actions">
     <button type="button" id="tab-pos-btn" class="nav-tab-btn active" onclick="scrollKeBagian('pos')">🍽️ Menu &amp; Kasir</button>
+    <button type="button" id="tab-stock-btn" class="nav-tab-btn" onclick="bukaModalStok()">
+      📦 Atur Stok Habis
+      <span id="nav-soldout-badge" class="nav-badge danger">0 Habis</span>
+    </button>
     <button type="button" id="tab-history-btn" class="nav-tab-btn" onclick="scrollKeBagian('riwayat')">
       📋 Riwayat &amp; Status
       <span id="nav-process-badge" class="nav-badge">0 Diproses</span>
@@ -1612,12 +1877,15 @@
         <input type="text" id="search-menu" placeholder="Cari menu kopi, teh, minuman, atau camilan..." oninput="filterCariMenu()">
         <button type="button" id="clear-search" class="clear-search-btn" onclick="resetPencarian()">✕</button>
       </div>
-      <div class="filter-bar">
-        <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua</button>
-        <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
-        <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
-        <button class="cat-btn" onclick="pilihKategori('Tea', this)">🍵 Tea</button>
-        <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
+      <div class="filter-bar-row">
+        <div class="filter-bar">
+          <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua</button>
+          <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
+          <button class="cat-btn" onclick="pilihKategori('Soft Drink', this)">🥤 Soft Drink</button>
+          <button class="cat-btn" onclick="pilihKategori('Tea', this)">🍵 Tea</button>
+          <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
+        </div>
+        <button type="button" class="toolbar-stock-btn" onclick="bukaModalStok()">📦 Atur / Uji Stok Habis</button>
       </div>
     </div>
 
@@ -1756,33 +2024,34 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
+  const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
 
   // Data menu cadangan sesuai menu asli Angkringan AmanLahLek jika sedang pratinjau/offline
   const MENU_CADANGAN = [
-    { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000 },
-    { id: "c2", nama: "Vanilla Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c3", nama: "Caramel Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c4", nama: "Hazelnut Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c5", nama: "Espresso", kategori: "Coffee", harga: 10000 },
-    { id: "c6", nama: "Americano", kategori: "Coffee", harga: 15000 },
-    { id: "c7", nama: "Sanger", kategori: "Coffee", harga: 15000 },
-    { id: "c8", nama: "Kopi Susu Gula Aren", kategori: "Coffee", harga: 18000 },
-    { id: "c9", nama: "Long Black", kategori: "Coffee", harga: 15000 },
-    { id: "c10", nama: "Caramel Machiato", kategori: "Coffee", harga: 23000 },
-    { id: "c11", nama: "Triple Peach Americano", kategori: "Coffee", harga: 23000 },
-    { id: "s1", nama: "Matcha", kategori: "Soft Drink", harga: 20000 },
-    { id: "s2", nama: "Taro", kategori: "Soft Drink", harga: 20000 },
-    { id: "s3", nama: "Red Velvet", kategori: "Soft Drink", harga: 20000 },
-    { id: "s4", nama: "Coklat", kategori: "Soft Drink", harga: 20000 },
-    { id: "s5", nama: "Strawberry", kategori: "Soft Drink", harga: 20000 },
-    { id: "t1", nama: "Lyche Tea", kategori: "Tea", harga: 20000 },
-    { id: "t2", nama: "Lemon Tea", kategori: "Tea", harga: 20000 },
-    { id: "t3", nama: "Peach Tea", kategori: "Tea", harga: 20000 },
-    { id: "t4", nama: "Thai Tea", kategori: "Tea", harga: 20000 },
-    { id: "m1", nama: "Indomie Kuah", kategori: "Makanan Ringan", harga: 12000 },
-    { id: "m2", nama: "Indomie Goreng", kategori: "Makanan Ringan", harga: 6000 },
-    { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000 },
-    { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000 }
+    { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c2", nama: "Vanilla Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c3", nama: "Caramel Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c4", nama: "Hazelnut Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c5", nama: "Espresso", kategori: "Coffee", harga: 10000, status: "Tersedia" },
+    { id: "c6", nama: "Americano", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c7", nama: "Sanger", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c8", nama: "Kopi Susu Gula Aren", kategori: "Coffee", harga: 18000, status: "Tersedia" },
+    { id: "c9", nama: "Long Black", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c10", nama: "Caramel Machiato", kategori: "Coffee", harga: 23000, status: "Tersedia" },
+    { id: "c11", nama: "Triple Peach Americano", kategori: "Coffee", harga: 23000, status: "Tersedia" },
+    { id: "s1", nama: "Matcha", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s2", nama: "Taro", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s3", nama: "Red Velvet", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s4", nama: "Coklat", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s5", nama: "Strawberry", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "t1", nama: "Lyche Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t2", nama: "Lemon Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t3", nama: "Peach Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t4", nama: "Thai Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "m1", nama: "Indomie Kuah", kategori: "Makanan Ringan", harga: 12000, status: "Tersedia" },
+    { id: "m2", nama: "Indomie Goreng", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
+    { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
+    { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" }
   ];
 
   const TAMBAHAN_CADANGAN = [
@@ -1797,6 +2066,8 @@
   let totalBelanja = 0;
   let riwayatPesanan = [];
   let filterStatusAktif = "semua";
+  let stokHabisMap = {};
+  let toastTimer = null;
 
   function simpanSession(key, val) {
     try {
@@ -1816,6 +2087,167 @@
     try {
       sessionStorage.removeItem(key);
     } catch (e) {}
+  }
+
+  function muatStokHabisLokal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_STOK_KEY);
+      if (raw) {
+        stokHabisMap = JSON.parse(raw) || {};
+      }
+    } catch (e) {
+      stokHabisMap = {};
+    }
+  }
+
+  function simpanStokHabisLokal() {
+    try {
+      localStorage.setItem(STORAGE_STOK_KEY, JSON.stringify(stokHabisMap));
+    } catch (e) {}
+  }
+
+  function bersihkanNamaMenu(namaAsli) {
+    return String(namaAsli || "")
+      .replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "")
+      .trim();
+  }
+
+  function apakahStokHabis(item) {
+    const namaBersih = bersihkanNamaMenu(item.nama);
+    if (stokHabisMap[namaBersih] === true) return true;
+    if (stokHabisMap[namaBersih] === false) return false;
+
+    const namaRaw = String(item.nama || "").toLowerCase();
+    if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) {
+      return true;
+    }
+
+    const statusRaw = String(item.status || item.stok || "").toLowerCase().trim();
+    if (
+      statusRaw === "habis" ||
+      statusRaw === "kosong" ||
+      statusRaw === "tidak tersedia" ||
+      statusRaw === "0" ||
+      item.habis === true
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function tampilkanToast(pesan) {
+    const toast = document.getElementById("toast-notice");
+    toast.innerText = pesan;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2400);
+  }
+
+  function perbaruiBadgeStokHabis() {
+    const jmlHabis = daftarMenu.filter(item => apakahStokHabis(item)).length;
+    const badge = document.getElementById("nav-soldout-badge");
+    if (badge) {
+      badge.innerText = `${jmlHabis} Habis`;
+    }
+  }
+
+  function bersihkanKeranjangDariMenuHabis() {
+    keranjang = keranjang.filter(k => {
+      const itemMenu = daftarMenu.find(m => bersihkanNamaMenu(m.nama) === k.nama);
+      return !(itemMenu && apakahStokHabis(itemMenu));
+    });
+    renderKeranjang();
+  }
+
+  function toggleStatusStokItem(namaBersih) {
+    const targetItem = daftarMenu.find(m => bersihkanNamaMenu(m.nama) === namaBersih);
+    if (!targetItem) return;
+
+    const sedangHabis = apakahStokHabis(targetItem);
+    const statusBaruHabis = !sedangHabis;
+    stokHabisMap[namaBersih] = statusBaruHabis;
+    simpanStokHabisLokal();
+
+    // Sinkronkan juga ke Google Spreadsheet jika Apps Script mendukung action updateStok
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateStok",
+        nama: namaBersih,
+        status: statusBaruHabis ? "Habis" : "Tersedia"
+      })
+    }).catch(() => {});
+
+    bersihkanKeranjangDariMenuHabis();
+    renderMenuTerkelompok();
+    renderDaftarPengaturanStok();
+    perbaruiBadgeStokHabis();
+
+    tampilkanToast(
+      statusBaruHabis
+        ? `🚫 ${namaBersih} ditandai STOK HABIS`
+        : `✓ ${namaBersih} kembali TERSEDIA`
+    );
+  }
+
+  function resetSemuaStokTersedia() {
+    daftarMenu.forEach(item => {
+      stokHabisMap[bersihkanNamaMenu(item.nama)] = false;
+    });
+    simpanStokHabisLokal();
+    renderMenuTerkelompok();
+    renderDaftarPengaturanStok();
+    perbaruiBadgeStokHabis();
+    tampilkanToast("✓ Semua menu diaktifkan kembali menjadi Tersedia");
+  }
+
+  function bukaModalStok() {
+    renderDaftarPengaturanStok();
+    document.getElementById("stock-modal").classList.add("show");
+  }
+
+  function tutupModalStok() {
+    document.getElementById("stock-modal").classList.remove("show");
+  }
+
+  function renderDaftarPengaturanStok() {
+    const listEl = document.getElementById("stock-list-container");
+    const keyword = (document.getElementById("search-stock-modal").value || "").trim().toLowerCase();
+    listEl.innerHTML = "";
+
+    const filtered = daftarMenu.filter(item => {
+      const namaBersih = bersihkanNamaMenu(item.nama).toLowerCase();
+      return !keyword || namaBersih.includes(keyword) || (item.kategori || "").toLowerCase().includes(keyword);
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div style="text-align:center; padding:20px; color:var(--espresso-600);">Menu tidak ditemukan.</div>`;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const namaBersih = bersihkanNamaMenu(item.nama);
+      const isHabis = apakahStokHabis(item);
+
+      const row = document.createElement("div");
+      row.className = "stock-item-row";
+      row.innerHTML = `
+        <div>
+          <strong>${namaBersih}</strong>
+          <small style="display:block; color:var(--espresso-600);">${item.kategori || "Menu"} • Rp ${Number(item.harga).toLocaleString("id-ID")}</small>
+        </div>
+        <button type="button" class="stock-switch-btn ${isHabis ? 'habis' : 'tersedia'}">
+          ${isHabis ? '🚫 Stok Habis (Aktifkan)' : '✓ Tersedia (Habiskan)'}
+        </button>
+      `;
+
+      row.querySelector("button").addEventListener("click", () => {
+        toggleStatusStokItem(namaBersih);
+      });
+      listEl.appendChild(row);
+    });
   }
 
   function muatRiwayatDariStorage() {
@@ -1839,6 +2271,7 @@
   }
 
   window.addEventListener("DOMContentLoaded", () => {
+    muatStokHabisLokal();
     muatRiwayatDariStorage();
     renderRiwayatPesanan();
     const loggedUser = ambilSession("adminAngkringan");
@@ -1958,14 +2391,18 @@
           daftarMenu = (data.menu && data.menu.length > 0) ? data.menu : MENU_CADANGAN;
           daftarTambahan = (data.tambahan && data.tambahan.length > 0) ? data.tambahan : TAMBAHAN_CADANGAN;
         }
+        bersihkanKeranjangDariMenuHabis();
         renderMenuTerkelompok();
         renderKeranjang();
+        perbaruiBadgeStokHabis();
       })
       .catch(() => {
         daftarMenu = MENU_CADANGAN;
         daftarTambahan = TAMBAHAN_CADANGAN;
+        bersihkanKeranjangDariMenuHabis();
         renderMenuTerkelompok();
         renderKeranjang();
+        perbaruiBadgeStokHabis();
       });
   }
 
@@ -2023,9 +2460,9 @@
     renderMenuTerkelompok();
   }
 
-  function hitungQtyDiKeranjang(itemId) {
+  function hitungQtyDiKeranjang(namaBersih) {
     return keranjang
-      .filter(k => String(k.id) === String(itemId))
+      .filter(k => k.nama === namaBersih)
       .reduce((sum, k) => sum + k.qty, 0);
   }
 
@@ -2034,7 +2471,8 @@
     const hasil = daftarMenu.filter(item => {
       const itemKat = (item.kategori || "").trim().toLowerCase();
       const cocokKategori = (kategoriAktif === "Semua") || (itemKat === kategoriAktif.toLowerCase());
-      const cocokCari = !kataKunciCari || (item.nama || "").toLowerCase().includes(kataKunciCari);
+      const namaBersih = bersihkanNamaMenu(item.nama).toLowerCase();
+      const cocokCari = !kataKunciCari || namaBersih.includes(kataKunciCari);
       return cocokKategori && cocokCari;
     });
 
@@ -2083,22 +2521,46 @@
       grid.className = "grid";
 
       items.forEach(item => {
-        const qtyInCart = hitungQtyDiKeranjang(item.id);
+        const namaBersih = bersihkanNamaMenu(item.nama);
+        const isHabis = apakahStokHabis(item);
+        const qtyInCart = hitungQtyDiKeranjang(namaBersih);
+
         const div = document.createElement("div");
-        div.className = "card" + (qtyInCart > 0 ? " in-cart" : "");
-        const badgeHTML = qtyInCart > 0 ? `<span class="card-qty-badge">${qtyInCart}x</span>` : "";
+        div.className = "card" + (isHabis ? " out-of-stock" : (qtyInCart > 0 ? " in-cart" : ""));
+
+        const badgeHTML = isHabis
+          ? `<span class="soldout-badge">🚫 STOK HABIS</span>`
+          : (qtyInCart > 0 ? `<span class="card-qty-badge">${qtyInCart}x</span>` : "");
+
+        const rightControlsHTML = isHabis
+          ? `<button type="button" class="card-stock-quick-btn restore" data-toggle-stok="${namaBersih}">↺ Aktifkan</button>`
+          : `
+            <button type="button" class="card-stock-quick-btn" data-toggle-stok="${namaBersih}" title="Tandai Stok Habis">Habiskan</button>
+            <div class="card-add-icon">+</div>
+          `;
 
         div.innerHTML = `
           <div class="card-top">
-            <h3>${item.nama}</h3>
+            <h3>${namaBersih}</h3>
             ${badgeHTML}
           </div>
           <div class="card-bottom">
             <div class="price">Rp ${Number(item.harga).toLocaleString("id-ID")}</div>
-            <div class="card-add-icon">+</div>
+            <div class="card-bottom-right">
+              ${rightControlsHTML}
+            </div>
           </div>
         `;
-        div.onclick = () => tambahItem(item);
+
+        const quickStokBtn = div.querySelector("[data-toggle-stok]");
+        if (quickStokBtn) {
+          quickStokBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleStatusStokItem(namaBersih);
+          });
+        }
+
+        div.addEventListener("click", () => tambahItem(item));
         grid.appendChild(div);
       });
 
@@ -2108,13 +2570,19 @@
   }
 
   function tambahItem(item) {
-    const existingIndex = keranjang.findIndex(k => k.id === item.id && k.addons.length === 0);
+    const namaBersih = bersihkanNamaMenu(item.nama);
+    if (apakahStokHabis(item)) {
+      tampilkanToast(`🚫 Stok ${namaBersih} sedang habis — klik "↺ Aktifkan" jika stok sudah tersedia`);
+      return;
+    }
+
+    const existingIndex = keranjang.findIndex(k => k.nama === namaBersih && k.addons.length === 0);
     if (existingIndex !== -1) {
       keranjang[existingIndex].qty++;
     } else {
       keranjang.push({
-        id: item.id,
-        nama: item.nama,
+        id: item.id || namaBersih,
+        nama: namaBersih,
         kategori: item.kategori || "",
         hargaDasar: Number(item.harga),
         qty: 1,
@@ -2136,10 +2604,10 @@
       item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
     }
 
-    const sigSekarang = item.id + "|" + item.addons.map(a => a.nama).sort().join(",");
+    const sigSekarang = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
     const duplikatIdx = keranjang.findIndex((k, idx) => {
       if (idx === cartIndex) return false;
-      const sigLain = k.id + "|" + k.addons.map(a => a.nama).sort().join(",");
+      const sigLain = k.nama + "|" + k.addons.map(a => a.nama).sort().join(",");
       return sigSekarang === sigLain;
     });
 
