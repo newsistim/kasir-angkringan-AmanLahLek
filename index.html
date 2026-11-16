@@ -22,6 +22,11 @@
       --accent-primary: #d84315;
       --accent-warm: #e65100;
       --accent-soft: #fff3e0;
+      --danger-bg: #ffebee;
+      --danger-border: #ffcdd2;
+      --danger-text: #c62828;
+      --success-bg: #e8f5e9;
+      --success-text: #2e7d32;
       --shadow-sm: 0 2px 10px rgba(36, 20, 14, 0.05);
       --shadow-md: 0 10px 28px rgba(36, 20, 14, 0.09);
       --radius-sm: 10px;
@@ -363,6 +368,53 @@
       background: linear-gradient(180deg, #ffffff 0%, #fff8f3 100%);
     }
 
+    /* Tampilan Khusus Menu Stok Habis */
+    .card.out-of-stock {
+      background: #f5f2ed;
+      border: 1.5px dashed #d7ccc8;
+      cursor: not-allowed;
+      opacity: 0.82;
+      box-shadow: none;
+    }
+
+    .card.out-of-stock:hover {
+      transform: none;
+      border-color: #ef9a9a;
+      box-shadow: none;
+    }
+
+    .card.out-of-stock h3 {
+      color: var(--espresso-600);
+      text-decoration: line-through;
+      text-decoration-color: rgba(198, 40, 40, 0.45);
+    }
+
+    .card.out-of-stock .price {
+      color: var(--espresso-400);
+    }
+
+    .soldout-badge {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .soldout-footer-label {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--danger-text);
+      background: var(--danger-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -432,9 +484,37 @@
       transition: all 0.18s ease;
     }
 
-    .card:hover .pick-btn {
+    .card:not(.out-of-stock):hover .pick-btn {
       background: var(--accent-primary);
       color: #fff;
+    }
+
+    /* ================= TOAST NOTIFICATION ================= */
+    .toast-notice {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--espresso-900);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* ================= FLOATING ESTIMATOR BAR ================= */
@@ -510,7 +590,7 @@
       cursor: pointer;
     }
 
-    /* ================= MODAL CATATAN PESANAN PELANGGAN ================= */
+    /* ================= MODAL CATATAN PESANAN ================= */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -529,7 +609,7 @@
 
     .modal-card {
       background: #fff;
-      max-width: 420px;
+      max-width: 430px;
       width: 100%;
       border-radius: 20px;
       padding: 22px;
@@ -651,6 +731,7 @@
       border-radius: 10px;
       text-align: center;
       font-weight: 600;
+      line-height: 1.45;
     }
 
     /* ================= EMPTY / LOADING STATE ================= */
@@ -707,6 +788,8 @@
 </head>
 <body>
 
+<div id="toast-notice" class="toast-notice">🚫 Maaf, stok menu ini sedang habis</div>
+
 <header>
   <div class="hero-badge">
     <span class="hero-dot"></span>
@@ -716,7 +799,7 @@
     <div class="brand-emblem">🍢</div>
     <h1>Angkringan AmanLahLek</h1>
   </div>
-  <p>Selamat Datang! Silakan lihat daftar menu &amp; harga kami, atau ketuk menu untuk menghitung estimasi pesanan Anda.</p>
+  <p>Selamat Datang! Silakan lihat daftar menu &amp; harga kami, atau ketuk menu yang tersedia untuk menghitung estimasi pesanan Anda.</p>
 </header>
 
 <div class="container">
@@ -780,32 +863,33 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
+  const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
 
   const MENU_CADANGAN = [
-    { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000 },
-    { id: "c2", nama: "Vanilla Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c3", nama: "Caramel Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c4", nama: "Hazelnut Latte", kategori: "Coffee", harga: 15000 },
-    { id: "c5", nama: "Espresso", kategori: "Coffee", harga: 10000 },
-    { id: "c6", nama: "Americano", kategori: "Coffee", harga: 15000 },
-    { id: "c7", nama: "Sanger", kategori: "Coffee", harga: 15000 },
-    { id: "c8", nama: "Kopi Susu Gula Aren", kategori: "Coffee", harga: 18000 },
-    { id: "c9", nama: "Long Black", kategori: "Coffee", harga: 15000 },
-    { id: "c10", nama: "Caramel Machiato", kategori: "Coffee", harga: 23000 },
-    { id: "c11", nama: "Triple Peach Americano", kategori: "Coffee", harga: 23000 },
-    { id: "s1", nama: "Matcha", kategori: "Soft Drink", harga: 20000 },
-    { id: "s2", nama: "Taro", kategori: "Soft Drink", harga: 20000 },
-    { id: "s3", nama: "Red Velvet", kategori: "Soft Drink", harga: 20000 },
-    { id: "s4", nama: "Coklat", kategori: "Soft Drink", harga: 20000 },
-    { id: "s5", nama: "Strawberry", kategori: "Soft Drink", harga: 20000 },
-    { id: "t1", nama: "Lyche Tea", kategori: "Tea", harga: 20000 },
-    { id: "t2", nama: "Lemon Tea", kategori: "Tea", harga: 20000 },
-    { id: "t3", nama: "Peach Tea", kategori: "Tea", harga: 20000 },
-    { id: "t4", nama: "Thai Tea", kategori: "Tea", harga: 20000 },
-    { id: "m1", nama: "Indomie Kuah", kategori: "Makanan Ringan", harga: 12000 },
-    { id: "m2", nama: "Indomie Goreng", kategori: "Makanan Ringan", harga: 6000 },
-    { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000 },
-    { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000 }
+    { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c2", nama: "Vanilla Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c3", nama: "Caramel Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c4", nama: "Hazelnut Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c5", nama: "Espresso", kategori: "Coffee", harga: 10000, status: "Tersedia" },
+    { id: "c6", nama: "Americano", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c7", nama: "Sanger", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c8", nama: "Kopi Susu Gula Aren", kategori: "Coffee", harga: 18000, status: "Tersedia" },
+    { id: "c9", nama: "Long Black", kategori: "Coffee", harga: 15000, status: "Tersedia" },
+    { id: "c10", nama: "Caramel Machiato", kategori: "Coffee", harga: 23000, status: "Tersedia" },
+    { id: "c11", nama: "Triple Peach Americano", kategori: "Coffee", harga: 23000, status: "Tersedia" },
+    { id: "s1", nama: "Matcha", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s2", nama: "Taro", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s3", nama: "Red Velvet", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s4", nama: "Coklat", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "s5", nama: "Strawberry", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
+    { id: "t1", nama: "Lyche Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t2", nama: "Lemon Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t3", nama: "Peach Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "t4", nama: "Thai Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
+    { id: "m1", nama: "Indomie Kuah", kategori: "Makanan Ringan", harga: 12000, status: "Tersedia" },
+    { id: "m2", nama: "Indomie Goreng", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
+    { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
+    { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" }
   ];
 
   const TAMBAHAN_CADANGAN = [
@@ -815,7 +899,61 @@
   let daftarMenu = [];
   let daftarTambahan = [...TAMBAHAN_CADANGAN];
   let kategoriAktif = "Semua";
-  let catatanPesanan = []; // Array item agar tiap minuman bisa diatur tambahan ICE secara fleksibel
+  let catatanPesanan = [];
+  let stokHabisMap = {};
+  let toastTimer = null;
+
+  function muatStokHabisLokal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_STOK_KEY);
+      if (raw) {
+        stokHabisMap = JSON.parse(raw) || {};
+      } else {
+        stokHabisMap = {};
+      }
+    } catch (e) {
+      stokHabisMap = {};
+    }
+  }
+
+  function bersihkanNamaMenu(namaAsli) {
+    return String(namaAsli || "")
+      .replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "")
+      .trim();
+  }
+
+  function apakahStokHabis(item) {
+    const namaBersih = bersihkanNamaMenu(item.nama);
+    if (stokHabisMap[namaBersih] === true) return true;
+    if (stokHabisMap[namaBersih] === false) return false;
+
+    const namaRaw = String(item.nama || "").toLowerCase();
+    if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) {
+      return true;
+    }
+
+    const statusRaw = String(item.status || item.stok || "").toLowerCase().trim();
+    if (
+      statusRaw === "habis" ||
+      statusRaw === "kosong" ||
+      statusRaw === "tidak tersedia" ||
+      statusRaw === "0" ||
+      item.habis === true
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function tampilkanToastHabis(namaMenu) {
+    const toast = document.getElementById("toast-notice");
+    toast.innerText = `🚫 Maaf, stok ${namaMenu} sedang habis & tidak dapat dipilih`;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2400);
+  }
 
   function tampilkanInfoTambahan(tambahan) {
     if (tambahan && tambahan.length > 0) {
@@ -831,24 +969,54 @@
     }
   }
 
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      const menuData = Array.isArray(data) ? data : (data.menu || []);
-      daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
-      daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
-        ? data.tambahan
-        : TAMBAHAN_CADANGAN;
+  function muatDataMenuDariServer() {
+    muatStokHabisLokal();
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        const menuData = Array.isArray(data) ? data : (data.menu || []);
+        daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
+        daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
+          ? data.tambahan
+          : TAMBAHAN_CADANGAN;
 
+        bersihkanPesananYangHabis();
+        terapkanFilter();
+        tampilkanInfoTambahan(daftarTambahan);
+      })
+      .catch(() => {
+        if (daftarMenu.length === 0) {
+          daftarMenu = MENU_CADANGAN;
+          daftarTambahan = TAMBAHAN_CADANGAN;
+        }
+        bersihkanPesananYangHabis();
+        terapkanFilter();
+        tampilkanInfoTambahan(daftarTambahan);
+      });
+  }
+
+  // Sinkron otomatis saat kasir mengubah stok di tab lain atau saat tab kembali aktif
+  window.addEventListener("storage", (e) => {
+    if (!e.key || e.key === STORAGE_STOK_KEY) {
+      muatStokHabisLokal();
+      bersihkanPesananYangHabis();
       terapkanFilter();
-      tampilkanInfoTambahan(daftarTambahan);
-    })
-    .catch(() => {
-      daftarMenu = MENU_CADANGAN;
-      daftarTambahan = TAMBAHAN_CADANGAN;
-      terapkanFilter();
-      tampilkanInfoTambahan(daftarTambahan);
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    muatDataMenuDariServer();
+  });
+
+  muatDataMenuDariServer();
+
+  function bersihkanPesananYangHabis() {
+    catatanPesanan = catatanPesanan.filter(pesanan => {
+      const itemMenu = daftarMenu.find(m => bersihkanNamaMenu(m.nama) === pesanan.nama);
+      return !(itemMenu && apakahStokHabis(itemMenu));
     });
+    perbaruiBarEstimasi();
+  }
 
   function bukaLoginKasir() {
     window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/kasir.html";
@@ -876,7 +1044,8 @@
     }
 
     const hasil = daftarMenu.filter(item => {
-      const cocokNama = (item.nama || "").toLowerCase().includes(keyword);
+      const namaBersih = bersihkanNamaMenu(item.nama).toLowerCase();
+      const cocokNama = namaBersih.includes(keyword);
       const itemKat = (item.kategori || "").trim().toLowerCase();
       const cocokKat = (kategoriAktif === "Semua") || (itemKat === kategoriAktif.toLowerCase());
       return cocokNama && cocokKat;
@@ -884,23 +1053,29 @@
     renderMenuTerkelompok(hasil);
   }
 
-  function hitungQtyMenu(namaMenu) {
+  function hitungQtyMenu(namaMenuBersih) {
     return catatanPesanan
-      .filter(i => i.nama === namaMenu)
+      .filter(i => i.nama === namaMenuBersih)
       .reduce((sum, i) => sum + i.qty, 0);
   }
 
   function tambahKeEstimasi(item) {
+    const namaBersih = bersihkanNamaMenu(item.nama);
+    if (apakahStokHabis(item)) {
+      tampilkanToastHabis(namaBersih);
+      return;
+    }
+
     const existingIdx = catatanPesanan.findIndex(
-      i => i.nama === item.nama && i.addons.length === 0
+      i => i.nama === namaBersih && i.addons.length === 0
     );
 
     if (existingIdx !== -1) {
       catatanPesanan[existingIdx].qty++;
     } else {
       catatanPesanan.push({
-        id: item.id || item.nama,
-        nama: item.nama,
+        id: item.id || namaBersih,
+        nama: namaBersih,
         kategori: item.kategori || "",
         hargaDasar: Number(item.harga),
         qty: 1,
@@ -923,7 +1098,6 @@
       item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
     }
 
-    // Gabungkan baris jika setelah diubah variannya sama dengan baris lain
     const sigSekarang = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
     const duplikatIdx = catatanPesanan.findIndex((k, idx) => {
       if (idx === rowIndex) return false;
@@ -1107,25 +1281,38 @@
       grid.className = "grid";
 
       listKategori.forEach(item => {
-        const pickedQty = hitungQtyMenu(item.nama);
+        const namaBersih = bersihkanNamaMenu(item.nama);
+        const isHabis = apakahStokHabis(item);
+        const pickedQty = hitungQtyMenu(namaBersih);
+
         const card = document.createElement("div");
-        card.className = "card" + (pickedQty > 0 ? " selected-card" : "");
+        card.className = "card" +
+          (isHabis ? " out-of-stock" : (pickedQty > 0 ? " selected-card" : ""));
 
         const isMinuman = !keyMatch.toLowerCase().includes("makanan");
-        const subTag = isMinuman ? "Bisa +ICE" : "Siap Saji";
-        const badgeHTML = pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "";
+        const subTag = isHabis
+          ? "Stok sedang kosong"
+          : (isMinuman ? "Bisa +ICE" : "Siap Saji");
+
+        const topBadgeHTML = isHabis
+          ? `<span class="soldout-badge">🚫 STOK HABIS</span>`
+          : (pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "");
+
+        const bottomActionHTML = isHabis
+          ? `<span class="soldout-footer-label">Tidak Tersedia</span>`
+          : `<span class="pick-btn" title="Tambah ke catatan estimasi">+</span>`;
 
         card.innerHTML = `
           <div class="card-top">
             <div>
-              <h3>${item.nama}</h3>
+              <h3>${namaBersih}</h3>
               <span class="card-cat-tag">${ikon} ${subTag}</span>
             </div>
-            ${badgeHTML}
+            ${topBadgeHTML}
           </div>
           <div class="card-bottom">
             <div class="price">Rp ${Number(item.harga).toLocaleString("id-ID")}</div>
-            <span class="pick-btn" title="Tambah ke catatan estimasi">+</span>
+            ${bottomActionHTML}
           </div>
         `;
         card.addEventListener("click", () => tambahKeEstimasi(item));
