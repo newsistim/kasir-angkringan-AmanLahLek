@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar Menu - Angkringan AmanLahLek</title>
+  <title>Daftar Menu &amp; Promo - Angkringan AmanLahLek</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,6 +26,7 @@
       --danger-border: #ffcdd2;
       --danger-text: #c62828;
       --success-bg: #e8f5e9;
+      --success-border: #a5d6a7;
       --success-text: #2e7d32;
       --shadow-sm: 0 2px 10px rgba(36, 20, 14, 0.05);
       --shadow-md: 0 10px 28px rgba(36, 20, 14, 0.09);
@@ -49,14 +50,14 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
     }
 
     /* ================= HERO HEADER ================= */
     header {
       background: linear-gradient(135deg, var(--espresso-900) 0%, var(--espresso-800) 60%, #4a281b 100%);
       color: #fff;
-      padding: 32px 20px 44px;
+      padding: 26px 20px 44px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -75,18 +76,29 @@
       pointer-events: none;
     }
 
+    .header-top-row {
+      max-width: 980px;
+      margin: 0 auto 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 7px;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      padding: 5px 14px;
+      padding: 6px 14px;
       border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 700;
       color: #ffccbc;
-      margin-bottom: 14px;
     }
 
     .hero-dot {
@@ -95,6 +107,27 @@
       border-radius: 50%;
       background: #66bb6a;
       box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25);
+    }
+
+    .member-header-btn {
+      background: linear-gradient(135deg, #ff7043 0%, #d84315 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(216, 67, 21, 0.35);
+      transition: transform 0.15s ease;
+    }
+
+    .member-header-btn:hover {
+      transform: translateY(-1px);
     }
 
     .brand-title-wrap {
@@ -127,7 +160,7 @@
 
     header p {
       margin: 0 auto;
-      max-width: 460px;
+      max-width: 480px;
       font-size: 0.94rem;
       color: #e6d7cf;
       font-weight: 500;
@@ -151,7 +184,7 @@
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-md);
       border: 1px solid var(--espresso-200);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       position: sticky;
       top: 12px;
       z-index: 50;
@@ -180,8 +213,6 @@
       font-family: inherit;
       font-size: 0.95rem;
       font-weight: 500;
-      margin-bottom: 0;
-      box-sizing: border-box;
       background: var(--bg-subtle);
       color: var(--espresso-900);
       transition: all 0.2s ease;
@@ -213,13 +244,11 @@
       justify-content: center;
     }
 
-    /* Tab Kategori */
     .cat-tabs {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 2px;
-      margin-bottom: 0;
       scrollbar-width: none;
     }
 
@@ -255,6 +284,115 @@
       color: #fff;
       border-color: transparent;
       box-shadow: 0 4px 12px rgba(216, 67, 21, 0.28);
+    }
+
+    /* ================= PROMO & KLAIM VOUCHER SECTION ================= */
+    .promo-section {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--espresso-200);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .promo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .promo-header h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .my-vouchers-btn {
+      background: var(--accent-soft);
+      color: var(--accent-primary);
+      border: 1px solid #ffccbc;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .promo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+    }
+
+    .voucher-card {
+      background: linear-gradient(135deg, #fffdf9 0%, #fff3e0 100%);
+      border: 1.5px dashed #ffb74d;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .voucher-code-pill {
+      display: inline-block;
+      background: var(--espresso-900);
+      color: #ffcc80;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .voucher-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      margin: 4px 0 2px;
+    }
+
+    .voucher-meta {
+      font-size: 0.76rem;
+      color: var(--espresso-600);
+      font-weight: 600;
+    }
+
+    .claim-btn {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
+      color: #fff;
+      transition: all 0.15s ease;
+    }
+
+    .claim-btn.claimed {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+      cursor: default;
+    }
+
+    .claim-btn.used {
+      background: var(--espresso-100);
+      color: var(--espresso-600);
+      cursor: default;
     }
 
     /* ================= INFO TAMBAHAN BANNER ================= */
@@ -309,7 +447,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      letter-spacing: -0.01em;
     }
 
     .category-count {
@@ -359,16 +496,11 @@
       box-shadow: 0 10px 22px rgba(216, 67, 21, 0.1);
     }
 
-    .card:active {
-      transform: scale(0.98);
-    }
-
     .card.selected-card {
       border-color: var(--accent-warm);
       background: linear-gradient(180deg, #ffffff 0%, #fff8f3 100%);
     }
 
-    /* Tampilan Khusus Menu Stok Habis */
     .card.out-of-stock {
       background: #f5f2ed;
       border: 1.5px dashed #d7ccc8;
@@ -403,7 +535,6 @@
       border-radius: 999px;
       white-space: nowrap;
       flex-shrink: 0;
-      letter-spacing: 0.02em;
     }
 
     .soldout-footer-label {
@@ -452,7 +583,6 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(216, 67, 21, 0.35);
     }
 
     .card-bottom {
@@ -481,12 +611,6 @@
       justify-content: center;
       font-weight: 800;
       font-size: 1rem;
-      transition: all 0.18s ease;
-    }
-
-    .card:not(.out-of-stock):hover .pick-btn {
-      background: var(--accent-primary);
-      color: #fff;
     }
 
     /* ================= TOAST NOTIFICATION ================= */
@@ -502,14 +626,10 @@
       font-size: 0.84rem;
       font-weight: 700;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-      z-index: 300;
+      z-index: 400;
       opacity: 0;
       pointer-events: none;
       transition: all 0.22s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .toast-notice.show {
@@ -542,16 +662,11 @@
       display: flex;
     }
 
-    .estimator-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
     .estimator-label {
       font-size: 0.76rem;
       color: #ebd9d0;
       font-weight: 600;
+      display: block;
     }
 
     .estimator-total {
@@ -590,16 +705,16 @@
       cursor: pointer;
     }
 
-    /* ================= MODAL CATATAN PESANAN ================= */
+    /* ================= MODALS ================= */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(36, 20, 14, 0.6);
+      background: rgba(36, 20, 14, 0.62);
       backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 200;
+      z-index: 250;
       padding: 20px;
     }
 
@@ -642,10 +757,79 @@
       color: var(--espresso-800);
     }
 
-    .est-list {
-      max-height: 310px;
-      overflow-y: auto;
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
       margin-bottom: 14px;
+    }
+
+    .auth-tab {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      padding: 9px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--espresso-700);
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      background: var(--espresso-900);
+      color: #fff;
+      border-color: var(--espresso-900);
+    }
+
+    .form-field {
+      margin-bottom: 12px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--espresso-800);
+      margin-bottom: 5px;
+    }
+
+    .form-field input,
+    .est-voucher-select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--espresso-200);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .auth-msg {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    .est-list {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 12px;
       padding-right: 2px;
     }
 
@@ -677,17 +861,8 @@
       background: var(--bg-subtle);
       font-weight: 800;
       cursor: pointer;
-      color: var(--espresso-900);
-      transition: all 0.15s ease;
     }
 
-    .est-step-btn:hover {
-      background: var(--espresso-100);
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-    }
-
-    /* Tombol Tambahan ICE di dalam Modal Catatan Pesanan */
     .est-addons {
       display: flex;
       flex-wrap: wrap;
@@ -705,22 +880,20 @@
       background: var(--bg-subtle);
       color: var(--espresso-700);
       cursor: pointer;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .est-addon-chip:hover {
-      background: var(--espresso-100);
-      border-color: var(--espresso-400);
     }
 
     .est-addon-chip.selected {
       background: var(--accent-warm);
       color: #fff;
       border-color: var(--accent-warm);
-      box-shadow: 0 2px 6px rgba(230, 81, 0, 0.25);
+    }
+
+    .est-voucher-box {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--espresso-200);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
     }
 
     .modal-note {
@@ -734,7 +907,6 @@
       line-height: 1.45;
     }
 
-    /* ================= EMPTY / LOADING STATE ================= */
     .state-box {
       background: var(--bg-surface);
       border: 1.5px dashed var(--espresso-200);
@@ -745,7 +917,6 @@
       font-weight: 600;
     }
 
-    /* ================= FOOTER ================= */
     footer {
       text-align: center;
       padding: 30px 16px 24px;
@@ -753,12 +924,6 @@
       color: var(--espresso-600);
       margin-top: 20px;
       border-top: 1px solid var(--espresso-200);
-    }
-
-    .footer-note {
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: var(--espresso-700);
     }
 
     .kasir-link-btn {
@@ -774,32 +939,29 @@
       font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
-      text-decoration: none;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.18s ease;
-    }
-
-    .kasir-link-btn:hover {
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-      transform: translateY(-1px);
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-<div id="toast-notice" class="toast-notice">🚫 Maaf, stok menu ini sedang habis</div>
+<div id="toast-notice" class="toast-notice"></div>
 
 <header>
-  <div class="hero-badge">
-    <span class="hero-dot"></span>
-    <span>Buka • Pesan Langsung di Kasir</span>
+  <div class="header-top-row">
+    <div class="hero-badge">
+      <span class="hero-dot"></span>
+      <span>Buka • Pesan Langsung di Kasir</span>
+    </div>
+    <button type="button" id="member-header-btn" class="member-header-btn" onclick="bukaModalMember()">
+      👤 Masuk / Daftar Member
+    </button>
   </div>
   <div class="brand-title-wrap">
     <div class="brand-emblem">🍢</div>
     <h1>Angkringan AmanLahLek</h1>
   </div>
-  <p>Selamat Datang! Silakan lihat daftar menu &amp; harga kami, atau ketuk menu yang tersedia untuk menghitung estimasi pesanan Anda.</p>
+  <p>Lihat menu &amp; harga kami, klaim voucher promo member, atau ketuk menu untuk menghitung estimasi pesanan Anda.</p>
 </header>
 
 <div class="container">
@@ -810,7 +972,6 @@
       <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="resetCari()">✕</button>
     </div>
 
-    <!-- Tombol Filter Kategori -->
     <div class="cat-tabs">
       <button class="cat-btn active" onclick="pilihKategori('Semua', this)">Semua Menu</button>
       <button class="cat-btn" onclick="pilihKategori('Coffee', this)">☕ Coffee</button>
@@ -819,6 +980,17 @@
       <button class="cat-btn" onclick="pilihKategori('Makanan Ringan', this)">🍟 Makanan Ringan</button>
     </div>
   </div>
+
+  <!-- Bagian Promo & Klaim Voucher -->
+  <section class="promo-section">
+    <div class="promo-header">
+      <h2>🎟️ Promo &amp; Voucher Member</h2>
+      <button type="button" id="my-vouchers-btn" class="my-vouchers-btn" onclick="bukaModalMember()">
+        Dompet Voucher (0)
+      </button>
+    </div>
+    <div id="promo-grid" class="promo-grid"></div>
+  </section>
 
   <div id="addon-box" class="addon-info" style="display:none;"></div>
   <div id="menu-container">
@@ -846,24 +1018,82 @@
       <button type="button" class="close-modal-btn" onclick="tutupModalEstimasi()">✕</button>
     </div>
     <div id="est-list-container" class="est-list"></div>
-    <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1rem; margin-bottom:12px; color:var(--espresso-900);">
+
+    <div id="est-voucher-box" class="est-voucher-box" style="display:none;">
+      <label for="est-voucher-select" style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:6px; color:var(--espresso-800);">
+        🎟️ Pakai Voucher Member yang Sudah Diklaim:
+      </label>
+      <select id="est-voucher-select" class="est-voucher-select" onchange="renderIsiModalEstimasi()"></select>
+      <div id="est-discount-line" style="display:none; justify-content:space-between; font-size:0.84rem; color:var(--success-text); font-weight:700; margin-top:8px;">
+        <span>Potongan Voucher</span>
+        <span id="est-discount-val">-Rp 0</span>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; margin-bottom:12px; color:var(--espresso-900);">
       <span>Estimasi Total:</span>
       <span id="modal-est-total" style="color:var(--accent-primary);">Rp 0</span>
     </div>
-    <div class="modal-note">
+    <div id="modal-kasir-hint" class="modal-note">
       Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.
     </div>
   </div>
 </div>
 
+<!-- Modal Akun Pelanggan (Login / Daftar / Dompet Voucher) -->
+<div id="member-modal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="member-modal-title">👤 Akun Member AmanLahLek</h3>
+      <button type="button" class="close-modal-btn" onclick="tutupModalMember()">✕</button>
+    </div>
+
+    <!-- Tampilan Saat Belum Login -->
+    <div id="member-auth-view">
+      <div class="auth-tabs">
+        <button type="button" id="tab-login-member" class="auth-tab active" onclick="ubahTabAuth('login')">Masuk</button>
+        <button type="button" id="tab-register-member" class="auth-tab" onclick="ubahTabAuth('register')">Daftar Baru</button>
+      </div>
+
+      <div id="register-name-group" class="form-field" style="display:none;">
+        <label for="member-name">Nama Panggilan</label>
+        <input type="text" id="member-name" placeholder="Contoh: Budi">
+      </div>
+      <div class="form-field">
+        <label for="member-phone">Nomor WhatsApp</label>
+        <input type="tel" id="member-phone" placeholder="Contoh: 081234567890">
+      </div>
+      <div class="form-field">
+        <label for="member-pin">PIN Keamanan (4–6 angka)</label>
+        <input type="password" id="member-pin" inputmode="numeric" maxlength="6" placeholder="Masukkan PIN...">
+      </div>
+      <button type="button" id="auth-submit-btn" class="primary-btn" onclick="prosesAuthPelanggan()">Masuk ke Akun Member</button>
+      <p id="member-auth-msg" class="auth-msg"></p>
+    </div>
+
+    <!-- Tampilan Saat Sudah Login -->
+    <div id="member-profile-view" style="display:none;">
+      <div style="background:var(--bg-subtle); border:1px solid var(--espresso-200); border-radius:12px; padding:12px; margin-bottom:14px;">
+        <div style="font-size:0.95rem; font-weight:800; color:var(--espresso-900);" id="profile-name-label">Member</div>
+        <div style="font-size:0.8rem; color:var(--espresso-600); font-weight:600;" id="profile-phone-label">08xxx</div>
+      </div>
+      <div style="font-size:0.84rem; font-weight:800; margin-bottom:8px; color:var(--espresso-800);">🎟️ Voucher Saya:</div>
+      <div id="profile-voucher-list" class="est-list" style="max-height:200px;"></div>
+      <button type="button" class="claim-btn used" style="margin-top:6px;" onclick="logoutPelanggan()">Keluar dari Akun Member</button>
+    </div>
+  </div>
+</div>
+
 <footer>
-  <div class="footer-note">Silakan pesan langsung di kasir.</div>
+  <div>Silakan pesan langsung di kasir.</div>
   <button type="button" class="kasir-link-btn" onclick="bukaLoginKasir()">🔒 Login Kasir</button>
 </footer>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
+  const STORAGE_MEMBER_KEY = "memberAngkringanAmanLahLek";
+  const STORAGE_VOUCHERS_LOCAL = "klaimVoucherLokalAmanLahLek";
 
   const MENU_CADANGAN = [
     { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000, status: "Tersedia" },
@@ -892,28 +1122,57 @@
     { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" }
   ];
 
-  const TAMBAHAN_CADANGAN = [
-    { nama: "ICE", harga: 2000 }
+  const VOUCHER_CADANGAN = [
+    { kode: "NGOPI5RB", judul: "Potongan Rp 5.000 Semua Menu", jenis: "NOMINAL", nilai: 5000, minBelanja: 20000, kuota: 100, status: "Aktif" },
+    { kode: "HEMAT10", judul: "Diskon 10% Khusus Member", jenis: "PERSEN", nilai: 10, minBelanja: 15000, kuota: 100, status: "Aktif" }
   ];
+
+  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 2000 }];
 
   let daftarMenu = [];
   let daftarTambahan = [...TAMBAHAN_CADANGAN];
+  let daftarVoucher = [...VOUCHER_CADANGAN];
   let kategoriAktif = "Semua";
   let catatanPesanan = [];
   let stokHabisMap = {};
+  let memberAktif = null; // { noHp, nama, claimedVouchers: [] }
+  let modeAuth = "login";
   let toastTimer = null;
+
+  function tampilkanToast(pesan) {
+    const toast = document.getElementById("toast-notice");
+    toast.innerText = pesan;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
 
   function muatStokHabisLokal() {
     try {
       const raw = localStorage.getItem(STORAGE_STOK_KEY);
-      if (raw) {
-        stokHabisMap = JSON.parse(raw) || {};
-      } else {
-        stokHabisMap = {};
-      }
+      stokHabisMap = raw ? (JSON.parse(raw) || {}) : {};
     } catch (e) {
       stokHabisMap = {};
     }
+  }
+
+  function muatMemberLokal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_MEMBER_KEY);
+      if (raw) memberAktif = JSON.parse(raw);
+    } catch (e) {
+      memberAktif = null;
+    }
+  }
+
+  function simpanMemberLokal() {
+    try {
+      if (memberAktif) {
+        localStorage.setItem(STORAGE_MEMBER_KEY, JSON.stringify(memberAktif));
+      } else {
+        localStorage.removeItem(STORAGE_MEMBER_KEY);
+      }
+    } catch (e) {}
   }
 
   function bersihkanNamaMenu(namaAsli) {
@@ -928,31 +1187,272 @@
     if (stokHabisMap[namaBersih] === false) return false;
 
     const namaRaw = String(item.nama || "").toLowerCase();
-    if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) {
-      return true;
-    }
+    if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) return true;
 
     const statusRaw = String(item.status || item.stok || "").toLowerCase().trim();
-    if (
-      statusRaw === "habis" ||
-      statusRaw === "kosong" ||
-      statusRaw === "tidak tersedia" ||
-      statusRaw === "0" ||
-      item.habis === true
-    ) {
-      return true;
-    }
-    return false;
+    return statusRaw === "habis" || statusRaw === "kosong" || statusRaw === "tidak tersedia" || statusRaw === "0" || item.habis === true;
   }
 
-  function tampilkanToastHabis(namaMenu) {
-    const toast = document.getElementById("toast-notice");
-    toast.innerText = `🚫 Maaf, stok ${namaMenu} sedang habis & tidak dapat dipilih`;
-    toast.classList.add("show");
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2400);
+  function muatDataMenuDariServer() {
+    muatStokHabisLokal();
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        const menuData = Array.isArray(data) ? data : (data.menu || []);
+        daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
+        daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
+          ? data.tambahan
+          : TAMBAHAN_CADANGAN;
+        daftarVoucher = (!Array.isArray(data) && data.vouchers && data.vouchers.length > 0)
+          ? data.vouchers
+          : VOUCHER_CADANGAN;
+
+        bersihkanPesananYangHabis();
+        terapkanFilter();
+        renderPromoVoucher();
+        tampilkanInfoTambahan(daftarTambahan);
+      })
+      .catch(() => {
+        if (daftarMenu.length === 0) daftarMenu = MENU_CADANGAN;
+        bersihkanPesananYangHabis();
+        terapkanFilter();
+        renderPromoVoucher();
+        tampilkanInfoTambahan(daftarTambahan);
+      });
+  }
+
+  window.addEventListener("storage", (e) => {
+    if (!e.key || e.key === STORAGE_STOK_KEY) {
+      muatStokHabisLokal();
+      bersihkanPesananYangHabis();
+      terapkanFilter();
+    }
+  });
+
+  window.addEventListener("focus", muatDataMenuDariServer);
+
+  window.addEventListener("DOMContentLoaded", () => {
+    muatMemberLokal();
+    perbaruiUIMember();
+    muatDataMenuDariServer();
+  });
+
+  function perbaruiUIMember() {
+    const headerBtn = document.getElementById("member-header-btn");
+    const myVouchersBtn = document.getElementById("my-vouchers-btn");
+    if (memberAktif) {
+      const tersedia = (memberAktif.claimedVouchers || []).filter(v => v.statusPakai === "Tersedia").length;
+      headerBtn.innerText = `👤 ${memberAktif.nama} (${memberAktif.noHp})`;
+      myVouchersBtn.innerText = `🎟️ Voucher Saya (${tersedia})`;
+    } else {
+      headerBtn.innerText = "👤 Masuk / Daftar Member";
+      myVouchersBtn.innerText = "Dompet Voucher (0)";
+    }
+    renderPromoVoucher();
+  }
+
+  function renderPromoVoucher() {
+    const grid = document.getElementById("promo-grid");
+    grid.innerHTML = "";
+    if (daftarVoucher.length === 0) {
+      grid.innerHTML = `<div style="color:var(--espresso-600); font-size:0.85rem;">Belum ada promo aktif saat ini.</div>`;
+      return;
+    }
+
+    const klaimList = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers : [];
+
+    daftarVoucher.forEach(v => {
+      const match = klaimList.find(c => c.kode === v.kode);
+      const labelDiskon = v.jenis === "PERSEN" ? `Diskon ${v.nilai}%` : `Potongan Rp ${Number(v.nilai).toLocaleString("id-ID")}`;
+      const minText = v.minBelanja > 0 ? `Min. belanja Rp ${Number(v.minBelanja).toLocaleString("id-ID")}` : "Tanpa minimal belanja";
+
+      let btnClass = "claim-btn";
+      let btnText = "🎟️ Klaim Voucher";
+      let disabled = false;
+
+      if (match) {
+        if (match.statusPakai === "Terpakai") {
+          btnClass = "claim-btn used";
+          btnText = "Sudah Dipakai";
+          disabled = true;
+        } else {
+          btnClass = "claim-btn claimed";
+          btnText = "✓ Sudah Diklaim";
+          disabled = true;
+        }
+      }
+
+      const card = document.createElement("div");
+      card.className = "voucher-card";
+      card.innerHTML = `
+        <div>
+          <span class="voucher-code-pill">${v.kode}</span>
+          <div class="voucher-title">${v.judul}</div>
+          <div class="voucher-meta">${labelDiskon} • ${minText} • Sisa kuota: ${v.kuota}</div>
+        </div>
+        <button type="button" class="${btnClass}" ${disabled ? "disabled" : ""}>${btnText}</button>
+      `;
+      if (!disabled) {
+        card.querySelector("button").addEventListener("click", () => klaimVoucher(v));
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  function klaimVoucher(voucherObj) {
+    if (!memberAktif) {
+      tampilkanToast("👤 Masuk atau daftar akun member dulu untuk klaim voucher");
+      bukaModalMember();
+      return;
+    }
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "klaimVoucher",
+        noHp: memberAktif.noHp,
+        kodeVoucher: voucherObj.kode
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        memberAktif.claimedVouchers = data.claimedVouchers || [];
+        simpanMemberLokal();
+        perbaruiUIMember();
+        tampilkanToast(`✓ Voucher ${voucherObj.kode} berhasil diklaim!`);
+      } else {
+        tampilkanToast(data.message || "Gagal mengklaim voucher.");
+      }
+    })
+    .catch(() => {
+      // Fallback simulasi lokal bila offline/preview
+      if (!memberAktif.claimedVouchers) memberAktif.claimedVouchers = [];
+      if (!memberAktif.claimedVouchers.some(c => c.kode === voucherObj.kode)) {
+        memberAktif.claimedVouchers.push({
+          kode: voucherObj.kode,
+          judul: voucherObj.judul,
+          jenis: voucherObj.jenis,
+          nilai: voucherObj.nilai,
+          minBelanja: voucherObj.minBelanja,
+          statusPakai: "Tersedia"
+        });
+        simpanMemberLokal();
+        perbaruiUIMember();
+        tampilkanToast(`✓ Voucher ${voucherObj.kode} diklaim!`);
+      }
+    });
+  }
+
+  function bukaModalMember() {
+    const authView = document.getElementById("member-auth-view");
+    const profileView = document.getElementById("member-profile-view");
+    const msg = document.getElementById("member-auth-msg");
+    msg.style.display = "none";
+
+    if (memberAktif) {
+      authView.style.display = "none";
+      profileView.style.display = "block";
+      document.getElementById("profile-name-label").innerText = `Halo, ${memberAktif.nama}`;
+      document.getElementById("profile-phone-label").innerText = `No. WhatsApp: ${memberAktif.noHp}`;
+      renderDompetVoucherProfil();
+    } else {
+      profileView.style.display = "none";
+      authView.style.display = "block";
+    }
+    document.getElementById("member-modal").classList.add("show");
+  }
+
+  function tutupModalMember() {
+    document.getElementById("member-modal").classList.remove("show");
+  }
+
+  function renderDompetVoucherProfil() {
+    const list = document.getElementById("profile-voucher-list");
+    const items = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers : [];
+    if (items.length === 0) {
+      list.innerHTML = `<div style="font-size:0.84rem; color:var(--espresso-600); padding:12px 0;">Belum ada voucher diklaim. Pilih promo di halaman menu!</div>`;
+      return;
+    }
+    list.innerHTML = items.map(v => `
+      <div class="est-row">
+        <div class="est-row-top">
+          <div>
+            <strong>${v.kode}</strong> — ${v.judul}<br>
+            <small style="color:var(--espresso-600);">Tunjukkan kode &amp; No. WA di kasir</small>
+          </div>
+          <span class="addon-pill" style="${v.statusPakai === 'Terpakai' ? 'opacity:0.5;' : ''}">${v.statusPakai}</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function ubahTabAuth(mode) {
+    modeAuth = mode;
+    document.getElementById("tab-login-member").classList.toggle("active", mode === "login");
+    document.getElementById("tab-register-member").classList.toggle("active", mode === "register");
+    document.getElementById("register-name-group").style.display = mode === "register" ? "block" : "none";
+    document.getElementById("auth-submit-btn").innerText = mode === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+    document.getElementById("member-auth-msg").style.display = "none";
+  }
+
+  function prosesAuthPelanggan() {
+    const nama = document.getElementById("member-name").value.trim();
+    const noHp = document.getElementById("member-phone").value.trim();
+    const pin = document.getElementById("member-pin").value.trim();
+    const msg = document.getElementById("member-auth-msg");
+    const btn = document.getElementById("auth-submit-btn");
+
+    if (!noHp || pin.length < 4 || (modeAuth === "register" && !nama)) {
+      msg.innerText = "Lengkapi semua kolom (PIN minimal 4 angka).";
+      msg.style.color = "var(--danger-text)";
+      msg.style.display = "block";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Memproses...";
+    const action = modeAuth === "register" ? "registerPelanggan" : "loginPelanggan";
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: action, nama: nama, noHp: noHp, pin: pin })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled = false;
+      btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+      if (data.success) {
+        memberAktif = {
+          noHp: data.pelanggan.noHp,
+          nama: data.pelanggan.nama,
+          claimedVouchers: data.claimedVouchers || []
+        };
+        simpanMemberLokal();
+        perbaruiUIMember();
+        bukaModalMember();
+        tampilkanToast(`✓ Selamat datang, ${memberAktif.nama}!`);
+      } else {
+        msg.innerText = data.message || "Gagal memproses akun.";
+        msg.style.color = "var(--danger-text)";
+        msg.style.display = "block";
+      }
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+      msg.innerText = "Gagal terhubung ke server Spreadsheet.";
+      msg.style.color = "var(--danger-text)";
+      msg.style.display = "block";
+    });
+  }
+
+  function logoutPelanggan() {
+    memberAktif = null;
+    simpanMemberLokal();
+    perbaruiUIMember();
+    tutupModalMember();
+    tampilkanToast("Anda telah keluar dari akun member.");
   }
 
   function tampilkanInfoTambahan(tambahan) {
@@ -968,47 +1468,6 @@
       addonBox.style.display = "flex";
     }
   }
-
-  function muatDataMenuDariServer() {
-    muatStokHabisLokal();
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const menuData = Array.isArray(data) ? data : (data.menu || []);
-        daftarMenu = menuData.length > 0 ? menuData : MENU_CADANGAN;
-        daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0)
-          ? data.tambahan
-          : TAMBAHAN_CADANGAN;
-
-        bersihkanPesananYangHabis();
-        terapkanFilter();
-        tampilkanInfoTambahan(daftarTambahan);
-      })
-      .catch(() => {
-        if (daftarMenu.length === 0) {
-          daftarMenu = MENU_CADANGAN;
-          daftarTambahan = TAMBAHAN_CADANGAN;
-        }
-        bersihkanPesananYangHabis();
-        terapkanFilter();
-        tampilkanInfoTambahan(daftarTambahan);
-      });
-  }
-
-  // Sinkron otomatis saat kasir mengubah stok di tab lain atau saat tab kembali aktif
-  window.addEventListener("storage", (e) => {
-    if (!e.key || e.key === STORAGE_STOK_KEY) {
-      muatStokHabisLokal();
-      bersihkanPesananYangHabis();
-      terapkanFilter();
-    }
-  });
-
-  window.addEventListener("focus", () => {
-    muatDataMenuDariServer();
-  });
-
-  muatDataMenuDariServer();
 
   function bersihkanPesananYangHabis() {
     catatanPesanan = catatanPesanan.filter(pesanan => {
@@ -1030,8 +1489,7 @@
   }
 
   function resetCari() {
-    const input = document.getElementById("search-input");
-    input.value = "";
+    document.getElementById("search-input").value = "";
     document.getElementById("clear-search-btn").style.display = "none";
     terapkanFilter();
   }
@@ -1039,9 +1497,7 @@
   function terapkanFilter() {
     const keyword = document.getElementById("search-input").value.toLowerCase();
     const clearBtn = document.getElementById("clear-search-btn");
-    if (clearBtn) {
-      clearBtn.style.display = keyword.length > 0 ? "inline-flex" : "none";
-    }
+    if (clearBtn) clearBtn.style.display = keyword.length > 0 ? "inline-flex" : "none";
 
     const hasil = daftarMenu.filter(item => {
       const namaBersih = bersihkanNamaMenu(item.nama).toLowerCase();
@@ -1054,22 +1510,17 @@
   }
 
   function hitungQtyMenu(namaMenuBersih) {
-    return catatanPesanan
-      .filter(i => i.nama === namaMenuBersih)
-      .reduce((sum, i) => sum + i.qty, 0);
+    return catatanPesanan.filter(i => i.nama === namaMenuBersih).reduce((sum, i) => sum + i.qty, 0);
   }
 
   function tambahKeEstimasi(item) {
     const namaBersih = bersihkanNamaMenu(item.nama);
     if (apakahStokHabis(item)) {
-      tampilkanToastHabis(namaBersih);
+      tampilkanToast(`🚫 Maaf, stok ${namaBersih} sedang habis & tidak dapat dipilih`);
       return;
     }
 
-    const existingIdx = catatanPesanan.findIndex(
-      i => i.nama === namaBersih && i.addons.length === 0
-    );
-
+    const existingIdx = catatanPesanan.findIndex(i => i.nama === namaBersih && i.addons.length === 0);
     if (existingIdx !== -1) {
       catatanPesanan[existingIdx].qty++;
     } else {
@@ -1092,19 +1543,11 @@
     if (!item || !addon) return;
 
     const existIdx = item.addons.findIndex(a => a.nama === addon.nama);
-    if (existIdx !== -1) {
-      item.addons.splice(existIdx, 1);
-    } else {
-      item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
-    }
+    if (existIdx !== -1) item.addons.splice(existIdx, 1);
+    else item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
 
     const sigSekarang = item.nama + "|" + item.addons.map(a => a.nama).sort().join(",");
-    const duplikatIdx = catatanPesanan.findIndex((k, idx) => {
-      if (idx === rowIndex) return false;
-      const sigLain = k.nama + "|" + k.addons.map(a => a.nama).sort().join(",");
-      return sigSekarang === sigLain;
-    });
-
+    const duplikatIdx = catatanPesanan.findIndex((k, idx) => idx !== rowIndex && (k.nama + "|" + k.addons.map(a => a.nama).sort().join(",")) === sigSekarang);
     if (duplikatIdx !== -1) {
       catatanPesanan[duplikatIdx].qty += item.qty;
       catatanPesanan.splice(rowIndex, 1);
@@ -1118,9 +1561,7 @@
   function ubahQtyEstimasi(rowIndex, delta) {
     if (!catatanPesanan[rowIndex]) return;
     catatanPesanan[rowIndex].qty += delta;
-    if (catatanPesanan[rowIndex].qty <= 0) {
-      catatanPesanan.splice(rowIndex, 1);
-    }
+    if (catatanPesanan[rowIndex].qty <= 0) catatanPesanan.splice(rowIndex, 1);
     perbaruiBarEstimasi();
     renderIsiModalEstimasi();
     terapkanFilter();
@@ -1142,15 +1583,11 @@
 
   function perbaruiBarEstimasi() {
     const bar = document.getElementById("estimator-bar");
-    const countEl = document.getElementById("estimator-count");
-    const totalEl = document.getElementById("estimator-total");
-
     const totalQty = catatanPesanan.reduce((s, i) => s + i.qty, 0);
     const totalHarga = hitungTotalSemuaEstimasi();
-
     if (totalQty > 0) {
-      countEl.innerText = `${totalQty} Menu Dipilih (Estimasi)`;
-      totalEl.innerText = `Rp ${totalHarga.toLocaleString("id-ID")}`;
+      document.getElementById("estimator-count").innerText = `${totalQty} Menu Dipilih (Estimasi)`;
+      document.getElementById("estimator-total").innerText = `Rp ${totalHarga.toLocaleString("id-ID")}`;
       bar.classList.add("show");
     } else {
       bar.classList.remove("show");
@@ -1158,6 +1595,7 @@
   }
 
   function bukaModalEstimasi() {
+    isiDropdownVoucherEstimasi();
     renderIsiModalEstimasi();
     document.getElementById("estimator-modal").classList.add("show");
   }
@@ -1166,23 +1604,43 @@
     document.getElementById("estimator-modal").classList.remove("show");
   }
 
+  function isiDropdownVoucherEstimasi() {
+    const box = document.getElementById("est-voucher-box");
+    const sel = document.getElementById("est-voucher-select");
+    const tersedia = (memberAktif && memberAktif.claimedVouchers)
+      ? memberAktif.claimedVouchers.filter(v => v.statusPakai === "Tersedia")
+      : [];
+
+    if (!memberAktif || tersedia.length === 0) {
+      box.style.display = "none";
+      sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>`;
+      return;
+    }
+
+    box.style.display = "block";
+    sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>` +
+      tersedia.map(v => `<option value="${v.kode}">${v.kode} (${v.judul})</option>`).join("");
+  }
+
   function renderIsiModalEstimasi() {
     const listEl = document.getElementById("est-list-container");
     const modalTotalEl = document.getElementById("modal-est-total");
+    const discountLine = document.getElementById("est-discount-line");
+    const discountValEl = document.getElementById("est-discount-val");
+    const hintEl = document.getElementById("modal-kasir-hint");
 
     if (catatanPesanan.length === 0) {
       tutupModalEstimasi();
       return;
     }
 
-    let total = 0;
+    let subtotal = 0;
     listEl.innerHTML = "";
 
     catatanPesanan.forEach((item, rowIdx) => {
       const hargaAddon = item.addons.reduce((s, a) => s + Number(a.harga), 0);
-      const hargaSatuan = item.hargaDasar + hargaAddon;
-      const sub = hargaSatuan * item.qty;
-      total += sub;
+      const sub = (item.hargaDasar + hargaAddon) * item.qty;
+      subtotal += sub;
 
       const labelTambahan = item.addons.length > 0
         ? ` <span style="color:var(--accent-warm); font-size:0.8rem; font-weight:700;">(+ ${item.addons.map(a => a.nama).join(", ")})</span>`
@@ -1217,21 +1675,34 @@
       `;
 
       row.querySelectorAll(".est-step-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          ubahQtyEstimasi(Number(btn.getAttribute("data-row")), Number(btn.getAttribute("data-delta")));
-        });
+        btn.addEventListener("click", () => ubahQtyEstimasi(Number(btn.getAttribute("data-row")), Number(btn.getAttribute("data-delta"))));
       });
-
       row.querySelectorAll(".est-addon-chip").forEach(chip => {
-        chip.addEventListener("click", () => {
-          toggleAddonEstimasi(Number(chip.getAttribute("data-row")), Number(chip.getAttribute("data-addon")));
-        });
+        chip.addEventListener("click", () => toggleAddonEstimasi(Number(chip.getAttribute("data-row")), Number(chip.getAttribute("data-addon"))));
       });
-
       listEl.appendChild(row);
     });
 
-    modalTotalEl.innerText = `Rp ${total.toLocaleString("id-ID")}`;
+    const selectedKode = document.getElementById("est-voucher-select").value;
+    let diskon = 0;
+    if (selectedKode && memberAktif) {
+      const vObj = (memberAktif.claimedVouchers || []).find(v => v.kode === selectedKode);
+      if (vObj && subtotal >= Number(vObj.minBelanja || 0)) {
+        diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round((subtotal * vObj.nilai) / 100)) : Math.min(subtotal, vObj.nilai);
+        discountLine.style.display = "flex";
+        discountValEl.innerText = `-Rp ${diskon.toLocaleString("id-ID")}`;
+        hintEl.innerHTML = `Sebutkan No. WA <strong>${memberAktif.noHp}</strong> &amp; kode voucher <strong>${vObj.kode}</strong> ke kasir saat membayar.`;
+      } else if (vObj) {
+        discountLine.style.display = "flex";
+        discountValEl.innerText = `Min. belanja Rp ${Number(vObj.minBelanja).toLocaleString("id-ID")}`;
+        hintEl.innerHTML = `Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.`;
+      }
+    } else {
+      discountLine.style.display = "none";
+      hintEl.innerHTML = `Tunjukkan catatan ini atau sebutkan pesanan Anda langsung ke kasir <strong>Angkringan AmanLahLek</strong>.`;
+    }
+
+    modalTotalEl.innerText = `Rp ${Math.max(0, subtotal - diskon).toLocaleString("id-ID")}`;
   }
 
   function renderMenuTerkelompok(items) {
@@ -1243,14 +1714,9 @@
 
     container.innerHTML = "";
     const urutanKategori = ["Coffee", "Soft Drink", "Tea", "Makanan Ringan"];
-    const ikonKategori = {
-      "Coffee": "☕",
-      "Soft Drink": "🥤",
-      "Tea": "🍵",
-      "Makanan Ringan": "🍟"
-    };
-
+    const ikonKategori = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" };
     const grup = {};
+
     items.forEach(item => {
       const kat = (item.kategori || "Lainnya").trim();
       if (!grup[kat]) grup[kat] = [];
@@ -1258,7 +1724,6 @@
     });
 
     const daftarKunci = [...new Set([...urutanKategori, ...Object.keys(grup)])];
-
     daftarKunci.forEach(kat => {
       const keyMatch = Object.keys(grup).find(k => k.toLowerCase() === kat.toLowerCase()) || kat;
       if (!grup[keyMatch] || grup[keyMatch].length === 0) return;
@@ -1268,7 +1733,6 @@
 
       const section = document.createElement("div");
       section.className = "category-section";
-
       const ikon = ikonKategori[kat] || "🍽️";
       section.innerHTML = `
         <div class="category-header">
@@ -1286,21 +1750,12 @@
         const pickedQty = hitungQtyMenu(namaBersih);
 
         const card = document.createElement("div");
-        card.className = "card" +
-          (isHabis ? " out-of-stock" : (pickedQty > 0 ? " selected-card" : ""));
+        card.className = "card" + (isHabis ? " out-of-stock" : (pickedQty > 0 ? " selected-card" : ""));
 
         const isMinuman = !keyMatch.toLowerCase().includes("makanan");
-        const subTag = isHabis
-          ? "Stok sedang kosong"
-          : (isMinuman ? "Bisa +ICE" : "Siap Saji");
-
-        const topBadgeHTML = isHabis
-          ? `<span class="soldout-badge">🚫 STOK HABIS</span>`
-          : (pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "");
-
-        const bottomActionHTML = isHabis
-          ? `<span class="soldout-footer-label">Tidak Tersedia</span>`
-          : `<span class="pick-btn" title="Tambah ke catatan estimasi">+</span>`;
+        const subTag = isHabis ? "Stok sedang kosong" : (isMinuman ? "Bisa +ICE" : "Siap Saji");
+        const topBadgeHTML = isHabis ? `<span class="soldout-badge">🚫 STOK HABIS</span>` : (pickedQty > 0 ? `<span class="qty-badge">${pickedQty}x</span>` : "");
+        const bottomActionHTML = isHabis ? `<span class="soldout-footer-label">Tidak Tersedia</span>` : `<span class="pick-btn" title="Tambah ke catatan estimasi">+</span>`;
 
         card.innerHTML = `
           <div class="card-top">
