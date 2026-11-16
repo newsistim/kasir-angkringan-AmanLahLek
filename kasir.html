@@ -128,8 +128,9 @@
     .pay-status-pill.active.unpaid { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
 
     .cash-box { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); padding: 14px; border-radius: 12px; margin-top: 10px; }
-    .qris-bank-preview { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); padding: 12px; border-radius: 12px; margin-top: 10px; text-align: center; }
-    .qris-img-modal { max-width: 210px; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--espresso-200); margin: 6px auto; display: block; }
+    .qris-bank-preview { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); padding: 12px; border-radius: 12px; margin-top: 10px; text-align: center; overflow: hidden; }
+    .qris-zoom-wrap { overflow: hidden; border-radius: 12px; border: 1px solid var(--espresso-200); max-width: 260px; margin: 10px auto; background: #fff; }
+    .qris-zoom-img { width: 100%; max-width: none; max-height: none; height: auto; display: block; margin: 0; border: none; transform: scale(1.42); transform-origin: center; }
     .bank-card-mini { background: #fff; border: 1.5px dashed #ffb74d; border-radius: 10px; padding: 10px 12px; text-align: left; }
 
     .quick-cash { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
@@ -295,10 +296,12 @@
       <div class="change-row"><span>Kembalian:</span><span id="review-change-amount" class="change-ok">Rp 0</span></div>
     </div>
 
-    <!-- QRIS Barcode -->
+    <!-- QRIS Barcode (Zoom presisi) -->
     <div id="review-qris-section" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.82rem; font-weight:800;">Barcode QRIS ANGKRINGAN AMANLAHLEK</div>
-      <img src="QRIS.jpg">
+      <div class="qris-zoom-wrap">
+        <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+      </div>
       <div style="font-size:0.75rem; color:var(--espresso-600);">Tunjukkan barcode ini ke pelanggan jika belum scan QRIS.</div>
     </div>
 
@@ -450,10 +453,12 @@
       <div class="change-row"><span>Kembalian:</span><span id="change-amount" class="change-ok">Rp 0</span></div>
     </div>
 
-    <!-- Preview QRIS / Bank JAGO saat kasir memilih QRIS / Transfer -->
+    <!-- Preview QRIS / Bank JAGO saat kasir memilih QRIS / Transfer (Zoom presisi) -->
     <div id="kasir-qris-preview" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.8rem; font-weight:800;">Scan QRIS ANGKRINGAN AMANLAHLEK</div>
-      <img src="QRIS.jpg">
+      <div class="qris-zoom-wrap">
+        <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+      </div>
     </div>
     <div id="kasir-bank-preview" class="qris-bank-preview" style="display:none;">
       <div class="bank-card-mini">
