@@ -272,7 +272,7 @@
   </div>
 </div>
 
-<!-- Modal Tinjau & Konfirmasi Pembayaran (Menampilkan QRIS Barcode & Bank JAGO) -->
+<!-- Modal Tinjau & Konfirmasi Pembayaran -->
 <div id="review-order-modal" class="modal-backdrop">
   <div class="stock-modal-card">
     <div class="modal-header-row">
@@ -313,7 +313,7 @@
       <div class="change-row"><span>Kembalian:</span><span id="review-change-amount" class="change-ok">Rp 0</span></div>
     </div>
 
-    <!-- QRIS Barcode (Zoom presisi) -->
+    <!-- QRIS Barcode -->
     <div id="review-qris-section" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.82rem; font-weight:800;">Barcode QRIS ANGKRINGAN AMANLAHLEK</div>
       <div class="qris-zoom-wrap">
@@ -328,7 +328,7 @@
         <div style="font-size:0.76rem; color:var(--espresso-600); font-weight:700;">Tujuan Transfer Bank:</div>
         <div style="font-size:1rem; font-weight:800;">Bank JAGO</div>
         <div style="font-size:1.1rem; font-weight:800; color:var(--accent-primary);">1087 7020 0105</div>
-        <div style="font-size:0.76rem; color:var(--espresso-700);">a.n. Angkringan AmanLahLek</div>
+        <div style="font-size:0.76rem; color:var(--espresso-700);">a.n. MUHAMMAD ABDUL YAHYA</div>
       </div>
     </div>
 
@@ -470,7 +470,7 @@
       <div class="change-row"><span>Kembalian:</span><span id="change-amount" class="change-ok">Rp 0</span></div>
     </div>
 
-    <!-- Preview QRIS / Bank JAGO saat kasir memilih QRIS / Transfer (Zoom presisi) -->
+    <!-- Preview QRIS / Bank JAGO saat kasir memilih QRIS / Transfer -->
     <div id="kasir-qris-preview" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.8rem; font-weight:800;">Scan QRIS ANGKRINGAN AMANLAHLEK</div>
       <div class="qris-zoom-wrap">
@@ -481,6 +481,7 @@
       <div class="bank-card-mini">
         <div style="font-size:0.75rem; color:var(--espresso-600); font-weight:700;">Tujuan Transfer Bank:</div>
         <div style="font-size:0.95rem; font-weight:800;">Bank JAGO • <span style="color:var(--accent-primary);">1087 7020 0105</span></div>
+        <div style="font-size:0.74rem; color:var(--espresso-700);">a.n. MUHAMMAD ABDUL YAHYA</div>
       </div>
     </div>
 
@@ -529,6 +530,7 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
+  const STORAGE_HIDDEN_KEY = "hiddenOrdersAmanLahLek";
   const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
 
   const MENU_CADANGAN = [
@@ -568,6 +570,19 @@
   function simpanSession(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
   function ambilSession(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
   function hapusSession(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
+
+  function ambilHiddenIds() {
+    try {
+      const r = localStorage.getItem(STORAGE_HIDDEN_KEY);
+      return r ? (JSON.parse(r) || []) : [];
+    } catch (e) { return []; }
+  }
+  function tambahHiddenIds(ids) {
+    try {
+      const set = new Set([...ambilHiddenIds(), ...ids]);
+      localStorage.setItem(STORAGE_HIDDEN_KEY, JSON.stringify([...set]));
+    } catch (e) {}
+  }
 
   function normStatus(s) {
     const raw = String(s || "").toLowerCase().trim();
@@ -637,13 +652,27 @@
     });
   }
 
-  function muatRiwayatDariStorage() { try { const r = localStorage.getItem(STORAGE_RIWAYAT_KEY); if (r) { const p = JSON.parse(r); if (Array.isArray(p)) riwayatPesanan = p; } } catch (e) { riwayatPesanan = []; } }
+  function muatRiwayatDariStorage() {
+    try {
+      const r = localStorage.getItem(STORAGE_RIWAYAT_KEY);
+      const hidden = ambilHiddenIds();
+      if (r) {
+        const p = JSON.parse(r);
+        if (Array.isArray(p)) riwayatPesanan = p.filter(o => !hidden.includes(o.id));
+      }
+    } catch (e) { riwayatPesanan = []; }
+  }
   function simpanRiwayatKeStorage() { try { localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(riwayatPesanan)); } catch (e) {} }
 
   function sinkronPesananDariServer() {
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getPesananMasuk" }) })
       .then(res => res.json()).then(data => {
-        if (data && data.success && Array.isArray(data.orders)) { riwayatPesanan = data.orders; simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
+        if (data && data.success && Array.isArray(data.orders)) {
+          const hidden = ambilHiddenIds();
+          riwayatPesanan = data.orders.filter(o => !hidden.includes(o.id));
+          simpanRiwayatKeStorage();
+          renderRiwayatPesanan();
+        }
       }).catch(() => { muatRiwayatDariStorage(); renderRiwayatPesanan(); });
   }
 
@@ -857,9 +886,13 @@
     if (!pesananSedangDitinjau) return;
     const btn = document.getElementById("confirm-review-btn"); btn.disabled = true; btn.innerText = "Memproses...";
     const m = document.getElementById("review-payment-method").value, total = Number(pesananSedangDitinjau.total || 0);
-    const bayar = m === "Tunai" ? (parseFloat(document.getElementById("review-cash-received").value) || total) : total;
-    const kembali = m === "Tunai" ? Math.max(0, bayar - total) : 0, kasir = ambilSession("adminAngkringan") || "Admin";
-    const idTarget = pesananSedangDitinjau.id, sb = statusBayarTinjau;
+    const sb = statusBayarTinjau;
+    const bayar = sb === "Sudah Dibayar"
+      ? (m === "Tunai" ? (parseFloat(document.getElementById("review-cash-received").value) || total) : total)
+      : 0;
+    const kembali = (sb === "Sudah Dibayar" && m === "Tunai") ? Math.max(0, bayar - total) : 0;
+    const kasir = ambilSession("adminAngkringan") || "Admin";
+    const idTarget = pesananSedangDitinjau.id;
 
     const selesaikanLokal = (noTrx) => {
       const idx = riwayatPesanan.findIndex(p => p.id === idTarget);
@@ -892,8 +925,19 @@
     tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
   }
 
-  function hapusSatuPesanan(id) { riwayatPesanan = riwayatPesanan.filter(p => p.id !== id); simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
-  function hapusPesananSelesai() { riwayatPesanan = riwayatPesanan.filter(p => normStatus(p.status) !== "Selesai"); simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
+  function hapusSatuPesanan(id) {
+    tambahHiddenIds([id]);
+    riwayatPesanan = riwayatPesanan.filter(p => p.id !== id);
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
+  function hapusPesananSelesai() {
+    const idsSelesai = riwayatPesanan.filter(p => normStatus(p.status) === "Selesai").map(p => p.id);
+    tambahHiddenIds(idsSelesai);
+    riwayatPesanan = riwayatPesanan.filter(p => normStatus(p.status) !== "Selesai");
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+  }
   function filterStatusRiwayat(st, b) { filterStatusAktif = st; document.querySelectorAll(".status-tab").forEach(x => x.classList.remove("active")); b.classList.add("active"); renderRiwayatPesanan(); }
 
   function tampilkanModalStruk(o) { document.getElementById("receipt-icon").innerText = "✓"; document.getElementById("receipt-title").innerText = o.judul; document.getElementById("receipt-subtitle").innerText = o.subjudul; document.getElementById("receipt-body").innerHTML = o.html; document.getElementById("receipt-modal").classList.add("show"); }
@@ -1011,8 +1055,12 @@
     const atasNama = document.getElementById("cust-name-kasir").value.trim() || "Pelanggan Kasir";
     const rawMeja = document.getElementById("table-number").value.trim(), mejaLabel = formatLabelMeja(rawMeja);
     const detailItems = keranjang.map(i => `${i.nama}${i.addons.length > 0 ? " + " + i.addons.map(a => a.nama).join(" + ") : ""} (${i.qty}x)`).join(", ");
-    const metode = document.getElementById("payment-method").value, uang = parseFloat(document.getElementById("cash-received").value) || totalBelanja;
-    const kembali = metode === "Tunai" ? Math.max(0, uang - totalBelanja) : 0, kasir = ambilSession("adminAngkringan") || "Admin";
+    const metode = document.getElementById("payment-method").value;
+    const uang = statusBayarKasir === "Sudah Dibayar"
+      ? (metode === "Tunai" ? (parseFloat(document.getElementById("cash-received").value) || totalBelanja) : totalBelanja)
+      : 0;
+    const kembali = (statusBayarKasir === "Sudah Dibayar" && metode === "Tunai") ? Math.max(0, uang - totalBelanja) : 0;
+    const kasir = ambilSession("adminAngkringan") || "Admin";
     const waktuTrx = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
 
     fetch(API_URL, {
@@ -1028,7 +1076,7 @@
     }).then(res => res.json()).then(data => {
       riwayatPesanan.unshift({
         id: (data && data.idPesanan) || ("ORD-" + Date.now().toString().slice(-6)),
-        noTrx: (data && data.noTrx) || ("TRX-" + Date.now().toString().slice(-6)),
+        noTrx: (data && data.noTrx) || (statusBayarKasir === "Sudah Dibayar" ? ("TRX-" + Date.now().toString().slice(-6)) : "-"),
         waktu: waktuTrx, atasNama, mejaLabel, detailItems, total: totalBelanja,
         metode, statusBayar: statusBayarKasir, bayar: uang, kembali, kasir, status: "Sedang Diproses",
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "", diskon: diskonVoucher
