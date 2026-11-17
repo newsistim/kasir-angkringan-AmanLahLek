@@ -119,10 +119,30 @@
     .cust-pay-pill.active { background: var(--accent-soft); border-color: var(--accent-primary); color: var(--accent-primary); }
 
     .pay-detail-panel { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 14px; padding: 14px; margin-bottom: 12px; text-align: center; overflow: hidden; }
-.qris-img, .pay-detail-panel img { width: 100%; max-width: 220px; max-height: 240px; height: auto; object-fit: contain; background: #fff; border-radius: 12px; border: 1px solid var(--espresso-200); margin: 8px auto; display: block; }
+    .qris-zoom-wrap { overflow: hidden; border-radius: 12px; border: 1px solid var(--espresso-200); max-width: 400px; margin: 10px auto; background: #fff; }
+    .qris-zoom-img { width: 100%; max-width: none; max-height: none; height: auto; display: block; margin: 0; border: none; transform: scale(1.5); transform-origin: center; }
+
+    .qris-actions-row { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 6px; }
+    .toggle-download-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--espresso-900); color: #ffcc80; border: none; padding: 7px 14px; border-radius: 999px; font-family: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+    .toggle-download-btn.secondary { background: #fff; color: var(--espresso-800); border: 1.5px solid var(--espresso-200); }
+    .qris-download-drawer { display: none; background: #fff; border: 1px dashed #ffb74d; border-radius: 10px; padding: 10px; margin-top: 8px; }
+    .qris-download-drawer.show { display: block; }
+    .download-qris-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; border: none; padding: 9px 14px; border-radius: 9px; font-family: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; text-decoration: none; }
+
     .bank-box { background: #fff; border: 1.5px dashed #ffb74d; border-radius: 12px; padding: 12px; text-align: left; }
     .copy-rek-btn { background: var(--espresso-900); color: #ffcc80; border: none; padding: 6px 12px; border-radius: 8px; font-family: inherit; font-size: 0.76rem; font-weight: 800; cursor: pointer; margin-top: 8px; }
     .tunai-notice { background: #fff8e1; border: 1px solid #ffe082; color: var(--espresso-800); border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; font-weight: 600; line-height: 1.45; }
+
+    /* Upload Bukti Transfer */
+    .proof-upload-box { background: #fff; border: 1.5px dashed var(--espresso-400); border-radius: 12px; padding: 12px; margin-bottom: 12px; text-align: center; transition: border-color 0.2s ease, background 0.2s ease; }
+    .proof-upload-box.has-file { border-style: solid; border-color: var(--success-border); background: #f8fdf9; }
+    .proof-upload-box.error-highlight { border-color: var(--danger-text); background: var(--danger-bg); }
+    .proof-label { display: block; font-size: 0.82rem; font-weight: 800; color: var(--espresso-800); margin-bottom: 6px; }
+    .proof-pick-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--accent-soft); color: var(--accent-primary); border: 1.5px solid #ffccbc; padding: 9px 14px; border-radius: 10px; font-family: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; width: 100%; }
+    .proof-preview-wrap { display: none; margin-top: 10px; }
+    .proof-preview-img { max-width: 100%; max-height: 180px; border-radius: 10px; border: 1px solid var(--espresso-200); object-fit: contain; background: #fff; }
+    .proof-meta-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.76rem; font-weight: 700; color: var(--success-text); }
+    .proof-clear-btn { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 4px 10px; border-radius: 7px; font-family: inherit; font-size: 0.74rem; font-weight: 800; cursor: pointer; }
 
     .primary-btn { width: 100%; padding: 12px 14px; border-radius: 11px; border: none; font-family: inherit; font-size: 0.94rem; font-weight: 800; background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; cursor: pointer; }
     .primary-btn:disabled { background: #cfc6be; cursor: not-allowed; }
@@ -253,10 +273,17 @@
       <!-- Panel QRIS -->
       <div id="cust-pay-qris" class="pay-detail-panel">
         <div style="font-size:0.82rem; font-weight:800; color:var(--espresso-900);">Scan QRIS ANGKRINGAN AMANLAHLEK</div>
-        <div style="overflow:hidden; border-radius:12px; border:1px solid var(--espresso-200); max-width:400px; margin:10px auto; background:#fff;">
-  <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" style="width:100%; max-width:none; max-height:none; height:auto; display:block; margin:0; border:none; transform:scale(1.5); transform-origin:center;">
-</div>
-        <div style="font-size:0.78rem; color:var(--espresso-600); font-weight:600;">Bayar sesuai nominal total di atas, lalu tekan tombol konfirmasi di bawah.</div>
+        <div class="qris-zoom-wrap">
+          <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+        </div>
+        <div class="qris-actions-row">
+          <button type="button" id="toggle-qris-dl-btn" class="toggle-download-btn" onclick="toggleDownloadQris()">⬇️ Download Barcode QRIS</button>
+        </div>
+        <div id="qris-download-drawer" class="qris-download-drawer">
+          <div style="font-size:0.76rem; color:var(--espresso-700); font-weight:600; margin-bottom:8px;">Simpan gambar barcode QRIS ke galeri HP Anda untuk dibayar dari aplikasi e-wallet / m-banking:</div>
+          <button type="button" class="download-qris-action" onclick="downloadGambarQris()">💾 Simpan Barcode QRIS.jpg</button>
+        </div>
+        <div style="font-size:0.78rem; color:var(--espresso-600); font-weight:600; margin-top:6px;">Bayar sesuai nominal total di atas, lalu unggah bukti bayar di bawah sebelum mengirim pesanan.</div>
       </div>
 
       <!-- Panel Bank JAGO -->
@@ -277,13 +304,27 @@
         </div>
       </div>
 
+      <!-- Upload Bukti Transfer (Wajib untuk QRIS & Bank JAGO) -->
+      <div id="cust-proof-box" class="proof-upload-box">
+        <span class="proof-label">📸 Unggah Bukti Transfer / Bayar QRIS <span style="color:var(--danger-text);">* (Wajib)</span></span>
+        <input type="file" id="cust-proof-file" accept="image/*" style="display:none;" onchange="prosesUploadBukti(event)">
+        <button type="button" class="proof-pick-btn" onclick="document.getElementById('cust-proof-file').click()">📁 Pilih Foto / Screenshot Bukti Bayar</button>
+        <div id="proof-preview-wrap" class="proof-preview-wrap">
+          <img id="proof-preview-img" class="proof-preview-img" alt="Preview Bukti Transfer">
+          <div class="proof-meta-row">
+            <span id="proof-status-text">✓ Bukti pembayaran siap dikirim</span>
+            <button type="button" class="proof-clear-btn" onclick="hapusBuktiTransfer()">✕ Hapus</button>
+          </div>
+        </div>
+      </div>
+
       <button type="button" id="submit-order-btn" class="primary-btn" onclick="kirimPesananKeKasir()">✓ Saya Sudah Bayar via QRIS &amp; Kirim Pesanan</button>
     </div>
 
     <div id="order-sent-view" class="order-sent-card" style="display:none;">
       <div style="font-size:2.2rem;">📩</div>
       <h3 style="margin:6px 0 4px;">Pesanan Terkirim ke Kasir!</h3>
-      <div id="sent-status-pill" class="review-status-pill">🔍 Status: Sedang Ditinjau Kasir</div>
+      <div id="sent-status-pill" class="review-status-pill">🔍 Status: Menunggu Cek Kasir</div>
       <div id="sent-summary-box" class="sent-summary-box"></div>
       <p id="sent-instruction-text" style="font-size:0.82rem; color:var(--espresso-600); line-height:1.45; margin:0 0 14px;"></p>
       <button type="button" class="primary-btn" onclick="selesaiKirimPesanan()">Tutup &amp; Kembali ke Menu</button>
@@ -370,12 +411,96 @@
   let daftarMenu = [], daftarTambahan = [...TAMBAHAN_CADANGAN], daftarVoucher = [...VOUCHER_CADANGAN];
   let kategoriAktif = "Semua", catatanPesanan = [], stokHabisMap = {}, memberAktif = null, modeAuth = "login", toastTimer = null;
   let metodeBayarPelanggan = "QRIS";
+  let buktiTransferBase64 = "";
 
   function tampilkanToast(pesan) {
     const t = document.getElementById("toast-notice");
     t.innerText = pesan; t.classList.add("show");
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  function toggleDownloadQris() {
+    const drawer = document.getElementById("qris-download-drawer");
+    const btn = document.getElementById("toggle-qris-dl-btn");
+    const terbuka = drawer.classList.toggle("show");
+    btn.innerText = terbuka ? "✕ Tutup Opsi Download" : "⬇️ Download Barcode QRIS";
+  }
+
+  function downloadGambarQris() {
+    fetch("QRIS.jpg")
+      .then(res => {
+        if (!res.ok) throw new Error("not found");
+        return res.blob();
+      })
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "QRIS-Angkringan-AmanLahLek.jpg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        tampilkanToast("✓ Barcode QRIS sedang diunduh!");
+      })
+      .catch(() => {
+        const a = document.createElement("a");
+        a.href = "QRIS.jpg";
+        a.download = "QRIS-Angkringan-AmanLahLek.jpg";
+        a.target = "_blank";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        tampilkanToast("Membuka gambar QRIS untuk disimpan.");
+      });
+  }
+
+  function prosesUploadBukti(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      tampilkanToast("Pilih file gambar (JPG/PNG) bukti transfer.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        const maxDim = 560;
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else { w = Math.round((w * maxDim) / h); h = maxDim; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        let compressed = canvas.toDataURL("image/jpeg", 0.55);
+        if (compressed.length > 38000) {
+          compressed = canvas.toDataURL("image/jpeg", 0.35);
+        }
+        buktiTransferBase64 = compressed;
+        document.getElementById("proof-preview-img").src = compressed;
+        document.getElementById("proof-preview-wrap").style.display = "block";
+        const box = document.getElementById("cust-proof-box");
+        box.classList.remove("error-highlight");
+        box.classList.add("has-file");
+        tampilkanToast("✓ Bukti pembayaran berhasil dilampirkan!");
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function hapusBuktiTransfer() {
+    buktiTransferBase64 = "";
+    document.getElementById("cust-proof-file").value = "";
+    document.getElementById("proof-preview-img").src = "";
+    document.getElementById("proof-preview-wrap").style.display = "none";
+    const box = document.getElementById("cust-proof-box");
+    box.classList.remove("has-file", "error-highlight");
   }
 
   function salinRekening(noRek) {
@@ -545,6 +670,9 @@
     document.getElementById("cust-pay-qris").style.display = metode === "QRIS" ? "block" : "none";
     document.getElementById("cust-pay-transfer").style.display = metode === "Transfer" ? "block" : "none";
     document.getElementById("cust-pay-tunai").style.display = metode === "Tunai" ? "block" : "none";
+    document.getElementById("cust-proof-box").style.display = (metode === "QRIS" || metode === "Transfer") ? "block" : "none";
+    document.getElementById("cust-proof-box").classList.remove("error-highlight");
+
     const btn = document.getElementById("submit-order-btn");
     if (metode === "QRIS") btn.innerText = "✓ Saya Sudah Bayar via QRIS & Kirim Pesanan";
     else if (metode === "Transfer") btn.innerText = "✓ Saya Sudah Transfer Bank JAGO & Kirim Pesanan";
@@ -605,10 +733,19 @@
     if (!atasNama) { tampilkanToast("Isi Atas Nama Pemesan terlebih dahulu."); return; }
     if (!rawMeja) { tampilkanToast("Isi Nomor Meja atau pilih Bungkus."); return; }
 
+    if ((metodeBayarPelanggan === "QRIS" || metodeBayarPelanggan === "Transfer") && !buktiTransferBase64) {
+      const box = document.getElementById("cust-proof-box");
+      box.classList.add("error-highlight");
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+      tampilkanToast("📸 Wajib unggah foto/screenshot bukti transfer!");
+      return;
+    }
+
     const mejaLabel = rawMeja.toLowerCase() === "bungkus" ? "Bungkus" : (rawMeja.toLowerCase().startsWith("meja") ? rawMeja : `Meja ${rawMeja}`);
     const detailItems = catatanPesanan.map(i => `${i.nama}${i.addons.length > 0 ? " + " + i.addons.map(a => a.nama).join(" + ") : ""} (${i.qty}x)`).join(", ");
     const r = hitungRincianOrder(), noHp = memberAktif ? memberAktif.noHp : "";
-    const statusBayar = (metodeBayarPelanggan === "Tunai") ? "Belum Dibayar" : "Sudah Dibayar";
+    const statusBayar = (metodeBayarPelanggan === "Tunai") ? "Belum Dibayar" : "Menunggu Cek Kasir";
+    const buktiKirim = (metodeBayarPelanggan === "Tunai") ? "" : buktiTransferBase64;
 
     const btn = document.getElementById("submit-order-btn"); btn.disabled = true; btn.innerText = "Mengirim ke kasir...";
 
@@ -618,7 +755,8 @@
         list.unshift({
           id: idOrder, noTrx: "-", waktu: waktuOrder, atasNama, mejaLabel, noHp, detailItems,
           subtotal: r.subtotal, kodeVoucher: r.kodeVoucher, diskon: r.diskon, total: r.totalAkhir,
-          metode: metodeBayarPelanggan, statusBayar: statusBayar, kasir: "-", status: "Sedang Ditinjau"
+          metode: metodeBayarPelanggan, statusBayar: statusBayar, buktiTransfer: buktiKirim,
+          kasir: "-", status: "Sedang Ditinjau"
         });
         localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(list));
       } catch (e) {}
@@ -626,12 +764,12 @@
       document.getElementById("order-modal-title").innerText = "✅ Pesanan Terkirim";
       document.getElementById("order-form-view").style.display = "none";
       document.getElementById("order-sent-view").style.display = "block";
-      document.getElementById("sent-status-pill").innerText = statusBayar === "Sudah Dibayar"
-        ? `✅ Sudah Dibayar (${metodeBayarPelanggan}) • Sedang Ditinjau Kasir`
-        : `⏳ Belum Dibayar (Tunai) • Menunggu ke Kasir`;
+      document.getElementById("sent-status-pill").innerText = metodeBayarPelanggan === "Tunai"
+        ? `⏳ Belum Dibayar (Tunai) • Menunggu ke Kasir`
+        : `🔎 Menunggu Cek Kasir (${metodeBayarPelanggan}) • Bukti Terlampir`;
       document.getElementById("sent-instruction-text").innerText = metodeBayarPelanggan === "Tunai"
         ? "Silakan langsung menuju ke kasir untuk melakukan pembayaran Tunai agar pesanan Anda segera diproses."
-        : "Pembayaran Anda akan segera dicek dan dikonfirmasi oleh kasir agar pesanan langsung masuk tahap Sedang Diproses.";
+        : "Bukti pembayaran Anda sudah diterima. Kasir akan mengecek mutasi masuk terlebih dahulu sebelum memproses pesanan.";
       document.getElementById("sent-summary-box").innerHTML = `
         <div class="sent-row"><span>ID Pesanan</span><strong>${idOrder}</strong></div>
         <div class="sent-row"><span>Atas Nama</span><strong>${atasNama}</strong></div>
@@ -647,7 +785,7 @@
       body: JSON.stringify({
         action: "kirimPesananPelanggan", atasNama, meja: mejaLabel, noHp, detail: detailItems,
         subtotal: r.subtotal, kodeVoucher: r.kodeVoucher, diskon: r.diskon, total: r.totalAkhir,
-        metode: metodeBayarPelanggan, statusBayar: statusBayar
+        metode: metodeBayarPelanggan, statusBayar: statusBayar, buktiTransfer: buktiKirim
       })
     }).then(res => res.json()).then(data => {
       btn.disabled = false; pilihBayarPelanggan(metodeBayarPelanggan);
@@ -658,7 +796,7 @@
     });
   }
 
-  function selesaiKirimPesanan() { catatanPesanan = []; perbaruiBarEstimasi(); tutupModalEstimasi(); terapkanFilter(); }
+  function selesaiKirimPesanan() { catatanPesanan = []; hapusBuktiTransfer(); perbaruiBarEstimasi(); tutupModalEstimasi(); terapkanFilter(); }
 
   function renderMenuTerkelompok(items) {
     const container = document.getElementById("menu-container");
