@@ -704,7 +704,7 @@
       const vObj = (memberAktif.claimedVouchers || []).find(v => v.kode === kode);
       if (vObj && subtotal >= Number(vObj.minBelanja || 0)) diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round((subtotal * vObj.nilai) / 100)) : Math.min(subtotal, vObj.nilai);
     }
-    return { subtotal, kodeVoucher: kode, diskon, totalAkhir: Math.max(0, subtotal - diskon) };
+    return { subtotal, kodeVoucher: diskon > 0 ? kode : "", diskon, totalAkhir: Math.max(0, subtotal - diskon) };
   }
 
   function renderIsiModalEstimasi() {
