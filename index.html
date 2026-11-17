@@ -1577,24 +1577,24 @@
       })
 
     }).then(res => res.json()).then(data => {
-
       btn.disabled = false; pilihBayarPelanggan(metodeBayarPelanggan);
-
       if (!data || !data.success) {
-
         tampilkanToast("⚠️ Gagal ke server: " + ((data && data.message) || "Cek izin Apps Script"));
-
         return;
+      }
 
+      // 1. Ubah status voucher di memori HP pelanggan menjadi "Terpakai"
+      if (r.kodeVoucher && memberAktif && Array.isArray(memberAktif.claimedVouchers)) {
+        const vUsed = memberAktif.claimedVouchers.find(v => v.kode === r.kodeVoucher);
+        if (vUsed) vUsed.statusPakai = "Terpakai";
+        simpanMemberLokal(); // 2. Simpan perubahan ke localStorage
+        perbaruiUIMember();  // 3. Ubah tampilan tombol voucher di layar jadi "Sudah Dipakai"
       }
 
       simpanLokalDanTampilkan(data.idPesanan, data.waktu || (new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB"));
-
     }).catch(() => {
-
       btn.disabled = false; pilihBayarPelanggan(metodeBayarPelanggan);
-
-      tampilkanToast("⚠️ Koneksi ke server gagal. Pastikan Web App sudah di-deploy.");
+      tampilkanToast("⚠️ Koneksi ke server gagal. Coba beberapa saat lagi.");
 
     });
 
