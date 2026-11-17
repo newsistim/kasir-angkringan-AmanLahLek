@@ -1750,36 +1750,16 @@
 
   function setUangTinjau(n) { document.getElementById("review-cash-received").value = n; hitungKembalianTinjau(); }
 
-  function hitungKembalianTinjau(dariInputUang = false) {
+  function hitungKembalianTinjau() {
     if (!pesananSedangDitinjau) return;
     const btn = document.getElementById("confirm-review-btn"), m = document.getElementById("review-payment-method").value, el = document.getElementById("review-change-amount");
     const total = Number(pesananSedangDitinjau.total || 0);
-    const uang = parseFloat(document.getElementById("review-cash-received").value) || 0;
-
-    // Jika kasir mulai mengisi nominal uang tunai, otomatis tandai Uang Masuk (Lunas)
-    if (dariInputUang && uang > 0 && statusBayarTinjau === "Belum Dibayar") {
-      statusBayarTinjau = "Sudah Dibayar";
-      document.querySelectorAll("[data-rpaid]").forEach(b => b.classList.toggle("active", b.getAttribute("data-rpaid") === "Sudah Dibayar"));
-    }
-
-    if (m === "Tunai") {
-      const selisih = uang - total;
-      if (uang === 0 && total > 0) {
-        el.innerText = "Rp 0";
-        el.className = "change-ok";
-        btn.disabled = (statusBayarTinjau === "Sudah Dibayar");
-      } else if (selisih < 0) {
-        el.innerText = `Kurang Rp ${Math.abs(selisih).toLocaleString("id-ID")}`;
-        el.className = "change-kurang";
-        btn.disabled = (statusBayarTinjau === "Sudah Dibayar");
-      } else {
-        el.innerText = `Rp ${selisih.toLocaleString("id-ID")}`;
-        el.className = "change-ok";
-        btn.disabled = false;
-      }
-    } else {
-      btn.disabled = false;
-    }
+    if (statusBayarTinjau === "Belum Dibayar" || m !== "Tunai") { btn.disabled = false; return; }
+    const uang = parseFloat(document.getElementById("review-cash-received").value) || 0, selisih = uang - total;
+    if (uang === 0 && total > 0) { el.innerText = "Rp 0"; el.className = "change-ok"; btn.disabled = true; }
+    else if (selisih < 0) { el.innerText = `Kurang Rp ${Math.abs(selisih).toLocaleString("id-ID")}`; el.className = "change-kurang"; btn.disabled = true; }
+    else { el.innerText = `Rp ${selisih.toLocaleString("id-ID")}`; el.className = "change-ok"; btn.disabled = false; }
+  }
 
 
 
