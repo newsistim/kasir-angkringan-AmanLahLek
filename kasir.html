@@ -176,7 +176,11 @@
     .order-status-badge.diproses { background: var(--process-bg); color: var(--process-text); border: 1px solid var(--process-border); }
     .order-status-badge.selesai { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
     .pay-badge-paid { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; }
+    .pay-badge-check { background: var(--process-bg); color: var(--process-text); border: 1px solid var(--process-border); padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; }
     .pay-badge-unpaid { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; }
+    .btn-view-proof { background: var(--review-bg); color: var(--review-text); border: 1px solid var(--review-border); padding: 6px 10px; border-radius: 8px; font-family: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; }
+    .review-proof-box { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--espresso-200); text-align: center; }
+    .review-proof-img { width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px; border: 1px solid var(--espresso-200); background: #fff; margin-top: 6px; cursor: pointer; }
 
     .order-items-box { background: #fff; border: 1px dashed var(--espresso-200); border-radius: 10px; padding: 10px 12px; font-size: 0.85rem; font-weight: 600; line-height: 1.45; }
     .order-pay-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; }
@@ -244,6 +248,19 @@
   </div>
 </div>
 
+<!-- Modal Lihat Bukti Transfer -->
+<div id="proof-viewer-modal" class="modal-backdrop">
+  <div class="stock-modal-card" style="text-align:center;">
+    <div class="modal-header-row">
+      <h3>🖼️ Bukti Pembayaran Pelanggan</h3>
+      <button type="button" class="close-modal-btn" onclick="tutupModalBukti()">✕</button>
+    </div>
+    <div id="proof-viewer-meta" style="font-size:0.82rem; color:var(--espresso-700); font-weight:700; margin-bottom:10px;"></div>
+    <img id="proof-viewer-img" src="" alt="Bukti Transfer" style="width:100%; max-height:65vh; object-fit:contain; border-radius:12px; border:1px solid var(--espresso-200); background:#fff;">
+    <button type="button" class="pay-btn" onclick="tutupModalBukti()">Tutup</button>
+  </div>
+</div>
+
 <!-- Modal Struk -->
 <div id="receipt-modal" class="modal-backdrop">
   <div class="receipt-card">
@@ -264,10 +281,10 @@
     </div>
     <div id="review-order-summary" class="receipt-details" style="margin-top:0;"></div>
 
-    <label class="field-label">Status Pembayaran Saat Ini:</label>
+    <label class="field-label">Verifikasi Pembayaran (Cek Mutasi / Uang Masuk):</label>
     <div class="pay-status-pills">
-      <button type="button" class="pay-status-pill paid active" data-rpaid="Sudah Dibayar" onclick="pilihStatusBayarTinjau('Sudah Dibayar')">✅ Sudah Dibayar</button>
-      <button type="button" class="pay-status-pill unpaid" data-rpaid="Belum Dibayar" onclick="pilihStatusBayarTinjau('Belum Dibayar')">⏳ Belum Dibayar</button>
+      <button type="button" class="pay-status-pill paid active" data-rpaid="Sudah Dibayar" onclick="pilihStatusBayarTinjau('Sudah Dibayar')">✅ Uang Masuk (Lunas)</button>
+      <button type="button" class="pay-status-pill unpaid" data-rpaid="Belum Dibayar" onclick="pilihStatusBayarTinjau('Belum Dibayar')">⏳ Belum Masuk / Cek</button>
     </div>
 
     <label class="field-label" for="review-payment-method">Metode Pembayaran (QRIS / Bank JAGO / Tunai):</label>
@@ -311,7 +328,7 @@
         <div style="font-size:0.76rem; color:var(--espresso-600); font-weight:700;">Tujuan Transfer Bank:</div>
         <div style="font-size:1rem; font-weight:800;">Bank JAGO</div>
         <div style="font-size:1.1rem; font-weight:800; color:var(--accent-primary);">1087 7020 0105</div>
-        <div style="font-size:0.76rem; color:var(--espresso-700);">a.n. MUHAMMAD ABDUL YAHYA</div>
+        <div style="font-size:0.76rem; color:var(--espresso-700);">a.n. Angkringan AmanLahLek</div>
       </div>
     </div>
 
@@ -560,7 +577,20 @@
   }
 
   function normStatusBayar(sb) {
-    return String(sb || "").toLowerCase().includes("sudah") ? "Sudah Dibayar" : "Belum Dibayar";
+    const raw = String(sb || "").toLowerCase();
+    if (raw.includes("sudah")) return "Sudah Dibayar";
+    if (raw.includes("menunggu") || raw.includes("cek")) return "Menunggu Cek Kasir";
+    return "Belum Dibayar";
+  }
+  function bukaModalBukti(idPesanan) {
+    const order = riwayatPesanan.find(p => p.id === idPesanan);
+    if (!order || !order.buktiTransfer) return;
+    document.getElementById("proof-viewer-meta").innerText = `${order.atasNama || "Pelanggan"} • ${order.mejaLabel} • Rp ${Number(order.total).toLocaleString("id-ID")} (${order.metode})`;
+    document.getElementById("proof-viewer-img").src = order.buktiTransfer;
+    document.getElementById("proof-viewer-modal").classList.add("show");
+  }
+  function tutupModalBukti() {
+    document.getElementById("proof-viewer-modal").classList.remove("show");
   }
 
   function muatStokHabisLokal() { try { const r = localStorage.getItem(STORAGE_STOK_KEY); stokHabisMap = r ? (JSON.parse(r) || {}) : {}; } catch (e) { stokHabisMap = {}; } }
@@ -779,15 +809,19 @@
     pesananSedangDitinjau = order;
     const sb = normStatusBayar(order.statusBayar);
     const vRow = order.kodeVoucher ? `<div class="receipt-row"><span>Voucher (${order.kodeVoucher})</span><span style="color:var(--success-text); font-weight:700;">-Rp ${Number(order.diskon || 0).toLocaleString("id-ID")}</span></div>` : "";
+    const proofHTML = order.buktiTransfer
+      ? `<div class="review-proof-box"><div style="font-size:0.78rem; font-weight:800; color:var(--review-text);">📸 Bukti Pembayaran Pelanggan (klik untuk perbesar):</div><img src="${order.buktiTransfer}" alt="Bukti Transfer" class="review-proof-img" onclick="bukaModalBukti('${order.id}')"></div>`
+      : ((order.metode === "QRIS" || order.metode === "Transfer") ? `<div class="review-proof-box" style="font-size:0.76rem; color:var(--danger-text); font-weight:700;">⚠️ Belum ada gambar bukti transfer terlampir.</div>` : "");
     document.getElementById("review-order-summary").innerHTML = `
       <div class="receipt-row"><span>Atas Nama</span><strong>${order.atasNama || "Pelanggan"}</strong></div>
       <div class="receipt-row"><span>Nomor Meja</span><strong>${order.mejaLabel}</strong></div>
       <div class="receipt-row"><span>Pesanan</span><span style="text-align:right; max-width:62%;">${order.detailItems}</span></div>
       ${vRow}
       <div class="receipt-row total"><span>Total Tagihan</span><span style="color:var(--accent-primary);">Rp ${Number(order.total).toLocaleString("id-ID")}</span></div>
+      ${proofHTML}
     `;
     document.getElementById("review-cash-received").value = "";
-    pilihStatusBayarTinjau(sb);
+    pilihStatusBayarTinjau(sb === "Sudah Dibayar" ? "Sudah Dibayar" : "Belum Dibayar");
     pilihMetodeTinjau((order.metode && order.metode !== "-") ? order.metode : "Tunai");
     document.getElementById("review-order-modal").classList.add("show");
   }
@@ -852,9 +886,10 @@
 
   function tandaiSudahDibayar(id) {
     const idx = riwayatPesanan.findIndex(p => p.id === id);
+    const kasir = ambilSession("adminAngkringan") || "Admin";
     if (idx !== -1) { riwayatPesanan[idx].statusBayar = "Sudah Dibayar"; simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, statusBayar: "Sudah Dibayar" }) }).catch(() => {});
-    tampilkanToast("✅ Pembayaran ditandai Sudah Dibayar");
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, statusBayar: "Sudah Dibayar", kasir }) }).catch(() => {});
+    tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
   }
 
   function hapusSatuPesanan(id) { riwayatPesanan = riwayatPesanan.filter(p => p.id !== id); simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
@@ -877,7 +912,7 @@
     const jDitinjau = riwayatPesanan.filter(p => normStatus(p.status) === "Sedang Ditinjau").length;
     const jDiproses = riwayatPesanan.filter(p => normStatus(p.status) === "Sedang Diproses").length;
     const jSelesai = riwayatPesanan.filter(p => normStatus(p.status) === "Selesai").length;
-    const jBelumBayar = riwayatPesanan.filter(p => normStatusBayar(p.statusBayar) === "Belum Dibayar").length;
+    const jBelumBayar = riwayatPesanan.filter(p => normStatusBayar(p.statusBayar) !== "Sudah Dibayar").length;
     const jSudahBayar = riwayatPesanan.filter(p => normStatusBayar(p.statusBayar) === "Sudah Dibayar").length;
     const omzet = riwayatPesanan.filter(p => normStatusBayar(p.statusBayar) === "Sudah Dibayar").reduce((s, p) => s + (Number(p.total) || 0), 0);
 
@@ -909,7 +944,7 @@
     const kw = (document.getElementById("search-history").value || "").trim().toLowerCase();
     const hasil = riwayatPesanan.filter(p => {
       const st = normStatus(p.status), sb = normStatusBayar(p.statusBayar);
-      const cocokSt = (filterStatusAktif === "semua") || (st === filterStatusAktif) || (sb === filterStatusAktif);
+      const cocokSt = (filterStatusAktif === "semua") || (st === filterStatusAktif) || (sb === filterStatusAktif) || (filterStatusAktif === "Belum Dibayar" && sb !== "Sudah Dibayar");
       const cocokKw = !kw || (p.atasNama || "").toLowerCase().includes(kw) || (p.mejaLabel || "").toLowerCase().includes(kw) || (p.detailItems || "").toLowerCase().includes(kw);
       return cocokSt && cocokKw;
     });
@@ -934,10 +969,13 @@
 
       const payBadgeHTML = sb === "Sudah Dibayar"
         ? `<span class="pay-badge-paid">✅ Sudah Dibayar</span>`
-        : `<span class="pay-badge-unpaid">⏳ Belum Dibayar</span>`;
-      const markPaidBtnHTML = (sb === "Belum Dibayar" && st !== "Sedang Ditinjau")
-        ? `<button type="button" class="btn-pay-toggle" data-action="lunas">💵 Tandai Lunas</button>` : "";
+        : (sb === "Menunggu Cek Kasir"
+          ? `<span class="pay-badge-check">🔎 Cek Mutasi / Bukti</span>`
+          : `<span class="pay-badge-unpaid">⏳ Belum Dibayar</span>`);
+      const markPaidBtnHTML = (sb !== "Sudah Dibayar" && st !== "Sedang Ditinjau")
+        ? `<button type="button" class="btn-pay-toggle" data-action="lunas">✓ Konfirmasi Uang Masuk</button>` : "";
       const voucherTag = order.kodeVoucher ? `<div style="font-size:0.75rem; color:var(--success-text); font-weight:700; margin-top:4px;">🎟️ Voucher ${order.kodeVoucher} (-Rp ${Number(order.diskon || 0).toLocaleString("id-ID")})</div>` : "";
+      const proofBtnHTML = order.buktiTransfer ? `<div><button type="button" class="btn-view-proof" data-action="bukti">🖼️ Lihat Bukti Bayar</button></div>` : "";
 
       card.innerHTML = `
         <div>
@@ -949,7 +987,7 @@
             </div>
             <div class="order-badges-col">${badgeHTML}${payBadgeHTML}</div>
           </div>
-          <div class="order-items-box" style="margin-top:10px;">${order.detailItems}${voucherTag}</div>
+          <div class="order-items-box" style="margin-top:10px;">${order.detailItems}${voucherTag}${proofBtnHTML}</div>
         </div>
         <div>
           <div class="order-pay-info"><span>Metode: <strong>${order.metode && order.metode !== "-" ? order.metode : "Belum dipilih"}</strong></span><span class="order-pay-total">Rp ${Number(order.total).toLocaleString("id-ID")}</span></div>
@@ -960,6 +998,7 @@
       const selesaiBtn = card.querySelector('[data-action="selesai"]'); if (selesaiBtn) selesaiBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Selesai"));
       const prosesBtn = card.querySelector('[data-action="proses"]'); if (prosesBtn) prosesBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Sedang Diproses"));
       const lunasBtn = card.querySelector('[data-action="lunas"]'); if (lunasBtn) lunasBtn.addEventListener("click", () => tandaiSudahDibayar(order.id));
+      const buktiBtn = card.querySelector('[data-action="bukti"]'); if (buktiBtn) buktiBtn.addEventListener("click", () => bukaModalBukti(order.id));
       card.querySelector('[data-action="struk"]').addEventListener("click", () => lihatStrukRiwayat(order.id));
       card.querySelector('[data-action="hapus"]').addEventListener("click", () => hapusSatuPesanan(order.id));
       grid.appendChild(card);
