@@ -124,6 +124,16 @@
     .addon-toggle.selected-ice { background: #0277bd; color: #fff; border-color: #0277bd; }
     .input-error { border-color: var(--danger-text) !important; background: #fff8f8 !important; }
     .edit-item-row.missing-temp { background: #fff5f5; border: 1.5px solid var(--danger-border); }
+    .temp-shortcut-bar { display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 10px; padding: 7px 10px; margin-bottom: 10px; }
+    .temp-shortcut-bar.show { display: flex; }
+    .temp-shortcut-label { font-size: 0.74rem; font-weight: 800; color: var(--espresso-800); }
+    .temp-shortcut-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .temp-shortcut-btn { font-family: inherit; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; border-radius: 999px; border: 1.5px solid var(--espresso-200); background: #fff; cursor: pointer; }
+    .temp-shortcut-btn.hot { color: #d84315; border-color: #ffccbc; background: #fff8f5; }
+    .temp-shortcut-btn.hot.active { background: #d84315; color: #fff; border-color: #d84315; }
+    .temp-shortcut-btn.ice { color: #0277bd; border-color: #b3e5fc; background: #f3faff; }
+    .temp-shortcut-btn.ice.active { background: #0277bd; color: #fff; border-color: #0277bd; }
+    .order-locked-pill { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); border-radius: 10px; padding: 8px 10px; font-size: 0.76rem; font-weight: 800; }
     .kasir-proof-box { background: #fff; border: 1.5px dashed var(--espresso-400); border-radius: 12px; padding: 12px; margin-top: 10px; text-align: center; transition: border-color 0.2s ease, background 0.2s ease; }
     .kasir-proof-box.has-file { border-style: solid; border-color: var(--success-border); background: #f8fdf9; }
     .proof-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
@@ -361,6 +371,13 @@
     </div>
 
     <label class="field-label">🍽️ Daftar Menu Pesanan (Ubah Qty / Suhu / Hapus):</label>
+    <div id="edit-temp-shortcut" class="temp-shortcut-bar">
+      <span class="temp-shortcut-label">⚡ Semua Minuman:</span>
+      <div class="temp-shortcut-btns">
+        <button type="button" id="edit-all-hot-btn" class="temp-shortcut-btn hot" onclick="aturSemuaSuhuEdit('HOT')">🔥 Semua HOT</button>
+        <button type="button" id="edit-all-ice-btn" class="temp-shortcut-btn ice" onclick="aturSemuaSuhuEdit('ICE')">🧊 Semua ICE</button>
+      </div>
+    </div>
     <div id="edit-order-items-list" class="edit-items-list"></div>
 
     <div class="edit-add-menu-box">
@@ -598,6 +615,14 @@
         <button type="button" class="table-chip pos-table-chip" data-meja="9" onclick="pilihMejaCepat('9')">Meja 9</button>
         <button type="button" class="table-chip pos-table-chip" data-meja="10" onclick="pilihMejaCepat('10')">Meja 10</button>
         <button type="button" class="table-chip pos-table-chip" data-meja="Bungkus" onclick="pilihMejaCepat('Bungkus')">🛍️ Bungkus</button>
+      </div>
+    </div>
+
+    <div id="cart-temp-shortcut" class="temp-shortcut-bar">
+      <span class="temp-shortcut-label">⚡ Semua Minuman:</span>
+      <div class="temp-shortcut-btns">
+        <button type="button" id="cart-all-hot-btn" class="temp-shortcut-btn hot" onclick="aturSemuaSuhuKeranjang('HOT')">🔥 Semua HOT</button>
+        <button type="button" id="cart-all-ice-btn" class="temp-shortcut-btn ice" onclick="aturSemuaSuhuKeranjang('ICE')">🧊 Semua ICE</button>
       </div>
     </div>
 
@@ -1148,6 +1173,27 @@
     }
     renderKeranjang(); renderMenuTerkelompok();
   }
+  function aturSemuaSuhuKeranjang(suhuBaru) {
+    const hargaIce = getHargaIce();
+    const hasil = [];
+    keranjang.forEach(item => {
+      if (isMinuman(item.kategori)) {
+        item.suhu = suhuBaru;
+        item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
+      }
+      const existing = hasil.find(x => x.nama === item.nama && x.suhu === item.suhu);
+      if (existing) {
+        existing.qty += item.qty;
+      } else {
+        hasil.push(item);
+      }
+    });
+    keranjang = hasil;
+    renderKeranjang();
+    renderMenuTerkelompok();
+    tampilkanToast(suhuBaru === "ICE" ? "🧊 Semua minuman diatur ke ICE" : "🔥 Semua minuman diatur ke HOT");
+  }
+
   function pilihSuhuKeranjang(cIdx, suhuBaru) {
     const item = keranjang[cIdx];
     if (!item || !isMinuman(item.kategori)) return;
@@ -1201,6 +1247,18 @@
     const hargaIce = getHargaIce();
     document.getElementById("cart-count-badge").innerText = `${keranjang.reduce((s, i) => s + i.qty, 0)} item`;
     document.getElementById("clear-cart-btn").style.display = keranjang.length > 0 ? "inline-block" : "none";
+    const minumanCart = keranjang.filter(i => isMinuman(i.kategori));
+    const cartShortcut = document.getElementById("cart-temp-shortcut");
+    if (cartShortcut) {
+      if (minumanCart.length > 0) {
+        cartShortcut.classList.add("show");
+        document.getElementById("cart-all-hot-btn").classList.toggle("active", minumanCart.every(i => i.suhu === "HOT"));
+        document.getElementById("cart-all-ice-btn").classList.toggle("active", minumanCart.every(i => i.suhu === "ICE"));
+        document.getElementById("cart-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+      } else {
+        cartShortcut.classList.remove("show");
+      }
+    }
     if (keranjang.length === 0) {
       c.innerHTML = `<div class="empty-cart-state"><span style="font-size:1.8rem;">🛒</span><p style="margin:6px 0 0; font-weight:600;">Belum ada item dipilih</p></div>`;
       totalBelanja = 0; document.getElementById("total-price").innerText = "Rp 0"; document.getElementById("cash-received").value = ""; hitungKembalian(); return;
@@ -1344,6 +1402,10 @@
   function bukaModalEditPesanan(idPesanan) {
     const order = riwayatPesanan.find(p => p.id === idPesanan);
     if (!order) return;
+    if (normStatus(order.status) === "Selesai") {
+      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat diedit lagi.");
+      return;
+    }
     pesananSedangDiedit = order;
 
     const dariKasir = apakahPesananDariKasir(order);
@@ -1475,6 +1537,26 @@
     renderDaftarItemEdit();
   }
 
+  function aturSemuaSuhuEdit(suhuBaru) {
+    const hargaIce = getHargaIce();
+    const hasil = [];
+    keranjangEdit.forEach(item => {
+      if (isMinuman(item.kategori)) {
+        item.suhu = suhuBaru;
+        item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
+      }
+      const existing = hasil.find(x => x.nama === item.nama && x.suhu === item.suhu);
+      if (existing) {
+        existing.qty += item.qty;
+      } else {
+        hasil.push(item);
+      }
+    });
+    keranjangEdit = hasil;
+    renderDaftarItemEdit();
+    tampilkanToast(suhuBaru === "ICE" ? "🧊 Semua minuman diubah ke ICE" : "🔥 Semua minuman diubah ke HOT");
+  }
+
   function ubahSuhuItemEdit(idx, suhuBaru) {
     const item = keranjangEdit[idx];
     if (!item || !isMinuman(item.kategori)) return;
@@ -1507,6 +1589,18 @@
   function renderDaftarItemEdit() {
     const container = document.getElementById("edit-order-items-list");
     const hargaIce = getHargaIce();
+    const minumanEdit = keranjangEdit.filter(i => isMinuman(i.kategori));
+    const editShortcut = document.getElementById("edit-temp-shortcut");
+    if (editShortcut) {
+      if (minumanEdit.length > 0) {
+        editShortcut.classList.add("show");
+        document.getElementById("edit-all-hot-btn").classList.toggle("active", minumanEdit.every(i => i.suhu === "HOT"));
+        document.getElementById("edit-all-ice-btn").classList.toggle("active", minumanEdit.every(i => i.suhu === "ICE"));
+        document.getElementById("edit-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+      } else {
+        editShortcut.classList.remove("show");
+      }
+    }
 
     if (keranjangEdit.length === 0) {
       container.innerHTML = `<div class="empty-cart-state" style="padding:14px;">Belum ada item dalam pesanan. Silakan tambah menu di bawah.</div>`;
@@ -1791,6 +1885,10 @@
 
   function ubahStatusPesanan(id, statusBaru) {
     const idx = riwayatPesanan.findIndex(p => p.id === id);
+    if (idx !== -1 && normStatus(riwayatPesanan[idx].status) === "Selesai") {
+      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat dikembalikan ke Diproses.");
+      return;
+    }
     if (idx !== -1) {
       riwayatPesanan[idx].status = statusBaru;
       simpanEditedOrderLokal(id, { status: statusBaru });
@@ -1814,17 +1912,18 @@
   }
 
   function hapusSatuPesanan(id) {
+    const order = riwayatPesanan.find(p => p.id === id);
+    if (order && normStatus(order.status) === "Selesai") {
+      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat dihapus.");
+      return;
+    }
     tambahHiddenIds([id]);
     riwayatPesanan = riwayatPesanan.filter(p => p.id !== id);
     simpanRiwayatKeStorage();
     renderRiwayatPesanan();
   }
   function hapusPesananSelesai() {
-    const idsSelesai = riwayatPesanan.filter(p => normStatus(p.status) === "Selesai").map(p => p.id);
-    tambahHiddenIds(idsSelesai);
-    riwayatPesanan = riwayatPesanan.filter(p => normStatus(p.status) !== "Selesai");
-    simpanRiwayatKeStorage();
-    renderRiwayatPesanan();
+    tampilkanToast("🔒 Pesanan yang sudah Selesai terkunci dan tidak dapat dihapus.");
   }
   function filterStatusRiwayat(st, b) { filterStatusAktif = st; document.querySelectorAll(".status-tab").forEach(x => x.classList.remove("active")); b.classList.add("active"); renderRiwayatPesanan(); }
 
@@ -1863,7 +1962,7 @@
 
     document.getElementById("nav-review-badge").innerText = `${jDitinjau} Ditinjau`;
     document.getElementById("nav-process-badge").innerText = `${jDiproses} Diproses`;
-    document.getElementById("clear-completed-btn").style.display = jSelesai > 0 ? "inline-block" : "none";
+    document.getElementById("clear-completed-btn").style.display = "none";
 
     const banner = document.getElementById("active-queue-banner");
     if (jDitinjau > 0 || jDiproses > 0) {
@@ -1899,7 +1998,7 @@
         actionBtnHTML = `<button type="button" class="btn-status-toggle review-btn" data-action="tinjau">💳 Tinjau &amp; Konfirmasi</button>`;
       } else if (st === "Selesai") {
         badgeHTML = `<span class="order-status-badge selesai">✅ Selesai</span>`;
-        actionBtnHTML = `<button type="button" class="btn-status-toggle mark-process" data-action="proses">↺ Kembalikan Diproses</button>`;
+        actionBtnHTML = `<span class="order-locked-pill">🔒 Selesai (Terkunci)</span>`;
       }
 
       const payBadgeHTML = sb === "Sudah Dibayar"
@@ -1909,6 +2008,8 @@
           : `<span class="pay-badge-unpaid">⏳ Belum Dibayar</span>`);
       const markPaidBtnHTML = (sb !== "Sudah Dibayar" && st !== "Sedang Ditinjau")
         ? `<button type="button" class="btn-pay-toggle" data-action="lunas">✓ Konfirmasi Uang Masuk</button>` : "";
+      const editBtnHTML = st !== "Selesai" ? `<button type="button" class="btn-order-edit" data-action="edit" title="Edit Pesanan">✏️ Edit</button>` : "";
+      const deleteBtnHTML = st !== "Selesai" ? `<button type="button" class="btn-order-delete" data-action="hapus" title="Hapus Pesanan">🗑️</button>` : "";
       const voucherTag = order.kodeVoucher ? `<div style="font-size:0.75rem; color:var(--success-text); font-weight:700; margin-top:4px;">🎟️ Voucher ${order.kodeVoucher} (-Rp ${Number(order.diskon || 0).toLocaleString("id-ID")})</div>` : "";
       const proofBtnHTML = order.buktiTransfer ? `<div><button type="button" class="btn-view-proof" data-action="bukti">🖼️ Lihat Bukti Bayar</button></div>` : "";
 
@@ -1926,17 +2027,16 @@
         </div>
         <div>
           <div class="order-pay-info"><span>Metode: <strong>${order.metode && order.metode !== "-" ? order.metode : "Belum dipilih"}</strong></span><span class="order-pay-total">Rp ${Number(order.total).toLocaleString("id-ID")}</span></div>
-          <div class="order-actions">${actionBtnHTML}${markPaidBtnHTML}<button type="button" class="btn-order-edit" data-action="edit" title="Edit Pesanan">✏️ Edit</button><button type="button" class="btn-order-secondary" data-action="struk" title="Lihat Struk">🧾</button><button type="button" class="btn-order-delete" data-action="hapus" title="Hapus Pesanan">🗑️</button></div>
+          <div class="order-actions">${actionBtnHTML}${markPaidBtnHTML}${editBtnHTML}<button type="button" class="btn-order-secondary" data-action="struk" title="Lihat Struk">🧾</button>${deleteBtnHTML}</div>
         </div>
       `;
       const tinjauBtn = card.querySelector('[data-action="tinjau"]'); if (tinjauBtn) tinjauBtn.addEventListener("click", () => bukaModalTinjau(order.id));
       const selesaiBtn = card.querySelector('[data-action="selesai"]'); if (selesaiBtn) selesaiBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Selesai"));
-      const prosesBtn = card.querySelector('[data-action="proses"]'); if (prosesBtn) prosesBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Sedang Diproses"));
       const lunasBtn = card.querySelector('[data-action="lunas"]'); if (lunasBtn) lunasBtn.addEventListener("click", () => tandaiSudahDibayar(order.id));
       const buktiBtn = card.querySelector('[data-action="bukti"]'); if (buktiBtn) buktiBtn.addEventListener("click", () => bukaModalBukti(order.id));
-      card.querySelector('[data-action="edit"]').addEventListener("click", () => bukaModalEditPesanan(order.id));
+      const editBtn = card.querySelector('[data-action="edit"]'); if (editBtn) editBtn.addEventListener("click", () => bukaModalEditPesanan(order.id));
       card.querySelector('[data-action="struk"]').addEventListener("click", () => lihatStrukRiwayat(order.id));
-      card.querySelector('[data-action="hapus"]').addEventListener("click", () => hapusSatuPesanan(order.id));
+      const hapusBtn = card.querySelector('[data-action="hapus"]'); if (hapusBtn) hapusBtn.addEventListener("click", () => hapusSatuPesanan(order.id));
       grid.appendChild(card);
     });
     c.innerHTML = ""; c.appendChild(grid);
