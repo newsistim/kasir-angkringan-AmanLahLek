@@ -110,15 +110,20 @@
 
     #cart-items { max-height: 220px; overflow-y: auto; padding-right: 2px; }
     .empty-cart-state { text-align: center; padding: 20px 14px; background: var(--bg-subtle); border-radius: 10px; border: 1.5px dashed var(--espresso-200); color: var(--espresso-600); }
-    .cart-item { background: var(--bg-subtle); border: 1px solid var(--espresso-200); border-radius: 12px; padding: 11px; margin-bottom: 8px; }
+    .cart-item { background: var(--bg-subtle); border: 1px solid var(--espresso-200); border-radius: 12px; padding: 11px; margin-bottom: 8px; transition: border-color 0.2s ease, background 0.2s ease; }
+    .cart-item.missing-temp { background: #fff5f5; border: 1.5px solid var(--danger-border); }
     .cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
     .cart-item-price { font-size: 0.84rem; font-weight: 700; color: var(--accent-primary); margin-top: 3px; display: block; }
     .qty-controls { display: inline-flex; align-items: center; background: #fff; border: 1px solid var(--espresso-200); border-radius: 8px; padding: 2px; }
     .qty-btn { background: transparent; border: none; width: 26px; height: 26px; cursor: pointer; font-weight: 800; }
     .qty-num { min-width: 24px; text-align: center; font-size: 0.88rem; font-weight: 800; }
-    .item-addons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--espresso-200); }
-    .addon-toggle { font-family: inherit; font-size: 0.76rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--espresso-200); background: #fff; cursor: pointer; font-weight: 700; }
-    .addon-toggle.selected { background: var(--accent-warm); color: #fff; border-color: var(--accent-warm); }
+    .item-addons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--espresso-200); align-items: center; }
+    .temp-req-label { font-size: 0.72rem; font-weight: 800; color: var(--danger-text); }
+    .addon-toggle { font-family: inherit; font-size: 0.75rem; padding: 5px 11px; border-radius: 999px; border: 1.5px solid var(--espresso-200); background: #fff; cursor: pointer; font-weight: 800; }
+    .addon-toggle.selected-hot { background: #d84315; color: #fff; border-color: #d84315; }
+    .addon-toggle.selected-ice { background: #0277bd; color: #fff; border-color: #0277bd; }
+    .input-error { border-color: var(--danger-text) !important; background: #fff8f8 !important; }
+    .edit-item-row.missing-temp { background: #fff5f5; border: 1.5px solid var(--danger-border); }
 
     .total-box { background: linear-gradient(135deg, var(--espresso-900) 0%, var(--espresso-800) 100%); color: #fff; padding: 14px 16px; border-radius: 12px; font-weight: 800; margin: 14px 0; display: flex; justify-content: space-between; align-items: center; }
     #total-price { font-size: 1.25rem; color: #ffcc80; }
@@ -551,9 +556,9 @@
     </div>
 
     <div class="table-box">
-      <div class="table-box-header"><label class="field-label" for="table-number" style="margin-bottom:0;">🪑 Nomor Meja &amp; Nama:</label><span id="table-preview-pill" class="table-badge-preview">Belum dipilih</span></div>
-      <input type="text" id="cust-name-kasir" placeholder="Atas nama pemesan (opsional)..." style="margin-bottom:8px;">
-      <input type="text" id="table-number" placeholder="Ketik angka meja (misal: 1, 12, atau Bungkus)..." oninput="sinkronInputMeja()">
+      <div class="table-box-header"><label class="field-label" for="cust-name-kasir" style="margin-bottom:0;">👤 Atas Nama &amp; 🪑 Nomor Meja <span style="color:var(--danger-text);">* (Wajib)</span>:</label><span id="table-preview-pill" class="table-badge-preview">Belum lengkap</span></div>
+      <input type="text" id="cust-name-kasir" placeholder="Masukkan atas nama pemesan (wajib) *..." style="margin-bottom:8px;" oninput="sinkronInputMeja()">
+      <input type="text" id="table-number" placeholder="Ketik nomor meja (misal: 1, 12, atau Bungkus) *..." oninput="sinkronInputMeja()">
       <div class="quick-table-grid">
         <button type="button" class="table-chip pos-table-chip" data-meja="1" onclick="pilihMejaCepat('1')">Meja 1</button>
         <button type="button" class="table-chip pos-table-chip" data-meja="2" onclick="pilihMejaCepat('2')">Meja 2</button>
@@ -972,8 +977,14 @@
 
   function pilihMejaCepat(val) { document.getElementById("table-number").value = val; sinkronInputMeja(); }
   function sinkronInputMeja() {
-    const v = document.getElementById("table-number").value.trim();
-    document.getElementById("table-preview-pill").innerText = !v ? "Belum dipilih" : (v.toLowerCase() === "bungkus" ? "🛍️ Bungkus" : `🪑 Meja ${v}`);
+    const namaEl = document.getElementById("cust-name-kasir");
+    const mejaEl = document.getElementById("table-number");
+    const nama = namaEl.value.trim();
+    const v = mejaEl.value.trim();
+    if (nama) namaEl.classList.remove("input-error");
+    if (v) mejaEl.classList.remove("input-error");
+    const labelMeja = !v ? "Meja belum diisi" : (v.toLowerCase() === "bungkus" ? "🛍️ Bungkus" : `🪑 Meja ${v}`);
+    document.getElementById("table-preview-pill").innerText = (nama && v) ? `👤 ${nama} • ${labelMeja}` : (!nama && !v ? "Belum lengkap" : (!nama ? `Nama belum diisi • ${labelMeja}` : `👤 ${nama} • Meja belum diisi`));
     document.querySelectorAll(".pos-table-chip").forEach(c => c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === v.toLowerCase()));
   }
   function formatLabelMeja(val) { const r = (val || "").trim(); if (!r) return "Tanpa Meja"; if (r.toLowerCase() === "bungkus") return "Bungkus"; return r.toLowerCase().startsWith("meja") ? r : `Meja ${r}`; }
@@ -1012,34 +1023,73 @@
   function tambahItem(item) {
     const nb = bersihkanNamaMenu(item.nama);
     if (apakahStokHabis(item)) { tampilkanToast(`🚫 Stok ${nb} sedang habis`); return; }
-    const idx = keranjang.findIndex(k => k.nama === nb && k.addons.length === 0);
-    if (idx !== -1) keranjang[idx].qty++; else keranjang.push({ id: item.id || nb, nama: nb, kategori: item.kategori || "", hargaDasar: Number(item.harga), qty: 1, addons: [] });
+    const minuman = isMinuman(item.kategori);
+    const idx = keranjang.findIndex(k => k.nama === nb && (!minuman || k.suhu === ""));
+    if (idx !== -1) {
+      keranjang[idx].qty++;
+    } else {
+      keranjang.push({
+        id: item.id || nb,
+        nama: nb,
+        kategori: item.kategori || "",
+        hargaDasar: Number(item.harga),
+        qty: 1,
+        suhu: minuman ? "" : "N/A",
+        addons: []
+      });
+    }
+    renderKeranjang(); renderMenuTerkelompok();
+  }
+  function pilihSuhuKeranjang(cIdx, suhuBaru) {
+    const item = keranjang[cIdx];
+    if (!item || !isMinuman(item.kategori)) return;
+    const hargaIce = getHargaIce();
+    const sameIdx = keranjang.findIndex((x, i) => i !== cIdx && x.nama === item.nama && x.suhu === suhuBaru);
+    if (sameIdx !== -1) {
+      keranjang[sameIdx].qty += item.qty;
+      keranjang.splice(cIdx, 1);
+    } else {
+      item.suhu = suhuBaru;
+      item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
+    }
     renderKeranjang(); renderMenuTerkelompok();
   }
   function toggleAddon(cIdx, aIdx) {
-    const item = keranjang[cIdx], addon = daftarTambahan[aIdx], eIdx = item.addons.findIndex(a => a.nama === addon.nama);
-    if (eIdx !== -1) item.addons.splice(eIdx, 1); else item.addons.push({ nama: addon.nama, harga: Number(addon.harga) });
-    renderKeranjang();
+    const item = keranjang[cIdx], addon = daftarTambahan[aIdx];
+    if (!item || !addon) return;
+    pilihSuhuKeranjang(cIdx, item.suhu === "ICE" ? "HOT" : "ICE");
   }
   function ubahQty(i, d) { keranjang[i].qty += d; if (keranjang[i].qty <= 0) keranjang.splice(i, 1); renderKeranjang(); renderMenuTerkelompok(); }
-  function kosongkanKeranjang() { keranjang = []; hapusVoucherKasir(); document.getElementById("cash-received").value = ""; document.getElementById("table-number").value = ""; document.getElementById("cust-name-kasir").value = ""; sinkronInputMeja(); renderKeranjang(); renderMenuTerkelompok(); }
+  function kosongkanKeranjang() {
+    keranjang = [];
+    hapusVoucherKasir();
+    document.getElementById("cash-received").value = "";
+    document.getElementById("table-number").value = "";
+    document.getElementById("cust-name-kasir").value = "";
+    document.getElementById("cust-name-kasir").classList.remove("input-error");
+    document.getElementById("table-number").classList.remove("input-error");
+    sinkronInputMeja();
+    renderKeranjang();
+    renderMenuTerkelompok();
+  }
 
   function cekVoucherKasir() {
     const kode = document.getElementById("voucher-code-kasir").value.trim().toUpperCase(), noHp = document.getElementById("member-hp-kasir").value.trim();
     if (!kode || subtotalBelanja <= 0) { tampilkanToast("Pilih menu & isi kode voucher."); return; }
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "cekVoucherKasir", kodeVoucher: kode, noHp, total: subtotalBelanja }) })
+    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "cekVoucherKasir", kodeVoucher: kode, noHp, total: subtotalBelanja }) })
       .then(res => res.json()).then(data => {
         if (data.success) {
           diskonVoucher = Number(data.discountAmount || 0); voucherTerpasang = { kode, noHp, diskon: diskonVoucher };
           document.getElementById("voucher-applied-text").innerText = `✓ ${kode} (-Rp ${diskonVoucher.toLocaleString("id-ID")})`;
           document.getElementById("voucher-applied-pill").style.display = "flex"; renderKeranjang();
         } else tampilkanToast(data.message || "Voucher tidak valid.");
-      }).catch(() => tampilkanToast("Gagal memeriksa voucher."));
+      }).catch(() => tampilkanToast("Gagal memeriksa voucher.")); } catch (e) {}
   }
   function hapusVoucherKasir() { diskonVoucher = 0; voucherTerpasang = null; document.getElementById("voucher-code-kasir").value = ""; document.getElementById("voucher-applied-pill").style.display = "none"; renderKeranjang(); }
 
   function renderKeranjang() {
     const c = document.getElementById("cart-items"); subtotalBelanja = 0;
+    const hargaIce = getHargaIce();
     document.getElementById("cart-count-badge").innerText = `${keranjang.reduce((s, i) => s + i.qty, 0)} item`;
     document.getElementById("clear-cart-btn").style.display = keranjang.length > 0 ? "inline-block" : "none";
     if (keranjang.length === 0) {
@@ -1048,10 +1098,26 @@
     }
     c.innerHTML = "";
     keranjang.forEach((item, idx) => {
-      const sub = (item.hargaDasar + item.addons.reduce((s, a) => s + Number(a.harga), 0)) * item.qty; subtotalBelanja += sub;
-      const addHTML = !item.kategori.toLowerCase().includes("makanan") && daftarTambahan.length > 0
-        ? `<div class="item-addons">` + daftarTambahan.map((a, aIdx) => `<button type="button" class="addon-toggle ${item.addons.some(x => x.nama === a.nama) ? 'selected' : ''}" onclick="toggleAddon(${idx}, ${aIdx})">${item.addons.some(x => x.nama === a.nama) ? '✓ ' : '+ '}${a.nama} (+${a.harga/1000}rb)</button>`).join("") + `</div>` : "";
-      c.innerHTML += `<div class="cart-item"><div class="cart-item-top"><div><strong>${item.nama}</strong><span class="cart-item-price">Rp ${sub.toLocaleString("id-ID")}</span></div><div class="qty-controls"><button type="button" class="qty-btn" onclick="ubahQty(${idx}, -1)">−</button><span class="qty-num">${item.qty}</span><button type="button" class="qty-btn" onclick="ubahQty(${idx}, 1)">+</button></div></div>${addHTML}</div>`;
+      const minuman = isMinuman(item.kategori);
+      const belumPilihSuhu = minuman && !item.suhu;
+      const sub = (item.hargaDasar + item.addons.reduce((s, a) => s + Number(a.harga), 0)) * item.qty;
+      subtotalBelanja += sub;
+
+      let labelSuhu = "";
+      if (minuman) {
+        if (item.suhu === "HOT") labelSuhu = ` <span style="color:#d84315; font-size:0.76rem; font-weight:800;">[🔥 HOT]</span>`;
+        else if (item.suhu === "ICE") labelSuhu = ` <span style="color:#0277bd; font-size:0.76rem; font-weight:800;">[🧊 ICE]</span>`;
+        else labelSuhu = ` <span style="color:var(--danger-text); font-size:0.74rem; font-weight:800;">(Pilih HOT / ICE *)</span>`;
+      }
+
+      const addHTML = minuman
+        ? `<div class="item-addons">
+            <span class="temp-req-label">Suhu *:</span>
+            <button type="button" class="addon-toggle ${item.suhu === 'HOT' ? 'selected-hot' : ''}" onclick="pilihSuhuKeranjang(${idx}, 'HOT')">🔥 HOT (Gratis)</button>
+            <button type="button" class="addon-toggle ${item.suhu === 'ICE' ? 'selected-ice' : ''}" onclick="pilihSuhuKeranjang(${idx}, 'ICE')">🧊 ICE (+${hargaIce/1000}rb)</button>
+          </div>`
+        : "";
+      c.innerHTML += `<div class="cart-item ${belumPilihSuhu ? 'missing-temp' : ''}"><div class="cart-item-top"><div><strong>${item.nama}</strong>${labelSuhu}<span class="cart-item-price">Rp ${sub.toLocaleString("id-ID")}</span></div><div class="qty-controls"><button type="button" class="qty-btn" onclick="ubahQty(${idx}, -1)">−</button><span class="qty-num">${item.qty}</span><button type="button" class="qty-btn" onclick="ubahQty(${idx}, 1)">+</button></div></div>${addHTML}</div>`;
     });
     totalBelanja = Math.max(0, subtotalBelanja - diskonVoucher);
     document.getElementById("total-price").innerText = "Rp " + totalBelanja.toLocaleString("id-ID");
@@ -1264,8 +1330,8 @@
     if (!item) return;
 
     const minuman = isMinuman(item.kategori);
-    const defaultSuhu = minuman ? "HOT" : "N/A";
-    const existingIdx = keranjangEdit.findIndex(k => k.nama === namaMenu && k.suhu === defaultSuhu);
+    const defaultSuhu = minuman ? "" : "N/A";
+    const existingIdx = keranjangEdit.findIndex(k => k.nama === namaMenu && (!minuman || k.suhu === ""));
 
     if (existingIdx !== -1) {
       keranjangEdit[existingIdx].qty++;
@@ -1341,22 +1407,25 @@
         const hargaAddon = (item.addons || []).reduce((s, a) => s + Number(a.harga || 0), 0);
         const sub = (Number(item.hargaDasar || 0) + hargaAddon) * item.qty;
 
+        const belumPilihSuhuEdit = minuman && !item.suhu;
         const suhuBadge = minuman
           ? (item.suhu === "ICE"
             ? `<span style="color:#0277bd; font-size:0.76rem; font-weight:800; margin-left:4px;">[🧊 ICE]</span>`
-            : `<span style="color:#d84315; font-size:0.76rem; font-weight:800; margin-left:4px;">[🔥 HOT]</span>`)
+            : (item.suhu === "HOT"
+              ? `<span style="color:#d84315; font-size:0.76rem; font-weight:800; margin-left:4px;">[🔥 HOT]</span>`
+              : `<span style="color:var(--danger-text); font-size:0.74rem; font-weight:800; margin-left:4px;">(Pilih HOT / ICE *)</span>`))
           : "";
 
         const suhuControls = minuman
           ? `<div class="edit-temp-row">
-              <span style="font-size:0.74rem; font-weight:700; color:var(--espresso-600);">Varian Suhu:</span>
-              <button type="button" class="edit-temp-chip ${item.suhu !== 'ICE' ? 'hot-active' : ''}" data-eidx="${idx}" data-esuhu="HOT">🔥 HOT (Gratis)</button>
+              <span class="temp-req-label">Suhu *:</span>
+              <button type="button" class="edit-temp-chip ${item.suhu === 'HOT' ? 'hot-active' : ''}" data-eidx="${idx}" data-esuhu="HOT">🔥 HOT (Gratis)</button>
               <button type="button" class="edit-temp-chip ${item.suhu === 'ICE' ? 'ice-active' : ''}" data-eidx="${idx}" data-esuhu="ICE">🧊 ICE (+Rp ${hargaIce.toLocaleString("id-ID")})</button>
             </div>`
           : "";
 
         const row = document.createElement("div");
-        row.className = "edit-item-row";
+        row.className = "edit-item-row" + (belumPilihSuhuEdit ? " missing-temp" : "");
         row.innerHTML = `
           <div class="edit-item-top">
             <div>
@@ -1409,8 +1478,34 @@
       return;
     }
 
-    const atasNamaBaru = document.getElementById("edit-order-name").value.trim() || "Pelanggan";
-    const rawMeja = document.getElementById("edit-order-table").value.trim();
+    const nameInputEdit = document.getElementById("edit-order-name");
+    const tableInputEdit = document.getElementById("edit-order-table");
+    const atasNamaBaru = nameInputEdit.value.trim();
+    const rawMeja = tableInputEdit.value.trim();
+
+    if (!atasNamaBaru) {
+      nameInputEdit.classList.add("input-error");
+      nameInputEdit.focus();
+      tampilkanToast("👤 Wajib isi Atas Nama Pemesan terlebih dahulu!");
+      return;
+    }
+    nameInputEdit.classList.remove("input-error");
+
+    if (!rawMeja) {
+      tableInputEdit.classList.add("input-error");
+      tableInputEdit.focus();
+      tampilkanToast("🪑 Wajib isi Nomor Meja atau pilih Bungkus!");
+      return;
+    }
+    tableInputEdit.classList.remove("input-error");
+
+    const itemEditBelumSuhu = keranjangEdit.find(i => isMinuman(i.kategori) && !i.suhu);
+    if (itemEditBelumSuhu) {
+      renderDaftarItemEdit();
+      tampilkanToast(`🌡️ Wajib pilih HOT atau ICE untuk ${itemEditBelumSuhu.nama}!`);
+      return;
+    }
+
     const mejaBaru = formatLabelMeja(rawMeja);
     const detailBaru = formatKeranjangEditKeDetailString(keranjangEdit);
     const subtotalBaru = hitungSubtotalEdit();
@@ -1734,10 +1829,41 @@
   }
 
   function prosesBayar() {
+    const namaEl = document.getElementById("cust-name-kasir");
+    const mejaEl = document.getElementById("table-number");
+    const atasNama = namaEl.value.trim();
+    const rawMeja = mejaEl.value.trim();
+
+    if (!atasNama) {
+      namaEl.classList.add("input-error");
+      namaEl.focus();
+      tampilkanToast("👤 Wajib isi Atas Nama Pemesan terlebih dahulu!");
+      return;
+    }
+    namaEl.classList.remove("input-error");
+
+    if (!rawMeja) {
+      mejaEl.classList.add("input-error");
+      mejaEl.focus();
+      tampilkanToast("🪑 Wajib isi Nomor Meja atau pilih Bungkus terlebih dahulu!");
+      return;
+    }
+    mejaEl.classList.remove("input-error");
+
+    const itemBelumPilihSuhu = keranjang.find(i => isMinuman(i.kategori) && !i.suhu);
+    if (itemBelumPilihSuhu) {
+      renderKeranjang();
+      document.getElementById("cart-items").scrollIntoView({ behavior: "smooth", block: "center" });
+      tampilkanToast(`🌡️ Wajib pilih HOT atau ICE untuk minuman ${itemBelumPilihSuhu.nama}!`);
+      return;
+    }
+
     const btn = document.getElementById("pay-btn"); btn.innerText = "Menyimpan..."; btn.disabled = true;
-    const atasNama = document.getElementById("cust-name-kasir").value.trim() || "Pelanggan Kasir";
-    const rawMeja = document.getElementById("table-number").value.trim(), mejaLabel = formatLabelMeja(rawMeja);
-    const detailItems = keranjang.map(i => `${i.nama}${i.addons.length > 0 ? " + " + i.addons.map(a => a.nama).join(" + ") : ""} (${i.qty}x)`).join(", ");
+    const mejaLabel = formatLabelMeja(rawMeja);
+    const detailItems = keranjang.map(i => {
+      const tagSuhu = isMinuman(i.kategori) && i.suhu ? ` [${i.suhu}]` : "";
+      return `${i.nama}${tagSuhu} (${i.qty}x)`;
+    }).join(", ");
     const metode = document.getElementById("payment-method").value;
     const uang = statusBayarKasir === "Sudah Dibayar"
       ? (metode === "Tunai" ? (parseFloat(document.getElementById("cash-received").value) || totalBelanja) : totalBelanja)
