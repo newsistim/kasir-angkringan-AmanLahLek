@@ -1300,7 +1300,7 @@
     { kode: "NGOPI5RB", judul: "Potongan Rp 5.000 Semua Menu", jenis: "NOMINAL", nilai: 5000, minBelanja: 20000, kuota: 100, status: "Aktif" },
     { kode: "HEMAT10", judul: "Diskon 10% Khusus Member", jenis: "PERSEN", nilai: 10, minBelanja: 15000, kuota: 100, status: "Aktif" }
   ];
-  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 2000 }];
+  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 0 }];
 
   let daftarMenu = [], daftarTambahan = [...TAMBAHAN_CADANGAN], daftarVoucher = [...VOUCHER_CADANGAN];
   let kategoriAktif = "Semua", catatanPesanan = [], stokHabisMap = {}, bestSellerMap = {}, memberAktif = null, modeAuth = "login", toastTimer = null;
@@ -1319,8 +1319,7 @@
   }
 
   function getHargaIce() {
-    const iceObj = daftarTambahan.find(a => String(a.nama || "").trim().toUpperCase() === "ICE");
-    return iceObj ? Number(iceObj.harga || 0) : 2000;
+    return 0;
   }
 
   function toggleDownloadQris() {
@@ -1551,8 +1550,7 @@
   function logoutPelanggan() { memberAktif = null; simpanMemberLokal(); perbaruiUIMember(); tutupModalMember(); }
   function tampilkanInfoTambahan() {
     const box = document.getElementById("addon-box");
-    const hargaIce = getHargaIce();
-    box.innerHTML = `<div>🌡️ <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class="addon-pill">🔥 HOT (Gratis)</span> <span class="addon-pill">🧊 ICE (+Rp ${hargaIce.toLocaleString("id-ID")})</span></div>`;
+    box.innerHTML = `<div>🌡️ <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class="addon-pill">🔥 HOT (Gratis)</span> <span class="addon-pill">🧊 ICE (Gratis)</span></div>`;
     box.style.display = "flex";
   }
   function bersihkanPesananYangHabis() { catatanPesanan = catatanPesanan.filter(p => !(daftarMenu.find(m => bersihkanNamaMenu(m.nama) === p.nama && apakahStokHabis(m)))); perbaruiBarEstimasi(); }
@@ -1702,7 +1700,7 @@
         const semuaIce = minumanItems.every(i => i.suhu === "ICE");
         document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
         document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
-        document.getElementById("est-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+        document.getElementById("est-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
       } else {
         shortcutBar.classList.remove("show");
       }
@@ -1724,7 +1722,7 @@
         ? `<div class="est-addons">
             <span class="temp-req-label">Suhu *:</span>
             <button type="button" class="est-temp-chip ${item.suhu === 'HOT' ? 'selected-hot' : ''}" data-row="${rIdx}" data-suhu="HOT">🔥 HOT (Gratis)</button>
-            <button type="button" class="est-temp-chip ${item.suhu === 'ICE' ? 'selected-ice' : ''}" data-row="${rIdx}" data-suhu="ICE">🧊 ICE (+${hargaIce / 1000}rb)</button>
+            <button type="button" class="est-temp-chip ${item.suhu === 'ICE' ? 'selected-ice' : ''}" data-row="${rIdx}" data-suhu="ICE">🧊 ICE (Gratis)</button>
           </div>`
         : "";
 
