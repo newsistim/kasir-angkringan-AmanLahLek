@@ -124,6 +124,15 @@
     .addon-toggle.selected-ice { background: #0277bd; color: #fff; border-color: #0277bd; }
     .input-error { border-color: var(--danger-text) !important; background: #fff8f8 !important; }
     .edit-item-row.missing-temp { background: #fff5f5; border: 1.5px solid var(--danger-border); }
+    .kasir-proof-box { background: #fff; border: 1.5px dashed var(--espresso-400); border-radius: 12px; padding: 12px; margin-top: 10px; text-align: center; transition: border-color 0.2s ease, background 0.2s ease; }
+    .kasir-proof-box.has-file { border-style: solid; border-color: var(--success-border); background: #f8fdf9; }
+    .proof-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+    .proof-cam-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: linear-gradient(135deg, #e65100 0%, #d84315 100%); color: #fff; border: none; padding: 9px 10px; border-radius: 9px; font-family: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+    .proof-gal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: var(--accent-soft); color: var(--accent-primary); border: 1.5px solid #ffccbc; padding: 9px 10px; border-radius: 9px; font-family: inherit; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+    .kasir-proof-preview { display: none; margin-top: 10px; }
+    .kasir-proof-preview img { max-width: 100%; max-height: 170px; border-radius: 10px; border: 1px solid var(--espresso-200); object-fit: contain; background: #fff; }
+    .kasir-proof-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.75rem; font-weight: 700; color: var(--success-text); }
+    .proof-clear-btn { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 4px 10px; border-radius: 7px; font-family: inherit; font-size: 0.73rem; font-weight: 800; cursor: pointer; }
 
     .total-box { background: linear-gradient(135deg, var(--espresso-900) 0%, var(--espresso-800) 100%); color: #fff; padding: 14px 16px; border-radius: 12px; font-weight: 800; margin: 14px 0; display: flex; justify-content: space-between; align-items: center; }
     #total-price { font-size: 1.25rem; color: #ffcc80; }
@@ -465,6 +474,24 @@
       </div>
     </div>
 
+    <!-- Foto Bukti Transfer / QRIS di Modal Tinjau -->
+    <div id="review-proof-box" class="kasir-proof-box" style="display:none;">
+      <div style="font-size:0.8rem; font-weight:800; color:var(--espresso-800);">📸 Foto Bukti Bayar (Kamera HP Kasir)</div>
+      <input type="file" id="review-proof-camera" accept="image/*" capture="environment" style="display:none;" onchange="prosesUploadBuktiKasir(event, 'review')">
+      <input type="file" id="review-proof-gallery" accept="image/*" style="display:none;" onchange="prosesUploadBuktiKasir(event, 'review')">
+      <div class="proof-btn-grid">
+        <button type="button" class="proof-cam-btn" onclick="document.getElementById('review-proof-camera').click()">📷 Kamera HP</button>
+        <button type="button" class="proof-gal-btn" onclick="document.getElementById('review-proof-gallery').click()">🖼️ Galeri</button>
+      </div>
+      <div id="review-proof-preview" class="kasir-proof-preview">
+        <img id="review-proof-img" alt="Preview Bukti Transfer">
+        <div class="kasir-proof-meta">
+          <span>✓ Foto bukti siap dilampirkan</span>
+          <button type="button" class="proof-clear-btn" onclick="hapusBuktiKasir('review')">✕ Hapus</button>
+        </div>
+      </div>
+    </div>
+
     <button type="button" id="confirm-review-btn" class="pay-btn" onclick="konfirmasiPesananKeProses()" disabled>
       ✓ Konfirmasi &amp; Masuk Sedang Diproses
     </button>
@@ -637,6 +664,25 @@
       </div>
     </div>
 
+    <!-- Foto Bukti Transfer / QRIS via Kamera HP Kasir -->
+    <div id="kasir-proof-box" class="kasir-proof-box" style="display:none;">
+      <div style="font-size:0.8rem; font-weight:800; color:var(--espresso-800);">📸 Foto Bukti Transfer / QRIS Berhasil</div>
+      <div style="font-size:0.73rem; color:var(--espresso-600); margin-top:2px;">Gunakan kamera HP untuk memfoto layar HP pelanggan yang sudah berhasil bayar.</div>
+      <input type="file" id="kasir-proof-camera" accept="image/*" capture="environment" style="display:none;" onchange="prosesUploadBuktiKasir(event, 'pos')">
+      <input type="file" id="kasir-proof-gallery" accept="image/*" style="display:none;" onchange="prosesUploadBuktiKasir(event, 'pos')">
+      <div class="proof-btn-grid">
+        <button type="button" class="proof-cam-btn" onclick="document.getElementById('kasir-proof-camera').click()">📷 Kamera HP</button>
+        <button type="button" class="proof-gal-btn" onclick="document.getElementById('kasir-proof-gallery').click()">🖼️ Galeri</button>
+      </div>
+      <div id="kasir-proof-preview" class="kasir-proof-preview">
+        <img id="kasir-proof-img" alt="Preview Bukti Transfer">
+        <div class="kasir-proof-meta">
+          <span>✓ Foto bukti siap disimpan</span>
+          <button type="button" class="proof-clear-btn" onclick="hapusBuktiKasir('pos')">✕ Hapus</button>
+        </div>
+      </div>
+    </div>
+
     <button id="pay-btn" class="pay-btn" onclick="prosesBayar()" disabled>Simpan &amp; Proses Pesanan</button>
   </div>
 </div>
@@ -718,6 +764,7 @@
   let daftarMenu = [], daftarTambahan = [], kategoriAktif = "Semua", kataKunciCari = "";
   let keranjang = [], subtotalBelanja = 0, diskonVoucher = 0, voucherTerpasang = null, totalBelanja = 0;
   let statusBayarKasir = "Sudah Dibayar", statusBayarTinjau = "Sudah Dibayar";
+  let buktiKasirBase64 = "", buktiReviewBase64 = "";
   let riwayatPesanan = [], filterStatusAktif = "semua", stokHabisMap = {}, bestSellerMap = {}, toastTimer = null;
   let pesananSedangDitinjau = null, pollTimer = null;
 
@@ -781,6 +828,67 @@
 
   function isMinuman(kategori) {
     return !String(kategori || "").toLowerCase().includes("makanan");
+  }
+
+  function prosesUploadBuktiKasir(event, target) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      tampilkanToast("Pilih file gambar (JPG/PNG) bukti transfer.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        const maxDim = 560;
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else { w = Math.round((w * maxDim) / h); h = maxDim; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        let compressed = canvas.toDataURL("image/jpeg", 0.55);
+        if (compressed.length > 38000) {
+          compressed = canvas.toDataURL("image/jpeg", 0.35);
+        }
+        if (target === "review") {
+          buktiReviewBase64 = compressed;
+          document.getElementById("review-proof-img").src = compressed;
+          document.getElementById("review-proof-preview").style.display = "block";
+          document.getElementById("review-proof-box").classList.add("has-file");
+        } else {
+          buktiKasirBase64 = compressed;
+          document.getElementById("kasir-proof-img").src = compressed;
+          document.getElementById("kasir-proof-preview").style.display = "block";
+          document.getElementById("kasir-proof-box").classList.add("has-file");
+        }
+        tampilkanToast("✓ Foto bukti transfer berhasil diambil!");
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function hapusBuktiKasir(target) {
+    if (target === "review") {
+      buktiReviewBase64 = "";
+      document.getElementById("review-proof-camera").value = "";
+      document.getElementById("review-proof-gallery").value = "";
+      document.getElementById("review-proof-img").src = "";
+      document.getElementById("review-proof-preview").style.display = "none";
+      document.getElementById("review-proof-box").classList.remove("has-file");
+    } else {
+      buktiKasirBase64 = "";
+      document.getElementById("kasir-proof-camera").value = "";
+      document.getElementById("kasir-proof-gallery").value = "";
+      document.getElementById("kasir-proof-img").src = "";
+      document.getElementById("kasir-proof-preview").style.display = "none";
+      document.getElementById("kasir-proof-box").classList.remove("has-file");
+    }
   }
 
   function bukaModalBukti(idPesanan) {
@@ -1068,6 +1176,7 @@
     document.getElementById("cust-name-kasir").value = "";
     document.getElementById("cust-name-kasir").classList.remove("input-error");
     document.getElementById("table-number").classList.remove("input-error");
+    hapusBuktiKasir("pos");
     sinkronInputMeja();
     renderKeranjang();
     renderMenuTerkelompok();
@@ -1135,6 +1244,7 @@
     document.getElementById("cash-section").style.display = m === "Tunai" ? "block" : "none";
     document.getElementById("kasir-qris-preview").style.display = m === "QRIS" ? "block" : "none";
     document.getElementById("kasir-bank-preview").style.display = m === "Transfer" ? "block" : "none";
+    document.getElementById("kasir-proof-box").style.display = (m === "QRIS" || m === "Transfer") ? "block" : "none";
     document.querySelectorAll("#pos-section .pay-method-pill").forEach(b => b.classList.toggle("active", b.getAttribute("data-method") === m));
     hitungKembalian();
   }
@@ -1592,6 +1702,7 @@
       ${proofHTML}
     `;
     document.getElementById("review-cash-received").value = "";
+    hapusBuktiKasir("review");
     pilihStatusBayarTinjau(sb === "Sudah Dibayar" ? "Sudah Dibayar" : "Belum Dibayar");
     pilihMetodeTinjau((order.metode && order.metode !== "-") ? order.metode : "Tunai");
     document.getElementById("review-order-modal").classList.add("show");
@@ -1608,6 +1719,7 @@
     document.getElementById("review-cash-section").style.display = m === "Tunai" ? "block" : "none";
     document.getElementById("review-qris-section").style.display = m === "QRIS" ? "block" : "none";
     document.getElementById("review-bank-section").style.display = m === "Transfer" ? "block" : "none";
+    document.getElementById("review-proof-box").style.display = (m === "QRIS" || m === "Transfer") ? "block" : "none";
     document.querySelectorAll("#review-order-modal .pay-method-pill").forEach(b => b.classList.toggle("active", b.getAttribute("data-rmethod") === m));
     hitungKembalianTinjau(false);
   }
@@ -1657,20 +1769,22 @@
     const kasir = ambilSession("adminAngkringan") || "Admin";
     const idTarget = pesananSedangDitinjau.id;
 
+    const buktiKirimReview = (m === "QRIS" || m === "Transfer") ? (buktiReviewBase64 || pesananSedangDitinjau.buktiTransfer || "") : "";
     const selesaikanLokal = (noTrx) => {
       const idx = riwayatPesanan.findIndex(p => p.id === idTarget);
       if (idx !== -1) {
         riwayatPesanan[idx].status = "Sedang Diproses"; riwayatPesanan[idx].metode = m;
         riwayatPesanan[idx].statusBayar = sb; riwayatPesanan[idx].bayar = bayar;
         riwayatPesanan[idx].kembali = kembali; riwayatPesanan[idx].kasir = kasir; riwayatPesanan[idx].noTrx = noTrx;
-        simpanEditedOrderLokal(idTarget, { status: "Sedang Diproses", metode: m, statusBayar: sb, bayar, kembali, kasir, noTrx });
+        if (buktiKirimReview) riwayatPesanan[idx].buktiTransfer = buktiKirimReview;
+        simpanEditedOrderLokal(idTarget, { status: "Sedang Diproses", metode: m, statusBayar: sb, bayar, kembali, kasir, noTrx, ...(buktiKirimReview ? { buktiTransfer: buktiKirimReview } : {}) });
         simpanRiwayatKeStorage(); renderRiwayatPesanan();
       }
       tutupModalTinjau();
       tampilkanToast(`✓ Pesanan masuk Sedang Diproses (${m} • ${sb})`);
     };
 
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "konfirmasiPesananKasir", idPesanan: idTarget, metode: m, statusBayar: sb, total, bayar, kembali, kasir }) })
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "konfirmasiPesananKasir", idPesanan: idTarget, metode: m, statusBayar: sb, total, bayar, kembali, kasir, buktiTransfer: buktiKirimReview }) })
       .then(res => res.json()).then(data => { btn.disabled = false; btn.innerText = "✓ Konfirmasi & Masuk Sedang Diproses"; selesaikanLokal((data && data.noTrx) || ("TRX-" + Date.now().toString().slice(-6))); })
       .catch(() => { btn.disabled = false; btn.innerText = "✓ Konfirmasi & Masuk Sedang Diproses"; selesaikanLokal("TRX-" + Date.now().toString().slice(-6)); });
   }
@@ -1871,6 +1985,7 @@
     const kembali = (statusBayarKasir === "Sudah Dibayar" && metode === "Tunai") ? Math.max(0, uang - totalBelanja) : 0;
     const kasir = ambilSession("adminAngkringan") || "Admin";
     const waktuTrx = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
+    const buktiKirimKasir = (metode === "QRIS" || metode === "Transfer") ? buktiKasirBase64 : "";
 
     try { fetch(API_URL, {
       method: "POST",
@@ -1880,7 +1995,7 @@
         metode, statusBayar: statusBayarKasir, bayar: uang, kembali, kasir,
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "",
         noHpPelanggan: voucherTerpasang ? voucherTerpasang.noHp : document.getElementById("member-hp-kasir").value.trim(),
-        diskon: diskonVoucher
+        diskon: diskonVoucher, buktiTransfer: buktiKirimKasir
       })
     }).then(res => res.json()).then(data => {
       if (!data || !data.success) {
@@ -1893,7 +2008,8 @@
         noTrx: data.noTrx || (statusBayarKasir === "Sudah Dibayar" ? ("TRX-" + Date.now().toString().slice(-6)) : "-"),
         waktu: waktuTrx, atasNama, mejaLabel, detailItems, subtotal: subtotalBelanja, total: totalBelanja,
         metode, statusBayar: statusBayarKasir, bayar: uang, kembali, kasir, status: "Sedang Diproses",
-        kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "", diskon: diskonVoucher
+        kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "", diskon: diskonVoucher,
+        buktiTransfer: buktiKirimKasir
       });
       simpanRiwayatKeStorage(); renderRiwayatPesanan();
       tampilkanModalStruk({ judul: "Pesanan Masuk Proses!", subjudul: `${mejaLabel} • ${atasNama} • ${statusBayarKasir}`, html: `<div class="receipt-row"><span>Pesanan</span><span>${detailItems}</span></div><div class="receipt-row total"><span>Total</span><span>Rp ${totalBelanja.toLocaleString("id-ID")}</span></div>` });
