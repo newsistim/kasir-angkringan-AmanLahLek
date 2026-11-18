@@ -175,6 +175,9 @@
 
     .order-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .table-pill { display: inline-flex; align-items: center; gap: 5px; background: var(--espresso-900); color: #ffcc80; font-size: 0.78rem; font-weight: 800; padding: 4px 10px; border-radius: 8px; }
+    .order-source-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-left: 5px; }
+    .order-source-pill.pelanggan { background: var(--review-bg); color: var(--review-text); border: 1px solid var(--review-border); }
+    .order-source-pill.kasir { background: var(--accent-soft); color: var(--accent-primary); border: 1px solid #ffccbc; }
     .order-cust-name { font-size: 0.92rem; font-weight: 800; margin-top: 5px; }
     .order-id-time { font-size: 0.75rem; color: var(--espresso-600); font-weight: 600; margin-top: 2px; }
     .order-badges-col { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
@@ -198,8 +201,32 @@
     .btn-status-toggle.mark-done { background: var(--success-text); color: #fff; }
     .btn-status-toggle.mark-process { background: var(--espresso-100); color: var(--espresso-800); }
     .btn-pay-toggle { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); padding: 8px 10px; border-radius: 10px; font-family: inherit; font-size: 0.76rem; font-weight: 800; cursor: pointer; }
+    .btn-order-edit { background: var(--accent-soft); color: var(--accent-primary); border: 1px solid #ffccbc; padding: 8px 11px; border-radius: 10px; font-family: inherit; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+    .btn-order-edit:hover { background: #ffe0b2; }
     .btn-order-secondary, .btn-order-delete { background: #fff; border: 1px solid var(--espresso-200); padding: 8px 10px; border-radius: 10px; cursor: pointer; font-weight: 700; }
     .clear-done-btn { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); padding: 8px 13px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+    /* Modal Edit Pesanan */
+    .edit-modal-card { background: #fff; max-width: 540px; width: 100%; max-height: 92vh; overflow-y: auto; border-radius: 20px; padding: 22px; box-shadow: var(--shadow-lg); }
+    .edit-meta-banner { background: var(--bg-subtle); border: 1px solid var(--espresso-200); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; font-weight: 700; }
+    .edit-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    @media (max-width: 520px) { .edit-form-grid { grid-template-columns: 1fr; } }
+    .edit-items-list { max-height: 240px; overflow-y: auto; border: 1.5px solid var(--espresso-200); border-radius: 12px; padding: 10px; background: var(--bg-subtle); margin-bottom: 12px; }
+    .edit-item-row { background: #fff; border: 1px solid var(--espresso-200); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+    .edit-item-row:last-child { margin-bottom: 0; }
+    .edit-item-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .edit-temp-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--espresso-100); flex-wrap: wrap; }
+    .edit-temp-chip { font-family: inherit; font-size: 0.74rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 1.5px solid var(--espresso-200); background: #fff; cursor: pointer; }
+    .edit-temp-chip.hot-active { background: #d84315; color: #fff; border-color: #d84315; }
+    .edit-temp-chip.ice-active { background: #0277bd; color: #fff; border-color: #0277bd; }
+    .edit-add-menu-box { background: linear-gradient(135deg, #fffdf9 0%, #fff3e0 100%); border: 1.5px dashed #ffb74d; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+    .edit-add-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; align-items: center; }
+    .edit-add-btn { background: var(--espresso-900); color: #ffcc80; border: none; padding: 10px 14px; border-radius: 10px; font-family: inherit; font-size: 0.82rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .edit-summary-box { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 0.85rem; }
+    .edit-summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .edit-summary-row.total { margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--espresso-200); font-size: 1rem; font-weight: 800; margin-bottom: 0; }
+    .pay-status-pills-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; margin-bottom: 10px; }
+    .edit-footer-btns { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 14px; }
 
     #login-overlay { position: fixed; inset: 0; background: radial-gradient(circle at top right, #4e2f23 0%, #24140e 65%); display: flex; justify-content: center; align-items: center; z-index: 999; padding: 20px; }
     .login-box { background: #fff; padding: 34px 30px; border-radius: 22px; max-width: 390px; width: 100%; box-shadow: var(--shadow-lg); text-align: center; }
@@ -281,6 +308,95 @@
   </div>
 </div>
 
+<!-- Modal Edit Pesanan (Pelanggan & Kasir) -->
+<div id="edit-order-modal" class="modal-backdrop">
+  <div class="edit-modal-card">
+    <div class="modal-header-row">
+      <h3 style="margin:0;">✏️ Edit Pesanan</h3>
+      <button type="button" class="close-modal-btn" onclick="tutupModalEditPesanan()">✕</button>
+    </div>
+
+    <div id="edit-order-meta-banner" class="edit-meta-banner">
+      <span id="edit-order-id-label">ID: -</span>
+      <span id="edit-order-source-badge" class="order-source-pill pelanggan">Pesanan Pelanggan</span>
+    </div>
+
+    <div class="edit-form-grid">
+      <div>
+        <label class="field-label" for="edit-order-name">👤 Atas Nama Pemesan *</label>
+        <input type="text" id="edit-order-name" placeholder="Nama pelanggan...">
+      </div>
+      <div>
+        <label class="field-label" for="edit-order-table">🪑 Nomor Meja / Bungkus *</label>
+        <input type="text" id="edit-order-table" placeholder="Misal: 3 atau Bungkus..." oninput="sinkronChipMejaEdit()">
+      </div>
+    </div>
+
+    <div class="quick-table-grid" style="margin-top:0; margin-bottom:14px;">
+      <button type="button" class="table-chip edit-table-chip" data-emeja="1" onclick="pilihMejaEdit('1')">Meja 1</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="2" onclick="pilihMejaEdit('2')">Meja 2</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="3" onclick="pilihMejaEdit('3')">Meja 3</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="4" onclick="pilihMejaEdit('4')">Meja 4</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="5" onclick="pilihMejaEdit('5')">Meja 5</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="6" onclick="pilihMejaEdit('6')">Meja 6</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="7" onclick="pilihMejaEdit('7')">Meja 7</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="8" onclick="pilihMejaEdit('8')">Meja 8</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="9" onclick="pilihMejaEdit('9')">Meja 9</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="10" onclick="pilihMejaEdit('10')">Meja 10</button>
+      <button type="button" class="table-chip edit-table-chip" data-emeja="Bungkus" onclick="pilihMejaEdit('Bungkus')">🛍️ Bungkus</button>
+    </div>
+
+    <label class="field-label">🍽️ Daftar Menu Pesanan (Ubah Qty / Suhu / Hapus):</label>
+    <div id="edit-order-items-list" class="edit-items-list"></div>
+
+    <div class="edit-add-menu-box">
+      <label class="field-label" for="edit-add-menu-select" style="margin-bottom:4px;">➕ Tambah Menu Baru ke Pesanan Ini:</label>
+      <input type="text" id="edit-filter-menu-input" placeholder="🔍 Ketik untuk cari menu yang ingin ditambah..." oninput="isiDropdownTambahMenuEdit()" style="margin-bottom:6px; padding:8px 10px; font-size:0.84rem;">
+      <div class="edit-add-row">
+        <select id="edit-add-menu-select"></select>
+        <button type="button" class="edit-add-btn" onclick="tambahMenuKeEditPesanan()">+ Tambah</button>
+      </div>
+    </div>
+
+    <div class="edit-summary-box">
+      <div class="edit-summary-row">
+        <span>Subtotal Menu</span>
+        <strong id="edit-subtotal-label">Rp 0</strong>
+      </div>
+      <div id="edit-voucher-row" class="edit-summary-row" style="display:none; color:var(--success-text); font-weight:700;">
+        <span id="edit-voucher-label">🎟️ Diskon Voucher</span>
+        <div>
+          <span id="edit-discount-label">-Rp 0</span>
+          <button type="button" onclick="hapusVoucherDiEdit()" style="background:none; border:none; color:var(--danger-text); font-weight:800; cursor:pointer; margin-left:6px; font-size:0.75rem;">✕ Hapus</button>
+        </div>
+      </div>
+      <div class="edit-summary-row total">
+        <span>Total Tagihan Baru</span>
+        <span id="edit-total-label" style="color:var(--accent-primary);">Rp 0</span>
+      </div>
+    </div>
+
+    <label class="field-label">💳 Metode Pembayaran:</label>
+    <div class="payment-pills">
+      <button type="button" class="pay-method-pill edit-method-pill active" data-emethod="Tunai" onclick="pilihMetodeEdit('Tunai')">💵 Tunai</button>
+      <button type="button" class="pay-method-pill edit-method-pill" data-emethod="QRIS" onclick="pilihMetodeEdit('QRIS')">📱 QRIS</button>
+      <button type="button" class="pay-method-pill edit-method-pill" data-emethod="Transfer" onclick="pilihMetodeEdit('Transfer')">🏦 Bank JAGO</button>
+    </div>
+
+    <label class="field-label">📌 Status Pembayaran:</label>
+    <div class="pay-status-pills-3">
+      <button type="button" class="pay-status-pill edit-paid-pill paid" data-epaid="Sudah Dibayar" onclick="pilihStatusBayarEdit('Sudah Dibayar')">✅ Sudah Dibayar</button>
+      <button type="button" class="pay-status-pill edit-paid-pill" data-epaid="Menunggu Cek Kasir" onclick="pilihStatusBayarEdit('Menunggu Cek Kasir')">🔎 Cek Bukti</button>
+      <button type="button" class="pay-status-pill edit-paid-pill unpaid" data-epaid="Belum Dibayar" onclick="pilihStatusBayarEdit('Belum Dibayar')">⏳ Belum Dibayar</button>
+    </div>
+
+    <div class="edit-footer-btns">
+      <button type="button" class="reset-stock-btn" onclick="tutupModalEditPesanan()">Batal</button>
+      <button type="button" id="save-edit-order-btn" class="pay-btn" style="margin-top:0;" onclick="simpanPerubahanEditPesanan()">💾 Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Tinjau & Konfirmasi Pembayaran -->
 <div id="review-order-modal" class="modal-backdrop">
   <div class="stock-modal-card">
@@ -288,7 +404,10 @@
       <h3>🔍 Tinjau &amp; Konfirmasi Pembayaran</h3>
       <button type="button" class="close-modal-btn" onclick="tutupModalTinjau()">✕</button>
     </div>
-    <div id="review-order-summary" class="receipt-details" style="margin-top:0;"></div>
+    <div id="review-order-summary" class="receipt-details" style="margin-top:0; margin-bottom:10px;"></div>
+    <div style="text-align:right; margin-bottom:12px;">
+      <button type="button" class="btn-order-edit" onclick="bukaEditDariModalTinjau()">✏️ Edit Item / Meja Pesanan Ini</button>
+    </div>
 
     <label class="field-label">Verifikasi Pembayaran (Cek Mutasi / Uang Masuk):</label>
     <div class="pay-status-pills">
@@ -326,7 +445,7 @@
     <div id="review-qris-section" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.82rem; font-weight:800;">Barcode QRIS ANGKRINGAN AMANLAHLEK</div>
       <div class="qris-zoom-wrap">
-        <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+        <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/QRIS.jpg" onerror="this.onerror=null;this.src='QRIS.jpg';" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
       </div>
       <div style="font-size:0.75rem; color:var(--espresso-600);">Tunjukkan barcode ini ke pelanggan jika belum scan QRIS.</div>
     </div>
@@ -436,17 +555,17 @@
       <input type="text" id="cust-name-kasir" placeholder="Atas nama pemesan (opsional)..." style="margin-bottom:8px;">
       <input type="text" id="table-number" placeholder="Ketik angka meja (misal: 1, 12, atau Bungkus)..." oninput="sinkronInputMeja()">
       <div class="quick-table-grid">
-        <button type="button" class="table-chip" data-meja="1" onclick="pilihMejaCepat('1')">Meja 1</button>
-        <button type="button" class="table-chip" data-meja="2" onclick="pilihMejaCepat('2')">Meja 2</button>
-        <button type="button" class="table-chip" data-meja="3" onclick="pilihMejaCepat('3')">Meja 3</button>
-        <button type="button" class="table-chip" data-meja="4" onclick="pilihMejaCepat('4')">Meja 4</button>
-        <button type="button" class="table-chip" data-meja="5" onclick="pilihMejaCepat('5')">Meja 5</button>
-        <button type="button" class="table-chip" data-meja="6" onclick="pilihMejaCepat('6')">Meja 6</button>
-        <button type="button" class="table-chip" data-meja="7" onclick="pilihMejaCepat('7')">Meja 7</button>
-        <button type="button" class="table-chip" data-meja="8" onclick="pilihMejaCepat('8')">Meja 8</button>
-        <button type="button" class="table-chip" data-meja="9" onclick="pilihMejaCepat('9')">Meja 9</button>
-        <button type="button" class="table-chip" data-meja="10" onclick="pilihMejaCepat('10')">Meja 10</button>
-        <button type="button" class="table-chip" data-meja="Bungkus" onclick="pilihMejaCepat('Bungkus')">🛍️ Bungkus</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="1" onclick="pilihMejaCepat('1')">Meja 1</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="2" onclick="pilihMejaCepat('2')">Meja 2</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="3" onclick="pilihMejaCepat('3')">Meja 3</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="4" onclick="pilihMejaCepat('4')">Meja 4</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="5" onclick="pilihMejaCepat('5')">Meja 5</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="6" onclick="pilihMejaCepat('6')">Meja 6</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="7" onclick="pilihMejaCepat('7')">Meja 7</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="8" onclick="pilihMejaCepat('8')">Meja 8</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="9" onclick="pilihMejaCepat('9')">Meja 9</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="10" onclick="pilihMejaCepat('10')">Meja 10</button>
+        <button type="button" class="table-chip pos-table-chip" data-meja="Bungkus" onclick="pilihMejaCepat('Bungkus')">🛍️ Bungkus</button>
       </div>
     </div>
 
@@ -502,7 +621,7 @@
     <div id="kasir-qris-preview" class="qris-bank-preview" style="display:none;">
       <div style="font-size:0.8rem; font-weight:800;">Scan QRIS ANGKRINGAN AMANLAHLEK</div>
       <div class="qris-zoom-wrap">
-        <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+        <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/QRIS.jpg" onerror="this.onerror=null;this.src='QRIS.jpg';" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
       </div>
     </div>
     <div id="kasir-bank-preview" class="qris-bank-preview" style="display:none;">
@@ -522,8 +641,8 @@
   <div class="history-panel">
     <div class="history-top-bar">
       <div>
-        <h2 style="margin:0 0 4px;">📋 Antrean &amp; Riwayat Pesanan (3 Tahap + Status Bayar)</h2>
-        <p style="margin:0; font-size:0.85rem; color:var(--espresso-600);">Pantau pesanan <strong>Sedang Ditinjau</strong>, <strong>Sedang Diproses</strong>, <strong>Selesai</strong>, serta status <strong>Sudah Dibayar / Belum Dibayar</strong>.</p>
+        <h2 style="margin:0 0 4px;">📋 Antrean &amp; Riwayat Pesanan (Pelanggan &amp; Kasir)</h2>
+        <p style="margin:0; font-size:0.85rem; color:var(--espresso-600);">Pantau dan <strong>Edit Pesanan</strong> dari pelanggan maupun kasir pada tahap <strong>Sedang Ditinjau</strong>, <strong>Sedang Diproses</strong>, atau <strong>Selesai</strong>.</p>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button type="button" class="toolbar-stock-btn" onclick="sinkronPesananDariServer()">↻ Segarkan Antrean</button>
@@ -559,6 +678,7 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
   const STORAGE_HIDDEN_KEY = "hiddenOrdersAmanLahLek";
+  const STORAGE_EDITED_KEY = "editedOrdersAmanLahLek";
   const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
   const STORAGE_BESTSELLER_KEY = "bestSellerAmanLahLek";
 
@@ -596,6 +716,14 @@
   let riwayatPesanan = [], filterStatusAktif = "semua", stokHabisMap = {}, bestSellerMap = {}, toastTimer = null;
   let pesananSedangDitinjau = null, pollTimer = null;
 
+  // State untuk fitur Edit Pesanan (Pelanggan & Kasir)
+  let pesananSedangDiedit = null;
+  let keranjangEdit = [];
+  let metodeEdit = "Tunai";
+  let statusBayarEdit = "Belum Dibayar";
+  let kodeVoucherEdit = "";
+  let diskonEdit = 0;
+
   function simpanSession(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
   function ambilSession(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
   function hapusSession(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
@@ -613,6 +741,20 @@
     } catch (e) {}
   }
 
+  function ambilEditedOrdersMap() {
+    try {
+      const r = localStorage.getItem(STORAGE_EDITED_KEY);
+      return r ? (JSON.parse(r) || {}) : {};
+    } catch (e) { return {}; }
+  }
+  function simpanEditedOrderLokal(id, patchData) {
+    try {
+      const map = ambilEditedOrdersMap();
+      map[id] = { ...(map[id] || {}), ...patchData, updatedAt: Date.now() };
+      localStorage.setItem(STORAGE_EDITED_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+
   function normStatus(s) {
     const raw = String(s || "").toLowerCase().trim();
     if (raw.includes("tinjau")) return "Sedang Ditinjau";
@@ -626,6 +768,16 @@
     if (raw.includes("menunggu") || raw.includes("cek")) return "Menunggu Cek Kasir";
     return "Belum Dibayar";
   }
+
+  function getHargaIce() {
+    const iceObj = daftarTambahan.find(a => String(a.nama || "").trim().toUpperCase() === "ICE");
+    return iceObj ? Number(iceObj.harga || 0) : 2000;
+  }
+
+  function isMinuman(kategori) {
+    return !String(kategori || "").toLowerCase().includes("makanan");
+  }
+
   function bukaModalBukti(idPesanan) {
     const order = riwayatPesanan.find(p => p.id === idPesanan);
     if (!order || !order.buktiTransfer) return;
@@ -670,7 +822,7 @@
   function tampilkanToast(pesan) {
     const t = document.getElementById("toast-notice"); t.innerText = pesan; t.classList.add("show");
     if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
   }
 
   function perbaruiBadgeStokHabis() { document.getElementById("nav-soldout-badge").innerText = `${daftarMenu.filter(i => apakahStokHabis(i)).length}`; }
@@ -745,30 +897,36 @@
     try {
       const r = localStorage.getItem(STORAGE_RIWAYAT_KEY);
       const hidden = ambilHiddenIds();
+      const editedMap = ambilEditedOrdersMap();
       if (r) {
         const p = JSON.parse(r);
-        if (Array.isArray(p)) riwayatPesanan = p.filter(o => !hidden.includes(o.id));
+        if (Array.isArray(p)) {
+          riwayatPesanan = p.filter(o => !hidden.includes(o.id)).map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+        }
       }
     } catch (e) { riwayatPesanan = []; }
   }
   function simpanRiwayatKeStorage() { try { localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(riwayatPesanan)); } catch (e) {} }
 
   function sinkronPesananDariServer() {
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getPesananMasuk" }) })
+    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getPesananMasuk" }) })
       .then(res => res.json()).then(data => {
         if (data && data.success && Array.isArray(data.orders)) {
           const hidden = ambilHiddenIds();
-          const serverOrders = data.orders.filter(o => !hidden.includes(o.id));
+          const editedMap = ambilEditedOrdersMap();
+          const serverOrders = data.orders
+            .filter(o => !hidden.includes(o.id))
+            .map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
           const serverIds = new Set(serverOrders.map(o => o.id));
           const lokalBelumSync = riwayatPesanan.filter(o => !serverIds.has(o.id) && !hidden.includes(o.id));
           riwayatPesanan = [...lokalBelumSync, ...serverOrders];
           simpanRiwayatKeStorage();
           renderRiwayatPesanan();
         }
-      }).catch(() => { muatRiwayatDariStorage(); renderRiwayatPesanan(); });
+      }).catch(() => { muatRiwayatDariStorage(); renderRiwayatPesanan(); }); } catch (e) { muatRiwayatDariStorage(); renderRiwayatPesanan(); }
   }
 
-  window.addEventListener("storage", (e) => { if (e.key === STORAGE_RIWAYAT_KEY) { muatRiwayatDariStorage(); renderRiwayatPesanan(); } });
+  window.addEventListener("storage", (e) => { if (e.key === STORAGE_RIWAYAT_KEY || e.key === STORAGE_EDITED_KEY) { muatRiwayatDariStorage(); renderRiwayatPesanan(); } });
   window.addEventListener("DOMContentLoaded", () => {
     muatStokHabisLokal(); muatBestSellerLokal(); muatRiwayatDariStorage(); renderRiwayatPesanan();
     const u = ambilSession("adminAngkringan"); if (u) bukaHalamanKasir(u);
@@ -787,11 +945,11 @@
     const btn = document.getElementById("login-btn"), err = document.getElementById("login-error");
     if (!u || !p) { err.innerText = "Username dan Password wajib diisi."; err.style.display = "block"; return; }
     btn.innerText = "Memeriksa akun..."; btn.disabled = true; err.style.display = "none";
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "login", username: u, password: p }) })
+    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "login", username: u, password: p }) })
       .then(res => res.json()).then(data => {
         if (data.success) { simpanSession("adminAngkringan", u); bukaHalamanKasir(u); }
         else { err.innerText = "Username atau Password salah!"; err.style.display = "block"; btn.innerText = "Masuk ke Kasir"; btn.disabled = false; }
-      }).catch(() => { err.innerText = "Gagal terhubung ke server."; err.style.display = "block"; btn.innerText = "Masuk ke Kasir"; btn.disabled = false; });
+      }).catch(() => { err.innerText = "Gagal terhubung ke server."; err.style.display = "block"; btn.innerText = "Masuk ke Kasir"; btn.disabled = false; }); } catch (e) {}
   }
 
   function bukaHalamanKasir(u) {
@@ -805,18 +963,18 @@
 
   function muatMenu() {
     document.getElementById("menu-container").innerHTML = `<div class="loading-box">Memuat daftar menu...</div>`;
-    fetch(API_URL).then(res => res.json()).then(data => {
+    try { fetch(API_URL).then(res => res.json()).then(data => {
       daftarMenu = Array.isArray(data) ? (data.length > 0 ? data : MENU_CADANGAN) : ((data.menu && data.menu.length > 0) ? data.menu : MENU_CADANGAN);
       daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0) ? data.tambahan : TAMBAHAN_CADANGAN;
       bersihkanKeranjangDariMenuHabis(); renderMenuTerkelompok(); renderKeranjang(); perbaruiBadgeStokHabis(); perbaruiBadgeBestSeller();
-    }).catch(() => { daftarMenu = MENU_CADANGAN; daftarTambahan = TAMBAHAN_CADANGAN; bersihkanKeranjangDariMenuHabis(); renderMenuTerkelompok(); renderKeranjang(); perbaruiBadgeStokHabis(); perbaruiBadgeBestSeller(); });
+    }).catch(() => { daftarMenu = MENU_CADANGAN; daftarTambahan = TAMBAHAN_CADANGAN; bersihkanKeranjangDariMenuHabis(); renderMenuTerkelompok(); renderKeranjang(); perbaruiBadgeStokHabis(); perbaruiBadgeBestSeller(); }); } catch (e) {}
   }
 
   function pilihMejaCepat(val) { document.getElementById("table-number").value = val; sinkronInputMeja(); }
   function sinkronInputMeja() {
     const v = document.getElementById("table-number").value.trim();
     document.getElementById("table-preview-pill").innerText = !v ? "Belum dipilih" : (v.toLowerCase() === "bungkus" ? "🛍️ Bungkus" : `🪑 Meja ${v}`);
-    document.querySelectorAll(".table-chip").forEach(c => c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === v.toLowerCase()));
+    document.querySelectorAll(".pos-table-chip").forEach(c => c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === v.toLowerCase()));
   }
   function formatLabelMeja(val) { const r = (val || "").trim(); if (!r) return "Tanpa Meja"; if (r.toLowerCase() === "bungkus") return "Bungkus"; return r.toLowerCase().startsWith("meja") ? r : `Meja ${r}`; }
   function filterCariMenu() { kataKunciCari = document.getElementById("search-menu").value.trim().toLowerCase(); document.getElementById("clear-search").style.display = kataKunciCari ? "inline-flex" : "none"; renderMenuTerkelompok(); }
@@ -926,6 +1084,401 @@
     else { el.innerText = `Rp ${selisih.toLocaleString("id-ID")}`; el.className = "change-ok"; btn.disabled = false; }
   }
 
+  // ================= FITUR EDIT PESANAN (PELANGGAN & KASIR) =================
+  function parseDetailItemsKeKeranjangEdit(detailStr, fallbackTotal) {
+    const listMenuSumber = daftarMenu.length > 0 ? daftarMenu : MENU_CADANGAN;
+    const hargaIce = getHargaIce();
+    const parts = String(detailStr || "").split(",").map(s => s.trim()).filter(Boolean);
+    const parsed = [];
+
+    parts.forEach(part => {
+      let sisa = part;
+      let qty = 1;
+      const qtyMatch = sisa.match(/\((\d+)x\)\s*$/i);
+      if (qtyMatch) {
+        qty = Math.max(1, parseInt(qtyMatch[1], 10) || 1);
+        sisa = sisa.slice(0, qtyMatch.index).trim();
+      }
+
+      let pakaiIce = false;
+      let pakaiHot = false;
+
+      if (/\{\s*ice\s*\}|\[\s*ice\s*\]|\+\s*ice\b/i.test(sisa)) {
+        pakaiIce = true;
+      } else if (/\[\s*hot\s*\]|\+\s*hot\b/i.test(sisa)) {
+        pakaiHot = true;
+      }
+
+      const namaBersih = sisa
+        .replace(/\[\s*(hot|ice)\s*\]/gi, "")
+        .replace(/\+\s*(ice|hot)\b/gi, "")
+        .trim();
+
+      if (!namaBersih) return;
+
+      const menuMatch = listMenuSumber.find(m => bersihkanNamaMenu(m.nama).toLowerCase() === namaBersih.toLowerCase());
+      const kategori = menuMatch ? (menuMatch.kategori || "") : (pakaiIce || pakaiHot ? "Coffee" : "Lainnya");
+      const minuman = isMinuman(kategori);
+      const hargaDasar = menuMatch ? Number(menuMatch.harga || 0) : 15000;
+      const suhu = minuman ? (pakaiIce ? "ICE" : "HOT") : "N/A";
+      const addons = (minuman && suhu === "ICE") ? [{ nama: "ICE", harga: hargaIce }] : [];
+
+      parsed.push({
+        id: menuMatch ? (menuMatch.id || namaBersih) : namaBersih,
+        nama: menuMatch ? bersihkanNamaMenu(menuMatch.nama) : namaBersih,
+        kategori,
+        hargaDasar,
+        qty,
+        suhu,
+        addons
+      });
+    });
+
+    if (parsed.length === 0 && detailStr) {
+      parsed.push({
+        id: "custom-1",
+        nama: String(detailStr).trim(),
+        kategori: "Makanan Ringan",
+        hargaDasar: Number(fallbackTotal || 15000),
+        qty: 1,
+        suhu: "N/A",
+        addons: []
+      });
+    }
+
+    return parsed;
+  }
+
+  function formatKeranjangEditKeDetailString(items) {
+    return items.map(i => {
+      const minuman = isMinuman(i.kategori);
+      const tagSuhu = minuman ? ` [${i.suhu === "ICE" ? "ICE" : "HOT"}]` : "";
+      return `${i.nama}${tagSuhu} (${i.qty}x)`;
+    }).join(", ");
+  }
+
+  function apakahPesananDariKasir(order) {
+    if (!order) return false;
+    if (order.kasir && order.kasir !== "-" && String(order.status || "") !== "Sedang Ditinjau" && !order.buktiTransfer && (order.atasNama === "Pelanggan Kasir" || String(order.detailItems || "").includes("+ ICE") || !String(order.detailItems || "").match(/\[(HOT|ICE)\]/))) {
+      return true;
+    }
+    return order.atasNama === "Pelanggan Kasir";
+  }
+
+  function bukaModalEditPesanan(idPesanan) {
+    const order = riwayatPesanan.find(p => p.id === idPesanan);
+    if (!order) return;
+    pesananSedangDiedit = order;
+
+    const dariKasir = apakahPesananDariKasir(order);
+    document.getElementById("edit-order-id-label").innerText = `${order.id} • ${order.waktu || "-"}`;
+    const srcBadge = document.getElementById("edit-order-source-badge");
+    srcBadge.className = "order-source-pill " + (dariKasir ? "kasir" : "pelanggan");
+    srcBadge.innerText = dariKasir ? "🖥️ Dibuat oleh Kasir" : "📱 Dibuat oleh Pelanggan";
+
+    document.getElementById("edit-order-name").value = order.atasNama || "";
+    const rawMeja = String(order.mejaLabel || "").replace(/^meja\s+/i, "").trim();
+    document.getElementById("edit-order-table").value = rawMeja === "Tanpa Meja" ? "" : rawMeja;
+    sinkronChipMejaEdit();
+
+    keranjangEdit = parseDetailItemsKeKeranjangEdit(order.detailItems, order.total);
+    kodeVoucherEdit = String(order.kodeVoucher || "").trim().toUpperCase();
+    diskonEdit = Number(order.diskon || 0);
+
+    metodeEdit = (order.metode && order.metode !== "-") ? order.metode : "Tunai";
+    statusBayarEdit = normStatusBayar(order.statusBayar);
+
+    pilihMetodeEdit(metodeEdit);
+    pilihStatusBayarEdit(statusBayarEdit);
+    document.getElementById("edit-filter-menu-input").value = "";
+    isiDropdownTambahMenuEdit();
+    renderDaftarItemEdit();
+
+    document.getElementById("edit-order-modal").classList.add("show");
+  }
+
+  function bukaEditDariModalTinjau() {
+    if (!pesananSedangDitinjau) return;
+    const idTarget = pesananSedangDitinjau.id;
+    tutupModalTinjau();
+    bukaModalEditPesanan(idTarget);
+  }
+
+  function tutupModalEditPesanan() {
+    document.getElementById("edit-order-modal").classList.remove("show");
+    pesananSedangDiedit = null;
+  }
+
+  function pilihMejaEdit(val) {
+    document.getElementById("edit-order-table").value = val;
+    sinkronChipMejaEdit();
+  }
+
+  function sinkronChipMejaEdit() {
+    const v = document.getElementById("edit-order-table").value.trim().toLowerCase();
+    document.querySelectorAll(".edit-table-chip").forEach(c => {
+      c.classList.toggle("active", c.getAttribute("data-emeja").toLowerCase() === v);
+    });
+  }
+
+  function pilihMetodeEdit(m) {
+    metodeEdit = m;
+    document.querySelectorAll(".edit-method-pill").forEach(b => {
+      b.classList.toggle("active", b.getAttribute("data-emethod") === m);
+    });
+  }
+
+  function pilihStatusBayarEdit(st) {
+    statusBayarEdit = st;
+    document.querySelectorAll(".edit-paid-pill").forEach(b => {
+      b.classList.toggle("active", b.getAttribute("data-epaid") === st);
+    });
+  }
+
+  function isiDropdownTambahMenuEdit() {
+    const sel = document.getElementById("edit-add-menu-select");
+    const kw = (document.getElementById("edit-filter-menu-input").value || "").trim().toLowerCase();
+    const listMenuSumber = daftarMenu.length > 0 ? daftarMenu : MENU_CADANGAN;
+    const tersedia = listMenuSumber.filter(m => !apakahStokHabis(m) && (!kw || bersihkanNamaMenu(m.nama).toLowerCase().includes(kw) || String(m.kategori || "").toLowerCase().includes(kw)));
+
+    if (tersedia.length === 0) {
+      sel.innerHTML = `<option value="">-- Tidak ada menu yang cocok --</option>`;
+      return;
+    }
+
+    sel.innerHTML = tersedia.map(m => {
+      const nb = bersihkanNamaMenu(m.nama);
+      return `<option value="${nb}">${nb} (${m.kategori}) — Rp ${Number(m.harga).toLocaleString("id-ID")}</option>`;
+    }).join("");
+  }
+
+  function tambahMenuKeEditPesanan() {
+    const sel = document.getElementById("edit-add-menu-select");
+    const namaMenu = sel.value;
+    if (!namaMenu) {
+      tampilkanToast("Pilih menu yang ingin ditambahkan.");
+      return;
+    }
+    const listMenuSumber = daftarMenu.length > 0 ? daftarMenu : MENU_CADANGAN;
+    const item = listMenuSumber.find(m => bersihkanNamaMenu(m.nama) === namaMenu);
+    if (!item) return;
+
+    const minuman = isMinuman(item.kategori);
+    const defaultSuhu = minuman ? "HOT" : "N/A";
+    const existingIdx = keranjangEdit.findIndex(k => k.nama === namaMenu && k.suhu === defaultSuhu);
+
+    if (existingIdx !== -1) {
+      keranjangEdit[existingIdx].qty++;
+    } else {
+      keranjangEdit.push({
+        id: item.id || namaMenu,
+        nama: namaMenu,
+        kategori: item.kategori || "",
+        hargaDasar: Number(item.harga || 0),
+        qty: 1,
+        suhu: defaultSuhu,
+        addons: []
+      });
+    }
+    renderDaftarItemEdit();
+    tampilkanToast(`+ ${namaMenu} ditambahkan ke pesanan`);
+  }
+
+  function ubahQtyItemEdit(idx, delta) {
+    if (!keranjangEdit[idx]) return;
+    keranjangEdit[idx].qty += delta;
+    if (keranjangEdit[idx].qty <= 0) {
+      keranjangEdit.splice(idx, 1);
+    }
+    renderDaftarItemEdit();
+  }
+
+  function hapusBarisItemEdit(idx) {
+    if (!keranjangEdit[idx]) return;
+    keranjangEdit.splice(idx, 1);
+    renderDaftarItemEdit();
+  }
+
+  function ubahSuhuItemEdit(idx, suhuBaru) {
+    const item = keranjangEdit[idx];
+    if (!item || !isMinuman(item.kategori)) return;
+    const hargaIce = getHargaIce();
+
+    const sameIdx = keranjangEdit.findIndex((x, i) => i !== idx && x.nama === item.nama && x.suhu === suhuBaru);
+    if (sameIdx !== -1) {
+      keranjangEdit[sameIdx].qty += item.qty;
+      keranjangEdit.splice(idx, 1);
+    } else {
+      item.suhu = suhuBaru;
+      item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
+    }
+    renderDaftarItemEdit();
+  }
+
+  function hapusVoucherDiEdit() {
+    kodeVoucherEdit = "";
+    diskonEdit = 0;
+    renderDaftarItemEdit();
+  }
+
+  function hitungSubtotalEdit() {
+    return keranjangEdit.reduce((sum, item) => {
+      const hargaAddon = (item.addons || []).reduce((s, a) => s + Number(a.harga || 0), 0);
+      return sum + ((Number(item.hargaDasar || 0) + hargaAddon) * item.qty);
+    }, 0);
+  }
+
+  function renderDaftarItemEdit() {
+    const container = document.getElementById("edit-order-items-list");
+    const hargaIce = getHargaIce();
+
+    if (keranjangEdit.length === 0) {
+      container.innerHTML = `<div class="empty-cart-state" style="padding:14px;">Belum ada item dalam pesanan. Silakan tambah menu di bawah.</div>`;
+    } else {
+      container.innerHTML = "";
+      keranjangEdit.forEach((item, idx) => {
+        const minuman = isMinuman(item.kategori);
+        const hargaAddon = (item.addons || []).reduce((s, a) => s + Number(a.harga || 0), 0);
+        const sub = (Number(item.hargaDasar || 0) + hargaAddon) * item.qty;
+
+        const suhuBadge = minuman
+          ? (item.suhu === "ICE"
+            ? `<span style="color:#0277bd; font-size:0.76rem; font-weight:800; margin-left:4px;">[🧊 ICE]</span>`
+            : `<span style="color:#d84315; font-size:0.76rem; font-weight:800; margin-left:4px;">[🔥 HOT]</span>`)
+          : "";
+
+        const suhuControls = minuman
+          ? `<div class="edit-temp-row">
+              <span style="font-size:0.74rem; font-weight:700; color:var(--espresso-600);">Varian Suhu:</span>
+              <button type="button" class="edit-temp-chip ${item.suhu !== 'ICE' ? 'hot-active' : ''}" data-eidx="${idx}" data-esuhu="HOT">🔥 HOT (Gratis)</button>
+              <button type="button" class="edit-temp-chip ${item.suhu === 'ICE' ? 'ice-active' : ''}" data-eidx="${idx}" data-esuhu="ICE">🧊 ICE (+Rp ${hargaIce.toLocaleString("id-ID")})</button>
+            </div>`
+          : "";
+
+        const row = document.createElement("div");
+        row.className = "edit-item-row";
+        row.innerHTML = `
+          <div class="edit-item-top">
+            <div>
+              <strong>${item.nama}</strong>${suhuBadge}
+              <span class="cart-item-price">Rp ${sub.toLocaleString("id-ID")} <small style="color:var(--espresso-600); font-weight:600;">(@Rp ${(Number(item.hargaDasar) + hargaAddon).toLocaleString("id-ID")})</small></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div class="qty-controls">
+                <button type="button" class="qty-btn" data-eqty="${idx}" data-edelta="-1">−</button>
+                <span class="qty-num">${item.qty}</span>
+                <button type="button" class="qty-btn" data-eqty="${idx}" data-edelta="1">+</button>
+              </div>
+              <button type="button" class="btn-order-delete" data-edel="${idx}" title="Hapus Item" style="padding:5px 8px; font-size:0.75rem;">✕</button>
+            </div>
+          </div>
+          ${suhuControls}
+        `;
+        row.querySelectorAll("[data-eqty]").forEach(btn => {
+          btn.addEventListener("click", () => ubahQtyItemEdit(Number(btn.getAttribute("data-eqty")), Number(btn.getAttribute("data-edelta"))));
+        });
+        row.querySelector("[data-edel]").addEventListener("click", () => hapusBarisItemEdit(idx));
+        row.querySelectorAll("[data-esuhu]").forEach(chip => {
+          chip.addEventListener("click", () => ubahSuhuItemEdit(Number(chip.getAttribute("data-eidx")), chip.getAttribute("data-esuhu")));
+        });
+        container.appendChild(row);
+      });
+    }
+
+    const subtotal = hitungSubtotalEdit();
+    const diskonValid = kodeVoucherEdit ? Math.min(subtotal, diskonEdit) : 0;
+    const totalAkhir = Math.max(0, subtotal - diskonValid);
+
+    document.getElementById("edit-subtotal-label").innerText = `Rp ${subtotal.toLocaleString("id-ID")}`;
+    const vRow = document.getElementById("edit-voucher-row");
+    if (kodeVoucherEdit && diskonValid > 0) {
+      vRow.style.display = "flex";
+      document.getElementById("edit-voucher-label").innerText = `🎟️ Voucher (${kodeVoucherEdit})`;
+      document.getElementById("edit-discount-label").innerText = `-Rp ${diskonValid.toLocaleString("id-ID")}`;
+    } else {
+      vRow.style.display = "none";
+    }
+    document.getElementById("edit-total-label").innerText = `Rp ${totalAkhir.toLocaleString("id-ID")}`;
+    document.getElementById("save-edit-order-btn").disabled = keranjangEdit.length === 0;
+  }
+
+  function simpanPerubahanEditPesanan() {
+    if (!pesananSedangDiedit) return;
+    if (keranjangEdit.length === 0) {
+      tampilkanToast("Pesanan harus memiliki minimal 1 menu.");
+      return;
+    }
+
+    const atasNamaBaru = document.getElementById("edit-order-name").value.trim() || "Pelanggan";
+    const rawMeja = document.getElementById("edit-order-table").value.trim();
+    const mejaBaru = formatLabelMeja(rawMeja);
+    const detailBaru = formatKeranjangEditKeDetailString(keranjangEdit);
+    const subtotalBaru = hitungSubtotalEdit();
+    const diskonValid = kodeVoucherEdit ? Math.min(subtotalBaru, diskonEdit) : 0;
+    const totalBaru = Math.max(0, subtotalBaru - diskonValid);
+    const kasirAktif = ambilSession("adminAngkringan") || "Admin";
+    const idTarget = pesananSedangDiedit.id;
+    const statusOrderTetap = normStatus(pesananSedangDiedit.status);
+
+    const btn = document.getElementById("save-edit-order-btn");
+    btn.disabled = true;
+    btn.innerText = "Menyimpan perubahan...";
+
+    const patchObj = {
+      atasNama: atasNamaBaru,
+      mejaLabel: mejaBaru,
+      detailItems: detailBaru,
+      subtotal: subtotalBaru,
+      kodeVoucher: diskonValid > 0 ? kodeVoucherEdit : "",
+      diskon: diskonValid,
+      total: totalBaru,
+      metode: metodeEdit,
+      statusBayar: statusBayarEdit,
+      kasir: kasirAktif
+    };
+
+    const terapkanPerubahanLokal = (noTrxServer) => {
+      const idx = riwayatPesanan.findIndex(p => p.id === idTarget);
+      if (idx !== -1) {
+        riwayatPesanan[idx] = {
+          ...riwayatPesanan[idx],
+          ...patchObj,
+          noTrx: noTrxServer || riwayatPesanan[idx].noTrx || "-"
+        };
+      }
+      simpanEditedOrderLokal(idTarget, patchObj);
+      simpanRiwayatKeStorage();
+      renderRiwayatPesanan();
+      btn.disabled = false;
+      btn.innerText = "💾 Simpan Perubahan";
+      tutupModalEditPesanan();
+      tampilkanToast(`✓ Pesanan ${atasNamaBaru} (${mejaBaru}) berhasil diperbarui!`);
+    };
+
+    try { fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "editPesanan",
+        idPesanan: idTarget,
+        atasNama: atasNamaBaru,
+        mejaLabel: mejaBaru,
+        detailItems: detailBaru,
+        subtotal: subtotalBaru,
+        kodeVoucher: diskonValid > 0 ? kodeVoucherEdit : "",
+        diskon: diskonValid,
+        total: totalBaru,
+        metode: metodeEdit,
+        statusBayar: statusBayarEdit,
+        status: statusOrderTetap,
+        kasir: kasirAktif
+      })
+    }).then(res => res.json()).then(data => {
+      terapkanPerubahanLokal(data && data.noTrx ? data.noTrx : undefined);
+    }).catch(() => {
+      terapkanPerubahanLokal();
+    }); } catch (e) { terapkanPerubahanLokal(); }
+  }
+
   // ================= MODAL TINJAU & KONFIRMASI PEMBAYARAN =================
   function bukaModalTinjau(idPesanan) {
     const order = riwayatPesanan.find(p => p.id === idPesanan); if (!order) return;
@@ -1015,6 +1568,7 @@
         riwayatPesanan[idx].status = "Sedang Diproses"; riwayatPesanan[idx].metode = m;
         riwayatPesanan[idx].statusBayar = sb; riwayatPesanan[idx].bayar = bayar;
         riwayatPesanan[idx].kembali = kembali; riwayatPesanan[idx].kasir = kasir; riwayatPesanan[idx].noTrx = noTrx;
+        simpanEditedOrderLokal(idTarget, { status: "Sedang Diproses", metode: m, statusBayar: sb, bayar, kembali, kasir, noTrx });
         simpanRiwayatKeStorage(); renderRiwayatPesanan();
       }
       tutupModalTinjau();
@@ -1028,14 +1582,24 @@
 
   function ubahStatusPesanan(id, statusBaru) {
     const idx = riwayatPesanan.findIndex(p => p.id === id);
-    if (idx !== -1) { riwayatPesanan[idx].status = statusBaru; simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
+    if (idx !== -1) {
+      riwayatPesanan[idx].status = statusBaru;
+      simpanEditedOrderLokal(id, { status: statusBaru });
+      simpanRiwayatKeStorage();
+      renderRiwayatPesanan();
+    }
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, status: statusBaru }) }).catch(() => {});
   }
 
   function tandaiSudahDibayar(id) {
     const idx = riwayatPesanan.findIndex(p => p.id === id);
     const kasir = ambilSession("adminAngkringan") || "Admin";
-    if (idx !== -1) { riwayatPesanan[idx].statusBayar = "Sudah Dibayar"; simpanRiwayatKeStorage(); renderRiwayatPesanan(); }
+    if (idx !== -1) {
+      riwayatPesanan[idx].statusBayar = "Sudah Dibayar";
+      simpanEditedOrderLokal(id, { statusBayar: "Sudah Dibayar", kasir });
+      simpanRiwayatKeStorage();
+      renderRiwayatPesanan();
+    }
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, statusBayar: "Sudah Dibayar", kasir }) }).catch(() => {});
     tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
   }
@@ -1113,6 +1677,9 @@
     const grid = document.createElement("div"); grid.className = "history-grid";
     hasil.forEach(order => {
       const st = normStatus(order.status), sb = normStatusBayar(order.statusBayar);
+      const dariKasir = apakahPesananDariKasir(order);
+      const sourceBadge = `<span class="order-source-pill ${dariKasir ? 'kasir' : 'pelanggan'}">${dariKasir ? '🖥️ Kasir' : '📱 Pelanggan'}</span>`;
+
       const card = document.createElement("div");
       card.className = `order-card ${st === "Sedang Ditinjau" ? "stage-ditinjau" : (st === "Selesai" ? "stage-selesai" : "stage-diproses")}`;
 
@@ -1140,7 +1707,7 @@
         <div>
           <div class="order-card-head">
             <div>
-              <span class="table-pill">${(order.mejaLabel || "").toLowerCase().includes("bungkus") ? "🛍️" : "🪑"} ${order.mejaLabel}</span>
+              <div><span class="table-pill">${(order.mejaLabel || "").toLowerCase().includes("bungkus") ? "🛍️" : "🪑"} ${order.mejaLabel}</span>${sourceBadge}</div>
               <div class="order-cust-name">👤 ${order.atasNama || "Pelanggan"}</div>
               <div class="order-id-time">${order.id} • ${order.waktu}</div>
             </div>
@@ -1150,7 +1717,7 @@
         </div>
         <div>
           <div class="order-pay-info"><span>Metode: <strong>${order.metode && order.metode !== "-" ? order.metode : "Belum dipilih"}</strong></span><span class="order-pay-total">Rp ${Number(order.total).toLocaleString("id-ID")}</span></div>
-          <div class="order-actions">${actionBtnHTML}${markPaidBtnHTML}<button type="button" class="btn-order-secondary" data-action="struk">🧾</button><button type="button" class="btn-order-delete" data-action="hapus">🗑️</button></div>
+          <div class="order-actions">${actionBtnHTML}${markPaidBtnHTML}<button type="button" class="btn-order-edit" data-action="edit" title="Edit Pesanan">✏️ Edit</button><button type="button" class="btn-order-secondary" data-action="struk" title="Lihat Struk">🧾</button><button type="button" class="btn-order-delete" data-action="hapus" title="Hapus Pesanan">🗑️</button></div>
         </div>
       `;
       const tinjauBtn = card.querySelector('[data-action="tinjau"]'); if (tinjauBtn) tinjauBtn.addEventListener("click", () => bukaModalTinjau(order.id));
@@ -1158,6 +1725,7 @@
       const prosesBtn = card.querySelector('[data-action="proses"]'); if (prosesBtn) prosesBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Sedang Diproses"));
       const lunasBtn = card.querySelector('[data-action="lunas"]'); if (lunasBtn) lunasBtn.addEventListener("click", () => tandaiSudahDibayar(order.id));
       const buktiBtn = card.querySelector('[data-action="bukti"]'); if (buktiBtn) buktiBtn.addEventListener("click", () => bukaModalBukti(order.id));
+      card.querySelector('[data-action="edit"]').addEventListener("click", () => bukaModalEditPesanan(order.id));
       card.querySelector('[data-action="struk"]').addEventListener("click", () => lihatStrukRiwayat(order.id));
       card.querySelector('[data-action="hapus"]').addEventListener("click", () => hapusSatuPesanan(order.id));
       grid.appendChild(card);
@@ -1178,7 +1746,7 @@
     const kasir = ambilSession("adminAngkringan") || "Admin";
     const waktuTrx = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
 
-    fetch(API_URL, {
+    try { fetch(API_URL, {
       method: "POST",
       body: JSON.stringify({
         action: "transaksi", atasNama, mejaLabel, detailItems, subtotal: subtotalBelanja,
@@ -1197,14 +1765,14 @@
       riwayatPesanan.unshift({
         id: data.idPesanan || ("ORD-" + Date.now().toString().slice(-6)),
         noTrx: data.noTrx || (statusBayarKasir === "Sudah Dibayar" ? ("TRX-" + Date.now().toString().slice(-6)) : "-"),
-        waktu: waktuTrx, atasNama, mejaLabel, detailItems, total: totalBelanja,
+        waktu: waktuTrx, atasNama, mejaLabel, detailItems, subtotal: subtotalBelanja, total: totalBelanja,
         metode, statusBayar: statusBayarKasir, bayar: uang, kembali, kasir, status: "Sedang Diproses",
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "", diskon: diskonVoucher
       });
       simpanRiwayatKeStorage(); renderRiwayatPesanan();
       tampilkanModalStruk({ judul: "Pesanan Masuk Proses!", subjudul: `${mejaLabel} • ${atasNama} • ${statusBayarKasir}`, html: `<div class="receipt-row"><span>Pesanan</span><span>${detailItems}</span></div><div class="receipt-row total"><span>Total</span><span>Rp ${totalBelanja.toLocaleString("id-ID")}</span></div>` });
       kosongkanKeranjang(); document.getElementById("member-hp-kasir").value = ""; btn.innerText = "Simpan & Proses Pesanan";
-    }).catch(() => { tampilkanToast("Gagal menyimpan ke server."); btn.innerText = "Simpan & Proses Pesanan"; btn.disabled = false; });
+    }).catch(() => { tampilkanToast("Gagal menyimpan ke server."); btn.innerText = "Simpan & Proses Pesanan"; btn.disabled = false; }); } catch (e) {}
   }
 </script>
 
