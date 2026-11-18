@@ -134,6 +134,9 @@
     .temp-shortcut-btn.ice { color: #0277bd; border-color: #b3e5fc; background: #f3faff; }
     .temp-shortcut-btn.ice.active { background: #0277bd; color: #fff; border-color: #0277bd; }
     .order-locked-pill { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); border-radius: 10px; padding: 8px 10px; font-size: 0.76rem; font-weight: 800; }
+    .role-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; margin-left: 6px; }
+    .role-badge.kepala { background: rgba(255, 193, 7, 0.25); color: #ffe082; border: 1px solid rgba(255, 213, 79, 0.5); }
+    .role-badge.biasa { background: rgba(255, 255, 255, 0.12); color: #e6d7cf; border: 1px solid rgba(255, 255, 255, 0.2); }
     .kasir-proof-box { background: #fff; border: 1.5px dashed var(--espresso-400); border-radius: 12px; padding: 12px; margin-top: 10px; text-align: center; transition: border-color 0.2s ease, background 0.2s ease; }
     .kasir-proof-box.has-file { border-style: solid; border-color: var(--success-border); background: #f8fdf9; }
     .proof-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
@@ -792,6 +795,8 @@
   let buktiKasirBase64 = "", buktiReviewBase64 = "";
   let riwayatPesanan = [], filterStatusAktif = "semua", stokHabisMap = {}, bestSellerMap = {}, toastTimer = null;
   let pesananSedangDitinjau = null, pollTimer = null;
+  let roleAdminAktif = "Admin Biasa";
+  function isKepalaAdmin() { return String(roleAdminAktif || "").toLowerCase().includes("kepala"); }
 
   // State untuk fitur Edit Pesanan (Pelanggan & Kasir)
   let pesananSedangDiedit = null;
@@ -1067,7 +1072,7 @@
   window.addEventListener("storage", (e) => { if (e.key === STORAGE_RIWAYAT_KEY || e.key === STORAGE_EDITED_KEY) { muatRiwayatDariStorage(); renderRiwayatPesanan(); } });
   window.addEventListener("DOMContentLoaded", () => {
     muatStokHabisLokal(); muatBestSellerLokal(); muatRiwayatDariStorage(); renderRiwayatPesanan();
-    const u = ambilSession("adminAngkringan"); if (u) bukaHalamanKasir(u);
+    const u = ambilSession("adminAngkringan"); const r = ambilSession("adminAngkringanRole") || "Admin Biasa"; if (u) bukaHalamanKasir(u, r);
   });
 
   function scrollKeBagian(target) {
@@ -1085,19 +1090,26 @@
     btn.innerText = "Memeriksa akun..."; btn.disabled = true; err.style.display = "none";
     try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "login", username: u, password: p }) })
       .then(res => res.json()).then(data => {
-        if (data.success) { simpanSession("adminAngkringan", u); bukaHalamanKasir(u); }
+        if (data.success) {
+          const role = data.role || "Admin Biasa";
+          simpanSession("adminAngkringan", u);
+          simpanSession("adminAngkringanRole", role);
+          bukaHalamanKasir(u, role);
+        }
         else { err.innerText = "Username atau Password salah!"; err.style.display = "block"; btn.innerText = "Masuk ke Kasir"; btn.disabled = false; }
       }).catch(() => { err.innerText = "Gagal terhubung ke server."; err.style.display = "block"; btn.innerText = "Masuk ke Kasir"; btn.disabled = false; }); } catch (e) {}
   }
 
-  function bukaHalamanKasir(u) {
+  function bukaHalamanKasir(u, role) {
+    roleAdminAktif = role || ambilSession("adminAngkringanRole") || "Admin Biasa";
+    const kepala = isKepalaAdmin();
     document.getElementById("login-overlay").style.display = "none";
-    document.getElementById("admin-info").innerText = "Kasir aktif: " + u;
+    document.getElementById("admin-info").innerHTML = `Kasir aktif: <strong>${u}</strong> <span class="role-badge ${kepala ? 'kepala' : 'biasa'}">${kepala ? '👑 Kepala Admin' : '👤 Admin Biasa'}</span>`;
     muatMenu(); sinkronPesananDariServer();
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(sinkronPesananDariServer, 15000);
   }
-  function logoutAdmin() { hapusSession("adminAngkringan"); if (pollTimer) clearInterval(pollTimer); document.getElementById("login-overlay").style.display = "flex"; }
+  function logoutAdmin() { hapusSession("adminAngkringan"); hapusSession("adminAngkringanRole"); roleAdminAktif = "Admin Biasa"; if (pollTimer) clearInterval(pollTimer); document.getElementById("login-overlay").style.display = "flex"; }
 
   function muatMenu() {
     document.getElementById("menu-container").innerHTML = `<div class="loading-box">Memuat daftar menu...</div>`;
@@ -1402,8 +1414,8 @@
   function bukaModalEditPesanan(idPesanan) {
     const order = riwayatPesanan.find(p => p.id === idPesanan);
     if (!order) return;
-    if (normStatus(order.status) === "Selesai") {
-      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat diedit lagi.");
+    if (normStatus(order.status) === "Selesai" && !isKepalaAdmin()) {
+      tampilkanToast("🔒 Hanya Kepala Admin yang dapat mengedit pesanan berstatus Selesai.");
       return;
     }
     pesananSedangDiedit = order;
@@ -1885,8 +1897,8 @@
 
   function ubahStatusPesanan(id, statusBaru) {
     const idx = riwayatPesanan.findIndex(p => p.id === id);
-    if (idx !== -1 && normStatus(riwayatPesanan[idx].status) === "Selesai") {
-      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat dikembalikan ke Diproses.");
+    if (idx !== -1 && normStatus(riwayatPesanan[idx].status) === "Selesai" && !isKepalaAdmin()) {
+      tampilkanToast("🔒 Hanya Kepala Admin yang dapat mengembalikan pesanan Selesai ke Diproses.");
       return;
     }
     if (idx !== -1) {
@@ -1913,17 +1925,33 @@
 
   function hapusSatuPesanan(id) {
     const order = riwayatPesanan.find(p => p.id === id);
-    if (order && normStatus(order.status) === "Selesai") {
-      tampilkanToast("🔒 Pesanan berstatus Selesai tidak dapat dihapus.");
+    if (order && normStatus(order.status) === "Selesai" && !isKepalaAdmin()) {
+      tampilkanToast("🔒 Hanya Kepala Admin yang dapat menghapus pesanan berstatus Selesai.");
       return;
     }
     tambahHiddenIds([id]);
     riwayatPesanan = riwayatPesanan.filter(p => p.id !== id);
     simpanRiwayatKeStorage();
     renderRiwayatPesanan();
+    if (isKepalaAdmin()) {
+      fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "hapusPesanan", idPesanan: id, role: roleAdminAktif }) }).catch(() => {});
+      tampilkanToast("🗑️ Pesanan dihapus oleh Kepala Admin.");
+    }
   }
   function hapusPesananSelesai() {
-    tampilkanToast("🔒 Pesanan yang sudah Selesai terkunci dan tidak dapat dihapus.");
+    if (!isKepalaAdmin()) {
+      tampilkanToast("🔒 Hanya Kepala Admin yang dapat menghapus pesanan Selesai.");
+      return;
+    }
+    const idsSelesai = riwayatPesanan.filter(p => normStatus(p.status) === "Selesai").map(p => p.id);
+    tambahHiddenIds(idsSelesai);
+    riwayatPesanan = riwayatPesanan.filter(p => normStatus(p.status) !== "Selesai");
+    simpanRiwayatKeStorage();
+    renderRiwayatPesanan();
+    idsSelesai.forEach(id => {
+      fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "hapusPesanan", idPesanan: id, role: roleAdminAktif }) }).catch(() => {});
+    });
+    tampilkanToast(`🗑️ ${idsSelesai.length} pesanan selesai dibersihkan oleh Kepala Admin.`);
   }
   function filterStatusRiwayat(st, b) { filterStatusAktif = st; document.querySelectorAll(".status-tab").forEach(x => x.classList.remove("active")); b.classList.add("active"); renderRiwayatPesanan(); }
 
@@ -1962,7 +1990,7 @@
 
     document.getElementById("nav-review-badge").innerText = `${jDitinjau} Ditinjau`;
     document.getElementById("nav-process-badge").innerText = `${jDiproses} Diproses`;
-    document.getElementById("clear-completed-btn").style.display = "none";
+    document.getElementById("clear-completed-btn").style.display = (isKepalaAdmin() && jSelesai > 0) ? "inline-block" : "none";
 
     const banner = document.getElementById("active-queue-banner");
     if (jDitinjau > 0 || jDiproses > 0) {
@@ -1998,7 +2026,9 @@
         actionBtnHTML = `<button type="button" class="btn-status-toggle review-btn" data-action="tinjau">💳 Tinjau &amp; Konfirmasi</button>`;
       } else if (st === "Selesai") {
         badgeHTML = `<span class="order-status-badge selesai">✅ Selesai</span>`;
-        actionBtnHTML = `<span class="order-locked-pill">🔒 Selesai (Terkunci)</span>`;
+        actionBtnHTML = isKepalaAdmin()
+          ? `<button type="button" class="btn-status-toggle mark-process" data-action="proses">↺ Kembalikan Diproses</button>`
+          : `<span class="order-locked-pill">🔒 Selesai (Terkunci)</span>`;
       }
 
       const payBadgeHTML = sb === "Sudah Dibayar"
@@ -2008,8 +2038,9 @@
           : `<span class="pay-badge-unpaid">⏳ Belum Dibayar</span>`);
       const markPaidBtnHTML = (sb !== "Sudah Dibayar" && st !== "Sedang Ditinjau")
         ? `<button type="button" class="btn-pay-toggle" data-action="lunas">✓ Konfirmasi Uang Masuk</button>` : "";
-      const editBtnHTML = st !== "Selesai" ? `<button type="button" class="btn-order-edit" data-action="edit" title="Edit Pesanan">✏️ Edit</button>` : "";
-      const deleteBtnHTML = st !== "Selesai" ? `<button type="button" class="btn-order-delete" data-action="hapus" title="Hapus Pesanan">🗑️</button>` : "";
+      const bolehEditDanHapus = (st !== "Selesai") || isKepalaAdmin();
+      const editBtnHTML = bolehEditDanHapus ? `<button type="button" class="btn-order-edit" data-action="edit" title="Edit Pesanan">✏️ Edit</button>` : "";
+      const deleteBtnHTML = bolehEditDanHapus ? `<button type="button" class="btn-order-delete" data-action="hapus" title="Hapus Pesanan">🗑️</button>` : "";
       const voucherTag = order.kodeVoucher ? `<div style="font-size:0.75rem; color:var(--success-text); font-weight:700; margin-top:4px;">🎟️ Voucher ${order.kodeVoucher} (-Rp ${Number(order.diskon || 0).toLocaleString("id-ID")})</div>` : "";
       const proofBtnHTML = order.buktiTransfer ? `<div><button type="button" class="btn-view-proof" data-action="bukti">🖼️ Lihat Bukti Bayar</button></div>` : "";
 
@@ -2032,6 +2063,7 @@
       `;
       const tinjauBtn = card.querySelector('[data-action="tinjau"]'); if (tinjauBtn) tinjauBtn.addEventListener("click", () => bukaModalTinjau(order.id));
       const selesaiBtn = card.querySelector('[data-action="selesai"]'); if (selesaiBtn) selesaiBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Selesai"));
+      const prosesBtn = card.querySelector('[data-action="proses"]'); if (prosesBtn) prosesBtn.addEventListener("click", () => ubahStatusPesanan(order.id, "Sedang Diproses"));
       const lunasBtn = card.querySelector('[data-action="lunas"]'); if (lunasBtn) lunasBtn.addEventListener("click", () => tandaiSudahDibayar(order.id));
       const buktiBtn = card.querySelector('[data-action="bukti"]'); if (buktiBtn) buktiBtn.addEventListener("click", () => bukaModalBukti(order.id));
       const editBtn = card.querySelector('[data-action="edit"]'); if (editBtn) editBtn.addEventListener("click", () => bukaModalEditPesanan(order.id));
