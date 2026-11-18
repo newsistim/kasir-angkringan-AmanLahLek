@@ -1128,7 +1128,7 @@
     { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
     { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" }
   ];
-  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 2000 }];
+  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 0 }];
 
   let daftarMenu = [], daftarTambahan = [], kategoriAktif = "Semua", kataKunciCari = "";
   let keranjang = [], subtotalBelanja = 0, diskonVoucher = 0, voucherTerpasang = null, totalBelanja = 0;
@@ -1193,8 +1193,7 @@
   }
 
   function getHargaIce() {
-    const iceObj = daftarTambahan.find(a => String(a.nama || "").trim().toUpperCase() === "ICE");
-    return iceObj ? Number(iceObj.harga || 0) : 2000;
+    return 0;
   }
 
   function isMinuman(kategori) {
@@ -1607,7 +1606,7 @@
         cartShortcut.classList.add("show");
         document.getElementById("cart-all-hot-btn").classList.toggle("active", minumanCart.every(i => i.suhu === "HOT"));
         document.getElementById("cart-all-ice-btn").classList.toggle("active", minumanCart.every(i => i.suhu === "ICE"));
-        document.getElementById("cart-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+        document.getElementById("cart-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
       } else {
         cartShortcut.classList.remove("show");
       }
@@ -1634,7 +1633,7 @@
         ? `<div class="item-addons">
             <span class="temp-req-label">Suhu *:</span>
             <button type="button" class="addon-toggle ${item.suhu === 'HOT' ? 'selected-hot' : ''}" onclick="pilihSuhuKeranjang(${idx}, 'HOT')">🔥 HOT (Gratis)</button>
-            <button type="button" class="addon-toggle ${item.suhu === 'ICE' ? 'selected-ice' : ''}" onclick="pilihSuhuKeranjang(${idx}, 'ICE')">🧊 ICE (+${hargaIce/1000}rb)</button>
+            <button type="button" class="addon-toggle ${item.suhu === 'ICE' ? 'selected-ice' : ''}" onclick="pilihSuhuKeranjang(${idx}, 'ICE')">🧊 ICE (Gratis)</button>
           </div>`
         : "";
       c.innerHTML += `<div class="cart-item ${belumPilihSuhu ? 'missing-temp' : ''}"><div class="cart-item-top"><div><strong>${item.nama}</strong>${labelSuhu}<span class="cart-item-price">Rp ${sub.toLocaleString("id-ID")}</span></div><div class="qty-controls"><button type="button" class="qty-btn" onclick="ubahQty(${idx}, -1)">−</button><span class="qty-num">${item.qty}</span><button type="button" class="qty-btn" onclick="ubahQty(${idx}, 1)">+</button></div></div>${addHTML}</div>`;
@@ -1949,7 +1948,7 @@
         editShortcut.classList.add("show");
         document.getElementById("edit-all-hot-btn").classList.toggle("active", minumanEdit.every(i => i.suhu === "HOT"));
         document.getElementById("edit-all-ice-btn").classList.toggle("active", minumanEdit.every(i => i.suhu === "ICE"));
-        document.getElementById("edit-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+        document.getElementById("edit-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
       } else {
         editShortcut.classList.remove("show");
       }
@@ -1977,7 +1976,7 @@
           ? `<div class="edit-temp-row">
               <span class="temp-req-label">Suhu *:</span>
               <button type="button" class="edit-temp-chip ${item.suhu === 'HOT' ? 'hot-active' : ''}" data-eidx="${idx}" data-esuhu="HOT">🔥 HOT (Gratis)</button>
-              <button type="button" class="edit-temp-chip ${item.suhu === 'ICE' ? 'ice-active' : ''}" data-eidx="${idx}" data-esuhu="ICE">🧊 ICE (+Rp ${hargaIce.toLocaleString("id-ID")})</button>
+              <button type="button" class="edit-temp-chip ${item.suhu === 'ICE' ? 'ice-active' : ''}" data-eidx="${idx}" data-esuhu="ICE">🧊 ICE (Gratis)</button>
             </div>`
           : "";
 
