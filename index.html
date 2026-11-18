@@ -165,6 +165,15 @@
     .est-temp-chip { font-family: inherit; font-size: 0.76rem; font-weight: 800; padding: 5px 11px; border-radius: 999px; border: 1.5px solid var(--espresso-200); background: #fff; cursor: pointer; }
     .est-temp-chip.selected-hot { background: #d84315; color: #fff; border-color: #d84315; }
     .est-temp-chip.selected-ice { background: #0277bd; color: #fff; border-color: #0277bd; }
+    .temp-shortcut-bar { display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 11px; padding: 8px 10px; margin-bottom: 10px; }
+    .temp-shortcut-bar.show { display: flex; }
+    .temp-shortcut-label { font-size: 0.76rem; font-weight: 800; color: var(--espresso-800); }
+    .temp-shortcut-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .temp-shortcut-btn { font-family: inherit; font-size: 0.74rem; font-weight: 800; padding: 5px 10px; border-radius: 999px; border: 1.5px solid var(--espresso-200); background: #fff; cursor: pointer; }
+    .temp-shortcut-btn.hot { color: #d84315; border-color: #ffccbc; background: #fff8f5; }
+    .temp-shortcut-btn.hot.active { background: #d84315; color: #fff; border-color: #d84315; }
+    .temp-shortcut-btn.ice { color: #0277bd; border-color: #b3e5fc; background: #f3faff; }
+    .temp-shortcut-btn.ice.active { background: #0277bd; color: #fff; border-color: #0277bd; }
     .est-voucher-box { background: var(--bg-subtle); border: 1.5px solid var(--espresso-200); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
 
     .order-sent-card { text-align: center; padding: 10px 4px; }
@@ -240,6 +249,13 @@
     </div>
 
     <div id="order-form-view">
+      <div id="est-temp-shortcut" class="temp-shortcut-bar">
+        <span class="temp-shortcut-label">⚡ Semua Minuman:</span>
+        <div class="temp-shortcut-btns">
+          <button type="button" id="est-all-hot-btn" class="temp-shortcut-btn hot" onclick="aturSemuaSuhuEstimasi('HOT')">🔥 Semua HOT</button>
+          <button type="button" id="est-all-ice-btn" class="temp-shortcut-btn ice" onclick="aturSemuaSuhuEstimasi('ICE')">🧊 Semua ICE</button>
+        </div>
+      </div>
       <div id="est-list-container" class="est-list"></div>
 
       <div class="form-field">
@@ -290,7 +306,7 @@
       <div id="cust-pay-qris" class="pay-detail-panel">
         <div style="font-size:0.82rem; font-weight:800; color:var(--espresso-900);">Scan QRIS ANGKRINGAN AMANLAHLEK</div>
         <div class="qris-zoom-wrap">
-          <img src="QRIS.jpg" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
+          <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/QRIS.jpg" onerror="this.onerror=null;this.src='QRIS.jpg';" alt="QRIS Angkringan AmanLahLek" class="qris-zoom-img">
         </div>
         <div class="qris-actions-row">
           <button type="button" id="toggle-qris-dl-btn" class="toggle-download-btn" onclick="toggleDownloadQris()">⬇️ Download Barcode QRIS</button>
@@ -709,6 +725,28 @@
     perbaruiBarEstimasi(); terapkanFilter();
   }
 
+  function aturSemuaSuhuEstimasi(suhuBaru) {
+    const hargaIce = getHargaIce();
+    const hasil = [];
+    catatanPesanan.forEach(item => {
+      if (isMinuman(item.kategori)) {
+        item.suhu = suhuBaru;
+        item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
+      }
+      const existing = hasil.find(x => x.nama === item.nama && x.suhu === item.suhu);
+      if (existing) {
+        existing.qty += item.qty;
+      } else {
+        hasil.push(item);
+      }
+    });
+    catatanPesanan = hasil;
+    perbaruiBarEstimasi();
+    renderIsiModalEstimasi();
+    terapkanFilter();
+    tampilkanToast(suhuBaru === "ICE" ? "🧊 Semua minuman diatur ke ICE" : "🔥 Semua minuman diatur ke HOT");
+  }
+
   function pilihSuhuEstimasi(rIdx, suhuBaru) {
     const item = catatanPesanan[rIdx];
     if (!item || !isMinuman(item.kategori)) return;
@@ -792,6 +830,20 @@
     if (catatanPesanan.length === 0) { tutupModalEstimasi(); return; }
     listEl.innerHTML = "";
     const hargaIce = getHargaIce();
+    const minumanItems = catatanPesanan.filter(i => isMinuman(i.kategori));
+    const shortcutBar = document.getElementById("est-temp-shortcut");
+    if (shortcutBar) {
+      if (minumanItems.length > 0) {
+        shortcutBar.classList.add("show");
+        const semuaHot = minumanItems.every(i => i.suhu === "HOT");
+        const semuaIce = minumanItems.every(i => i.suhu === "ICE");
+        document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
+        document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
+        document.getElementById("est-all-ice-btn").innerText = `🧊 Semua ICE (+${hargaIce / 1000}rb)`;
+      } else {
+        shortcutBar.classList.remove("show");
+      }
+    }
 
     catatanPesanan.forEach((item, rIdx) => {
       const minuman = isMinuman(item.kategori);
