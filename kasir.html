@@ -560,7 +560,7 @@
     <button type="button" id="tab-history-btn" class="nav-tab-btn" onclick="scrollKeBagian('riwayat')">
       📋 Pesanan <span id="nav-review-badge" class="nav-badge info">0 Ditinjau</span> <span id="nav-process-badge" class="nav-badge">0 Diproses</span>
     </button>
-    <button type="button" class="refresh-btn" onclick="sinkronPesananDariServer()">↻ Cek Pesanan</button>
+    <button type="button" class="refresh-btn" onclick="sinkronPesananDariServer(true)">↻ Cek Pesanan</button>
     <button type="button" class="logout-btn" onclick="logoutAdmin()">Keluar</button>
   </div>
 </header>
@@ -724,7 +724,7 @@
         <p style="margin:0; font-size:0.85rem; color:var(--espresso-600);">Pantau dan <strong>Edit Pesanan</strong> dari pelanggan maupun kasir pada tahap <strong>Sedang Ditinjau</strong>, <strong>Sedang Diproses</strong>, atau <strong>Selesai</strong>.</p>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button type="button" class="toolbar-stock-btn" onclick="sinkronPesananDariServer()">↻ Segarkan Antrean</button>
+        <button type="button" class="toolbar-stock-btn" onclick="sinkronPesananDariServer(true)">↻ Segarkan Antrean</button>
         <button type="button" id="clear-completed-btn" class="clear-done-btn" onclick="hapusPesananSelesai()" style="display:none;">🗑️ Bersihkan yang Selesai</button>
       </div>
     </div>
@@ -826,13 +826,31 @@
   function ambilEditedOrdersMap() {
     try {
       const r = localStorage.getItem(STORAGE_EDITED_KEY);
-      return r ? (JSON.parse(r) || {}) : {};
+      const map = r ? (JSON.parse(r) || {}) : {};
+      const now = Date.now();
+      // Hanya pertahankan override lokal sementara (maks 15 detik saat POST masih berjalan)
+      const aktif = {};
+      Object.keys(map).forEach(k => {
+        if (map[k] && map[k].updatedAt && (now - map[k].updatedAt) < 15000) {
+          aktif[k] = map[k];
+        }
+      });
+      return aktif;
     } catch (e) { return {}; }
   }
   function simpanEditedOrderLokal(id, patchData) {
     try {
       const map = ambilEditedOrdersMap();
       map[id] = { ...(map[id] || {}), ...patchData, updatedAt: Date.now() };
+      localStorage.setItem(STORAGE_EDITED_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+  function hapusEditedOrderLokal(id) {
+    try {
+      const r = localStorage.getItem(STORAGE_EDITED_KEY);
+      if (!r) return;
+      const map = JSON.parse(r) || {};
+      delete map[id];
       localStorage.setItem(STORAGE_EDITED_KEY, JSON.stringify(map));
     } catch (e) {}
   }
@@ -1051,22 +1069,30 @@
   }
   function simpanRiwayatKeStorage() { try { localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(riwayatPesanan)); } catch (e) {} }
 
-  function sinkronPesananDariServer() {
-    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getPesananMasuk" }) })
-      .then(res => res.json()).then(data => {
-        if (data && data.success && Array.isArray(data.orders)) {
-          const hidden = ambilHiddenIds();
-          const editedMap = ambilEditedOrdersMap();
-          const serverOrders = data.orders
-            .filter(o => !hidden.includes(o.id))
-            .map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
-          const serverIds = new Set(serverOrders.map(o => o.id));
-          const lokalBelumSync = riwayatPesanan.filter(o => !serverIds.has(o.id) && !hidden.includes(o.id));
-          riwayatPesanan = [...lokalBelumSync, ...serverOrders];
-          simpanRiwayatKeStorage();
+  function sinkronPesananDariServer(manual) {
+    try {
+      fetch(API_URL + "?action=getPesananMasuk&_t=" + Date.now())
+        .then(res => res.json()).then(data => {
+          if (data && data.success && Array.isArray(data.orders)) {
+            const hidden = ambilHiddenIds();
+            const editedMap = ambilEditedOrdersMap();
+            const serverOrders = data.orders
+              .filter(o => !hidden.includes(o.id))
+              .map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+            const serverIds = new Set(serverOrders.map(o => o.id));
+            const now = Date.now();
+            const lokalBaru = riwayatPesanan.filter(o => !serverIds.has(o.id) && !hidden.includes(o.id) && o._localCreatedAt && (now - o._localCreatedAt) < 15000);
+            riwayatPesanan = [...lokalBaru, ...serverOrders];
+            simpanRiwayatKeStorage();
+            renderRiwayatPesanan();
+            if (manual) tampilkanToast("✓ Data pesanan disinkronkan dari server");
+          }
+        }).catch(() => {
+          muatRiwayatDariStorage();
           renderRiwayatPesanan();
-        }
-      }).catch(() => { muatRiwayatDariStorage(); renderRiwayatPesanan(); }); } catch (e) { muatRiwayatDariStorage(); renderRiwayatPesanan(); }
+          if (manual) tampilkanToast("⚠️ Gagal menyinkronkan dengan server");
+        });
+    } catch (e) { muatRiwayatDariStorage(); renderRiwayatPesanan(); }
   }
 
   window.addEventListener("storage", (e) => { if (e.key === STORAGE_RIWAYAT_KEY || e.key === STORAGE_EDITED_KEY) { muatRiwayatDariStorage(); renderRiwayatPesanan(); } });
@@ -1784,6 +1810,7 @@
         kasir: kasirAktif
       })
     }).then(res => res.json()).then(data => {
+      hapusEditedOrderLokal(idTarget);
       terapkanPerubahanLokal(data && data.noTrx ? data.noTrx : undefined);
     }).catch(() => {
       terapkanPerubahanLokal();
@@ -1891,7 +1918,7 @@
     };
 
     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "konfirmasiPesananKasir", idPesanan: idTarget, metode: m, statusBayar: sb, total, bayar, kembali, kasir, buktiTransfer: buktiKirimReview }) })
-      .then(res => res.json()).then(data => { btn.disabled = false; btn.innerText = "✓ Konfirmasi & Masuk Sedang Diproses"; selesaikanLokal((data && data.noTrx) || ("TRX-" + Date.now().toString().slice(-6))); })
+      .then(res => res.json()).then(data => { hapusEditedOrderLokal(idTarget); btn.disabled = false; btn.innerText = "✓ Konfirmasi & Masuk Sedang Diproses"; selesaikanLokal((data && data.noTrx) || ("TRX-" + Date.now().toString().slice(-6))); })
       .catch(() => { btn.disabled = false; btn.innerText = "✓ Konfirmasi & Masuk Sedang Diproses"; selesaikanLokal("TRX-" + Date.now().toString().slice(-6)); });
   }
 
@@ -1907,7 +1934,9 @@
       simpanRiwayatKeStorage();
       renderRiwayatPesanan();
     }
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, status: statusBaru }) }).catch(() => {});
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, status: statusBaru }) })
+      .then(res => res.json()).then(data => { if (data && data.success) hapusEditedOrderLokal(id); })
+      .catch(() => tampilkanToast("⚠️ Gagal menyimpan status ke server"));
   }
 
   function tandaiSudahDibayar(id) {
@@ -1919,7 +1948,9 @@
       simpanRiwayatKeStorage();
       renderRiwayatPesanan();
     }
-    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, statusBayar: "Sudah Dibayar", kasir }) }).catch(() => {});
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "ubahStatusPesanan", idPesanan: id, statusBayar: "Sudah Dibayar", kasir }) })
+      .then(res => res.json()).then(data => { if (data && data.success) hapusEditedOrderLokal(id); })
+      .catch(() => tampilkanToast("⚠️ Gagal menyimpan status bayar ke server"));
     tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
   }
 
@@ -2141,7 +2172,8 @@
         waktu: waktuTrx, atasNama, mejaLabel, detailItems, subtotal: subtotalBelanja, total: totalBelanja,
         metode, statusBayar: statusBayarKasir, bayar: uang, kembali, kasir, status: "Sedang Diproses",
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "", diskon: diskonVoucher,
-        buktiTransfer: buktiKirimKasir
+        buktiTransfer: buktiKirimKasir,
+        _localCreatedAt: Date.now()
       });
       simpanRiwayatKeStorage(); renderRiwayatPesanan();
       tampilkanModalStruk({ judul: "Pesanan Masuk Proses!", subjudul: `${mejaLabel} • ${atasNama} • ${statusBayarKasir}`, html: `<div class="receipt-row"><span>Pesanan</span><span>${detailItems}</span></div><div class="receipt-row total"><span>Total</span><span>Rp ${totalBelanja.toLocaleString("id-ID")}</span></div>` });
