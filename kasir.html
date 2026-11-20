@@ -1410,6 +1410,338 @@
       box-shadow: 0 6px 16px rgba(234, 88, 12, 0.3);
     }
 
+  
+    /* === KASIR LIVE CHAT INBOX & MODAL === */
+    .kasir-chat-toast {
+      position: fixed;
+      right: 18px;
+      bottom: 20px;
+      z-index: 1400;
+      background: linear-gradient(135deg, #2b1810, #4a2c1d);
+      color: #ffe082;
+      border: 2px solid #d4a359;
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      box-shadow: 0 12px 30px rgba(26, 15, 10, 0.36);
+      cursor: pointer;
+      display: none;
+      max-width: 340px;
+    }
+    .kasir-chat-toast.show { display: block; }
+
+    .klc-modal-card {
+      width: 100%;
+      max-width: 860px;
+      height: 82vh;
+      max-height: 640px;
+      padding: 0;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .klc-top-bar {
+      background: linear-gradient(135deg, #1f120b, #3a2115);
+      color: #fff8ee;
+      padding: 13px 16px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      border-bottom: 2px solid #d4a359;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .klc-top-title {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffe082;
+    }
+    .klc-top-actions {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .klc-refresh-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff8ee;
+      border: 1px solid rgba(255, 224, 130, 0.45);
+      border-radius: 10px;
+      padding: 6px 11px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .klc-body {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex: 1;
+      flex: 1;
+      min-height: 0;
+      background: #fdfaf5;
+    }
+    .klc-sidebar {
+      width: 280px;
+      border-right: 1.5px solid #e5d5be;
+      background: #fffaf2;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+      min-height: 0;
+    }
+    .klc-sidebar-head {
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #5c4033;
+      border-bottom: 1px solid #eadcc8;
+      background: #f5ebd9;
+    }
+    .klc-session-list {
+      -webkit-flex: 1;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .klc-session-item {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #efe3d2;
+      padding: 11px 12px;
+      cursor: pointer;
+      display: block;
+      color: #2b1810;
+    }
+    .klc-session-item:hover { background: #f8efe0; }
+    .klc-session-item.active { background: #f2e1c4; border-left: 4px solid #c6691e; }
+    .klc-session-top {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+    .klc-session-name { font-size: 0.86rem; font-weight: 800; color: #2b1810; }
+    .klc-session-meja {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: #e9d7bc;
+      color: #4a2c1d;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .klc-session-preview {
+      font-size: 0.76rem;
+      color: #6d4c41;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .klc-session-meta {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.68rem;
+      color: #8d6e63;
+    }
+    .klc-unread-pill {
+      background: #d32f2f;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    .klc-thread-pane {
+      -webkit-flex: 1;
+      flex: 1;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      background: #f9f4ec;
+    }
+    .klc-thread-head {
+      padding: 10px 14px;
+      background: #fff;
+      border-bottom: 1px solid #e5d5be;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 8px;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .klc-back-btn {
+      display: none;
+      background: #f5ebd9;
+      border: 1px solid #d4b895;
+      color: #4a2c1d;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .klc-del-btn {
+      background: #ffebee;
+      border: 1px solid #ef9a9a;
+      color: #c62828;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .klc-messages {
+      -webkit-flex: 1;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 14px;
+    }
+    .klc-empty {
+      text-align: center;
+      color: #8d6e63;
+      padding: 36px 16px;
+      font-size: 0.86rem;
+    }
+    .klc-msg-row {
+      display: -webkit-flex;
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .klc-msg-row.kasir { -webkit-justify-content: flex-end; justify-content: flex-end; }
+    .klc-msg-row.pelanggan { -webkit-justify-content: flex-start; justify-content: flex-start; }
+    .klc-bubble {
+      max-width: 78%;
+      padding: 9px 13px;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      line-height: 1.42;
+      word-wrap: break-word;
+      box-shadow: 0 2px 6px rgba(26, 15, 10, 0.06);
+    }
+    .klc-msg-row.kasir .klc-bubble {
+      background: linear-gradient(135deg, #3e2214, #5c331e);
+      color: #fff8ee;
+      border-bottom-right-radius: 4px;
+    }
+    .klc-msg-row.pelanggan .klc-bubble {
+      background: #ffffff;
+      color: #2b1810;
+      border: 1px solid #e6d7c3;
+      border-bottom-left-radius: 4px;
+    }
+    .klc-bubble-meta {
+      font-size: 0.68rem;
+      margin-top: 4px;
+      opacity: 0.76;
+    }
+    .klc-msg-row.kasir .klc-bubble-meta { text-align: right; color: #f5d6a7; }
+    .klc-msg-row.pelanggan .klc-bubble-meta { color: #8d6e63; }
+
+    .klc-quick-bar {
+      display: -webkit-flex;
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 6px;
+      padding: 7px 12px;
+      background: #fffaf2;
+      border-top: 1px solid #eadcc8;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .klc-quick-chip {
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+      background: #fff;
+      border: 1px solid #d4a359;
+      color: #4a2c1d;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .klc-input-bar {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #fff;
+      border-top: 1px solid #e5d5be;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .klc-input-bar input {
+      -webkit-flex: 1;
+      flex: 1;
+      min-width: 0;
+      padding: 10px 13px;
+      border: 1.5px solid #d7c3ab;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      background: #fdfaf5;
+      color: #2b1810;
+    }
+    .klc-send-btn {
+      background: linear-gradient(135deg, #c6691e, #e67e22);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .klc-send-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    @media (max-width: 720px) {
+      .klc-modal-card { height: 88vh; max-height: none; }
+      .klc-sidebar { width: 100%; border-right: none; }
+      .klc-thread-pane { display: none; }
+      .klc-body.klc-mobile-thread .klc-sidebar { display: none; }
+      .klc-body.klc-mobile-thread .klc-thread-pane { display: -webkit-flex; display: flex; }
+      .klc-back-btn { display: inline-block; }
+    }
+
   </style>
 </head>
 <body>
@@ -1718,11 +2050,62 @@
     <button type="button" id="tab-history-btn" class="nav-tab-btn" onclick="scrollKeBagian('riwayat')">
       📋 Pesanan <span id="nav-review-badge" class="nav-badge info">0 Ditinjau</span> <span id="nav-process-badge" class="nav-badge">0 Diproses</span>
     </button>
+    <button type="button" id="tab-livechat-btn" class="nav-tab-btn" onclick="bukaModalLiveChat()">💬 Live Chat <span id="nav-chat-badge" class="nav-badge info">0</span></button>
     <button type="button" id="sound-toggle-btn" class="refresh-btn btn-notif-sound" onclick="toggleSuaraNotifikasi()" title="Aktifkan/Matikan &amp; Tes Suara Notifikasi">🔔 Suara: Aktif</button>
     <button type="button" class="refresh-btn" onclick="sinkronPesananDariServer()">↻ Cek Pesanan</button>
     <button type="button" class="logout-btn" onclick="logoutAdmin()">Keluar</button>
   </div>
 </header>
+
+
+<div id="kasir-chat-toast" class="kasir-chat-toast" onclick="bukaModalLiveChat()"></div>
+
+<div id="livechat-modal" class="modal-overlay">
+  <div class="modal-card klc-modal-card">
+    <div class="klc-top-bar">
+      <div class="klc-top-title">
+        <span>💬 Live Chat Pelanggan</span>
+      </div>
+      <div class="klc-top-actions">
+        <button type="button" class="klc-refresh-btn" onclick="sinkronChatDariServer()">↻ Segarkan</button>
+        <button type="button" class="close-modal-btn" onclick="tutupModalLiveChat()">✕</button>
+      </div>
+    </div>
+    <div id="klc-body" class="klc-body">
+      <div class="klc-sidebar">
+        <div class="klc-sidebar-head">Daftar Percakapan Pelanggan</div>
+        <div id="klc-session-list" class="klc-session-list">
+          <div class="klc-empty">Belum ada pesan masuk dari pelanggan.</div>
+        </div>
+      </div>
+      <div class="klc-thread-pane">
+        <div id="klc-thread-head" class="klc-thread-head" style="display:none;">
+          <div style="display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;">
+            <button type="button" class="klc-back-btn" onclick="kembaliKeDaftarChat()">← Daftar</button>
+            <div>
+              <div id="klc-active-name" style="font-size:0.9rem;font-weight:800;color:#2b1810;">Pelanggan</div>
+              <div id="klc-active-meja" style="font-size:0.74rem;color:#6d4c41;">Meja -</div>
+            </div>
+          </div>
+          <button type="button" id="klc-del-session-btn" class="klc-del-btn" style="display:none;" onclick="konfirmasiHapusSesiChat()">🗑️ Hapus Sesi</button>
+        </div>
+        <div id="klc-messages" class="klc-messages">
+          <div class="klc-empty">Pilih percakapan pelanggan di sebelah kiri untuk membalas.</div>
+        </div>
+        <div id="klc-quick-bar" class="klc-quick-bar" style="display:none;">
+          <button type="button" class="klc-quick-chip" onclick="kirimCepatBalasanKasir('Siap Kak, pesanan sedang kami proses ya ☕')">Sedang diproses</button>
+          <button type="button" class="klc-quick-chip" onclick="kirimCepatBalasanKasir('Menu tersebut masih ready Kak, silakan dipesan!')">Menu ready</button>
+          <button type="button" class="klc-quick-chip" onclick="kirimCepatBalasanKasir('Baik Kak, tim kami segera menuju meja Anda.')">Segera ke meja</button>
+          <button type="button" class="klc-quick-chip" onclick="kirimCepatBalasanKasir('Terima kasih banyak Kak! 🙏')">Terima kasih</button>
+        </div>
+        <div id="klc-input-bar" class="klc-input-bar" style="display:none;">
+          <input type="text" id="klc-reply-input" placeholder="Ketik balasan untuk pelanggan..." onkeydown="if(event.keyCode===13){kirimBalasanKasir();}">
+          <button type="button" id="klc-send-btn" class="klc-send-btn" onclick="kirimBalasanKasir()">Kirim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="pos-section" class="container">
   <div class="menu-section">
@@ -1914,30 +2297,12 @@
 
 <script>
 
-  /* ES5 Polyfills for Legacy iOS 9 / iPad 2 A1396 */
-  if (!Array.prototype.includes) {
-    Array.prototype.includes = function(s, idx) { return this.indexOf(s, idx) !== -1; };
-  }
-  if (!String.prototype.includes) {
-    String.prototype.includes = function(s, idx) { return this.indexOf(s, idx) !== -1; };
-  }
-  if (!Array.prototype.find) {
-    Array.prototype.find = function(p) {
-      for (var i = 0; i < this.length; i++) { if (p.call(arguments[1], this[i], i, this)) return this[i]; }
-      return undefined;
-    };
-  }
-  if (!Object.assign) {
-    Object.assign = function(t) {
-      if (t == null) throw new TypeError("Cannot convert undefined or null to object");
-      var to = Object(t);
-      for (var i = 1; i < arguments.length; i++) {
-        var s = arguments[i];
-        if (s != null) { for (var k in s) { if (Object.prototype.hasOwnProperty.call(s, k)) to[k] = s[k]; } }
-      }
-      return to;
-    };
-  }
+if (!Array.prototype.includes) { Array.prototype.includes = function(el) { return this.indexOf(el) !== -1; }; }
+if (!String.prototype.includes) { String.prototype.includes = function(s, start) { if (typeof start !== "number") start = 0; return this.indexOf(s, start) !== -1; }; }
+if (!String.prototype.startsWith) { String.prototype.startsWith = function(s, pos) { return this.substr(!pos || pos < 0 ? 0 : +pos, s.length) === s; }; }
+if (!Array.prototype.find) { Array.prototype.find = function(p) { for (var i = 0; i < this.length; i++) { if (p.call(arguments[1], this[i], i, this)) return this[i]; } return undefined; }; }
+if (!Array.prototype.findIndex) { Array.prototype.findIndex = function(p) { for (var i = 0; i < this.length; i++) { if (p.call(arguments[1], this[i], i, this)) return i; } return -1; }; }
+if (typeof Object.assign !== "function") { Object.assign = function(target) { if (target == null) throw new TypeError("Cannot convert undefined or null to object"); var to = Object(target); for (var i = 1; i < arguments.length; i++) { var next = arguments[i]; if (next != null) { for (var k in next) { if (Object.prototype.hasOwnProperty.call(next, k)) to[k] = next[k]; } } } return to; }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -3094,12 +3459,16 @@ function bukaHalamanKasir(u, role) {
   initialOrderSyncDone = false;
   knownOrderIds = {};
   pollTickCount = 0;
+  klcInitialSyncDone = false;
+  klcKnownMsgIds = {};
   muatMenu();
   sinkronPesananDariServer();
+  sinkronChatDariServer();
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(function () {
     pollTickCount++;
     sinkronPesananDariServer();
+    sinkronChatDariServer();
     if (pollTickCount % 3 === 0) muatMenu(true);
   }, 8000);
 }
@@ -4499,6 +4868,306 @@ function prosesBayar() {
       btn.disabled = false;
     });
   } catch (e) {}
+}
+
+/* === KASIR LIVE CHAT === */
+var klcSessions = [];
+var klcActiveSessionId = "";
+var klcKnownMsgIds = {};
+var klcInitialSyncDone = false;
+var klcToastTimer = null;
+function klcEscapeHtml(str) {
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function klcFormatJam(waktu) {
+  var s = String(waktu || "");
+  var parts = s.split(" ");
+  if (parts.length >= 2) return parts[1].substring(0, 5);
+  return s.substring(0, 5);
+}
+function tampilkanToastChatKasir(teks) {
+  var t = document.getElementById("kasir-chat-toast");
+  if (!t) return;
+  t.innerText = teks;
+  t.classList.add("show");
+  if (klcToastTimer) clearTimeout(klcToastTimer);
+  klcToastTimer = setTimeout(function () {
+    t.classList.remove("show");
+  }, 5500);
+}
+function bukaModalLiveChat() {
+  var m = document.getElementById("livechat-modal");
+  if (m) m.classList.add("show");
+  var t = document.getElementById("kasir-chat-toast");
+  if (t) t.classList.remove("show");
+  sinkronChatDariServer();
+  renderDaftarSesiChat();
+  if (klcActiveSessionId) {
+    pilihSesiChat(klcActiveSessionId);
+  } else if (klcSessions.length > 0 && window.innerWidth > 720) {
+    pilihSesiChat(klcSessions[0].sessionId);
+  }
+}
+function tutupModalLiveChat() {
+  var m = document.getElementById("livechat-modal");
+  if (m) m.classList.remove("show");
+}
+function kembaliKeDaftarChat() {
+  var body = document.getElementById("klc-body");
+  if (body) body.classList.remove("klc-mobile-thread");
+}
+function perbaruiBadgeChatNav(totalUnread) {
+  var b = document.getElementById("nav-chat-badge");
+  if (!b) return;
+  b.innerText = String(totalUnread || 0);
+  if (totalUnread > 0) {
+    b.classList.remove("info");
+    b.classList.add("danger");
+  } else {
+    b.classList.remove("danger");
+    b.classList.add("info");
+  }
+}
+function sinkronChatDariServer() {
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getPesanChat",
+        mode: "all"
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      if (data && data.success && Array.isArray(data.sessions)) {
+        klcSessions = data.sessions;
+        perbaruiBadgeChatNav(data.totalUnread || 0);
+        var newCustomerMsg = null;
+        for (var i = 0; i < klcSessions.length; i++) {
+          var s = klcSessions[i];
+          var msgs = s.messages || [];
+          for (var j = 0; j < msgs.length; j++) {
+            var msg = msgs[j];
+            if (msg.id && !klcKnownMsgIds[msg.id]) {
+              klcKnownMsgIds[msg.id] = true;
+              if (klcInitialSyncDone && msg.pengirim === "Pelanggan") {
+                newCustomerMsg = {
+                  nama: s.nama || msg.nama || "Pelanggan",
+                  meja: s.meja || msg.meja || "-",
+                  sessionId: s.sessionId
+                };
+              }
+            }
+          }
+        }
+        klcInitialSyncDone = true;
+        if (newCustomerMsg) {
+          if (typeof putarSuaraNotifikasiPesanan === "function") putarSuaraNotifikasiPesanan();
+          tampilkanToastChatKasir("💬 Pesan baru dari " + newCustomerMsg.nama + " (" + newCustomerMsg.meja + ") — Klik untuk balas");
+        }
+        var modal = document.getElementById("livechat-modal");
+        if (modal && modal.classList.contains("show")) {
+          renderDaftarSesiChat();
+          if (klcActiveSessionId) {
+            renderThreadChatAktif(false);
+          }
+        }
+      }
+    }).catch(function () {});
+  } catch (e) {}
+}
+function renderDaftarSesiChat() {
+  var listEl = document.getElementById("klc-session-list");
+  if (!listEl) return;
+  if (!klcSessions || klcSessions.length === 0) {
+    listEl.innerHTML = '<div class="klc-empty">Belum ada pesan masuk dari pelanggan.</div>';
+    return;
+  }
+  var html = "";
+  for (var i = 0; i < klcSessions.length; i++) {
+    var s = klcSessions[i];
+    var activeCls = s.sessionId === klcActiveSessionId ? " active" : "";
+    var unreadBadge = s.unreadCount > 0 ? '<span class="klc-unread-pill">' + s.unreadCount + ' baru</span>' : '';
+    html += '<button type="button" class="klc-session-item' + activeCls + '" data-sid="' + klcEscapeHtml(s.sessionId) + '" onclick="pilihSesiChat(this.getAttribute(\'data-sid\'))">' + '<div class="klc-session-top">' + '<span class="klc-session-name">' + klcEscapeHtml(s.nama || "Pelanggan") + '</span>' + '<span class="klc-session-meja">' + klcEscapeHtml(s.meja || "-") + '</span>' + '</div>' + '<div class="klc-session-preview">' + (s.lastSender === "Kasir" ? "Anda: " : "") + klcEscapeHtml(s.lastMessage || "") + '</div>' + '<div class="klc-session-meta"><span>' + klcEscapeHtml(klcFormatJam(s.lastTime)) + '</span>' + unreadBadge + '</div>' + '</button>';
+  }
+  listEl.innerHTML = html;
+}
+function cariSesiChatById(sid) {
+  for (var i = 0; i < klcSessions.length; i++) {
+    if (klcSessions[i].sessionId === sid) return klcSessions[i];
+  }
+  return null;
+}
+function pilihSesiChat(sid) {
+  klcActiveSessionId = sid;
+  var body = document.getElementById("klc-body");
+  if (body) body.classList.add("klc-mobile-thread");
+  renderDaftarSesiChat();
+  renderThreadChatAktif(true);
+  var s = cariSesiChatById(sid);
+  if (s && s.unreadCount > 0) {
+    s.unreadCount = 0;
+    var total = 0;
+    for (var i = 0; i < klcSessions.length; i++) total += klcSessions[i].unreadCount || 0;
+    perbaruiBadgeChatNav(total);
+    renderDaftarSesiChat();
+    try {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "tandaiChatDibaca",
+          sessionId: sid
+        })
+      }).catch(function () {});
+    } catch (e) {}
+  }
+}
+function renderThreadChatAktif(scrollBottom) {
+  var head = document.getElementById("klc-thread-head");
+  var msgBox = document.getElementById("klc-messages");
+  var quickBar = document.getElementById("klc-quick-bar");
+  var inputBar = document.getElementById("klc-input-bar");
+  var delBtn = document.getElementById("klc-del-session-btn");
+  var s = cariSesiChatById(klcActiveSessionId);
+  if (!s) {
+    if (head) head.style.display = "none";
+    if (quickBar) quickBar.style.display = "none";
+    if (inputBar) inputBar.style.display = "none";
+    if (msgBox) msgBox.innerHTML = '<div class="klc-empty">Pilih percakapan pelanggan untuk melihat dan membalas pesan.</div>';
+    return;
+  }
+  if (head) head.style.display = "flex";
+  if (quickBar) quickBar.style.display = "flex";
+  if (inputBar) inputBar.style.display = "flex";
+  if (delBtn) delBtn.style.display = isKepalaAdmin() ? "inline-block" : "none";
+  var nameEl = document.getElementById("klc-active-name");
+  var mejaEl = document.getElementById("klc-active-meja");
+  if (nameEl) nameEl.innerText = s.nama || "Pelanggan";
+  if (mejaEl) mejaEl.innerText = "🪑 " + (s.meja || "-");
+  var msgs = s.messages || [];
+  var html = "";
+  for (var i = 0; i < msgs.length; i++) {
+    var m = msgs[i];
+    var isKasir = m.pengirim === "Kasir";
+    var cls = isKasir ? "kasir" : "pelanggan";
+    var label = isKasir ? m.nama || "Kasir" : m.nama || s.nama || "Pelanggan";
+    html += '<div class="klc-msg-row ' + cls + '"><div class="klc-bubble">' + klcEscapeHtml(m.pesan).replace(/\n/g, "<br>") + '<div class="klc-bubble-meta">' + klcEscapeHtml(label) + ' • ' + klcEscapeHtml(klcFormatJam(m.waktu)) + '</div>' + '</div></div>';
+  }
+  if (msgBox) {
+    msgBox.innerHTML = html || '<div class="klc-empty">Belum ada pesan.</div>';
+    if (scrollBottom) msgBox.scrollTop = msgBox.scrollHeight;
+  }
+}
+function kirimCepatBalasanKasir(teks) {
+  var inp = document.getElementById("klc-reply-input");
+  if (inp) inp.value = teks;
+  kirimBalasanKasir();
+}
+function kirimBalasanKasir() {
+  if (!klcActiveSessionId) return;
+  var inp = document.getElementById("klc-reply-input");
+  var btn = document.getElementById("klc-send-btn");
+  if (!inp) return;
+  var teks = inp.value.trim();
+  if (!teks) return;
+  var s = cariSesiChatById(klcActiveSessionId);
+  var kasirNama = ambilSession("adminAngkringan") || "Kasir AmanLahLek";
+  inp.value = "";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "...";
+  }
+  if (s) {
+    var now = new Date();
+    var hh = String(now.getHours());
+    if (hh.length < 2) hh = "0" + hh;
+    var mm = String(now.getMinutes());
+    if (mm.length < 2) mm = "0" + mm;
+    s.messages.push({
+      id: "TEMP-" + Date.now(),
+      sessionId: klcActiveSessionId,
+      waktu: "Hari ini " + hh + ":" + mm + ":00",
+      pengirim: "Kasir",
+      nama: "Kasir (" + kasirNama + ")",
+      meja: s.meja || "-",
+      pesan: teks
+    });
+    s.lastMessage = teks;
+    s.lastSender = "Kasir";
+    renderThreadChatAktif(true);
+    renderDaftarSesiChat();
+  }
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "kirimPesanChat",
+        sessionId: klcActiveSessionId,
+        pengirim: "Kasir",
+        nama: "Kasir (" + kasirNama + ")",
+        meja: s ? s.meja || "-" : "-",
+        pesan: teks
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Kirim";
+      }
+      if (data && data.success) {
+        sinkronChatDariServer();
+      }
+    }).catch(function () {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Kirim";
+      }
+    });
+  } catch (e) {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = "Kirim";
+    }
+  }
+}
+function konfirmasiHapusSesiChat() {
+  if (!isKepalaAdmin() || !klcActiveSessionId) return;
+  var s = cariSesiChatById(klcActiveSessionId);
+  var namaTarget = s ? s.nama + " (" + s.meja + ")" : klcActiveSessionId;
+  var sidToDel = klcActiveSessionId;
+  var doDelete = function doDelete() {
+    try {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "hapusSesiChat",
+          sessionId: sidToDel,
+          role: roleAdminAktif
+        })
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data && data.success) {
+          klcActiveSessionId = "";
+          kembaliKeDaftarChat();
+          sinkronChatDariServer();
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  };
+  if (typeof bukaModalKonfirmasi === "function") {
+    bukaModalKonfirmasi({
+      icon: "🗑️",
+      title: "Hapus Sesi Live Chat?",
+      msg: "Riwayat chat dengan " + namaTarget + " akan dihapus permanen dari Spreadsheet.",
+      okText: "Ya, Hapus Chat",
+      variant: "danger",
+      onConfirm: doDelete
+    });
+  } else {
+    doDelete();
+  }
 }
 </script>
 
