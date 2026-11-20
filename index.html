@@ -82,7 +82,10 @@
     header::before {
       content: "";
       position: absolute;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
       background-size: 24px 24px;
       pointer-events: none;
@@ -223,6 +226,7 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid rgba(230, 220, 207, 0.95);
       margin-bottom: 22px;
+      position: -webkit-sticky;
       position: sticky;
       top: 12px;
       z-index: 50;
@@ -699,7 +703,12 @@
     /* MODALS */
     .modal-backdrop {
       position: fixed;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(22, 12, 8, 0.68);
       backdrop-filter: blur(6px);
       display: none;
@@ -1047,16 +1056,23 @@
     html {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      overflow-x: hidden;
       overflow-x: clip;
     }
     body {
+      overflow-x: hidden;
       overflow-x: clip;
+      min-height: 100vh;
       min-height: 100dvh;
+      padding-bottom: 108px;
       padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
     }
     header {
+      padding-top: 24px;
       padding-top: calc(24px + env(safe-area-inset-top, 0px));
+      padding-left: 16px;
       padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: 16px;
       padding-right: calc(16px + env(safe-area-inset-right, 0px));
     }
     .hero-badge, .filter-panel, .modal-backdrop {
@@ -1083,20 +1099,24 @@
       overscroll-behavior: contain;
     }
     .promo-grid {
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
     .estimator-bar {
+      bottom: 16px;
       bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     }
     .toast-notice {
+      top: 18px;
       top: calc(18px + env(safe-area-inset-top, 0px));
       max-width: calc(100vw - 32px);
       text-align: center;
     }
     .modal-backdrop {
+      padding: 14px;
       padding: calc(14px + env(safe-area-inset-top, 0px)) 14px calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .modal-card {
+      max-height: 90vh;
       max-height: 90dvh;
     }
     .visually-hidden-file {
@@ -1114,7 +1134,7 @@
     }
     @media (max-width: 600px) {
       .container { padding: 0 12px; }
-      .filter-panel { padding: 14px; top: calc(8px + env(safe-area-inset-top, 0px)); border-radius: 20px; }
+      .filter-panel { padding: 14px; top: 8px; top: calc(8px + env(safe-area-inset-top, 0px)); border-radius: 20px; }
       .promo-section, .bestseller-section { padding: 16px 14px; border-radius: 20px; }
       .header-top-row { justify-content: center; gap: 8px; }
       .hero-badge, .member-header-btn { font-size: 0.76rem; padding: 7px 13px; }
@@ -1141,6 +1161,79 @@
       .quick-table-grid { grid-template-columns: repeat(3, 1fr); }
       .estimator-bar { flex-direction: column; align-items: stretch; gap: 10px; }
       .estimator-actions { display: grid; grid-template-columns: 1fr auto; }
+    }
+
+    /* ================= LEGACY iPAD / iOS 9 - 14 COMPATIBILITY ================= */
+    @supports not (inset: 0) {
+      .header-top-row > *,
+      .cat-tabs > *,
+      .estimator-actions > *,
+      .est-addons > *,
+      .qris-actions-row > *,
+      .temp-shortcut-btns > *,
+      .hero-badge > *,
+      .member-header-btn > * {
+        margin-right: 8px;
+        margin-bottom: 6px;
+      }
+      .header-top-row > *:last-child,
+      .estimator-actions > *:last-child,
+      .hero-badge > *:last-child,
+      .member-header-btn > *:last-child {
+        margin-right: 0;
+      }
+    }
+    @supports not (display: grid) {
+      .grid, .promo-grid {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin: -6px;
+      }
+      .grid > .card {
+        width: calc(33.333% - 12px);
+        margin: 6px;
+      }
+      .promo-grid > * {
+        width: calc(50% - 12px);
+        margin: 6px;
+      }
+      .quick-table-grid {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        margin: -3px;
+      }
+      .quick-table-grid > * {
+        width: calc(20% - 6px);
+        margin: 3px;
+      }
+      .auth-tabs, .cust-pay-pills {
+        display: -webkit-flex;
+        display: flex;
+        margin: -4px;
+      }
+      .auth-tabs > * {
+        -webkit-flex: 1;
+        flex: 1;
+        margin: 4px;
+      }
+      .cust-pay-pills > * {
+        -webkit-flex: 1;
+        flex: 1;
+        margin: 4px;
+      }
+      @media (max-width: 768px) {
+        .grid > .card { width: calc(50% - 12px); }
+        .promo-grid > * { width: calc(100% - 12px); }
+      }
+      @media (max-width: 600px) {
+        .quick-table-grid > * { width: calc(25% - 6px); }
+      }
+    }
+    @media (max-width: 480px) {
+      .promo-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1370,6 +1463,33 @@
 </footer>
 
 <script>
+  // Fallback fetch() untuk iPad / iOS versi lama (iOS 9 - 10.2)
+  if (typeof window.fetch !== "function") {
+    window.fetch = function(url, opts) {
+      opts = opts || {};
+      return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(opts.method || "GET", url, true);
+        if (opts.headers) {
+          Object.keys(opts.headers).forEach(function(k) {
+            xhr.setRequestHeader(k, opts.headers[k]);
+          });
+        }
+        xhr.onload = function() {
+          var bodyText = xhr.responseText;
+          resolve({
+            ok: xhr.status >= 200 && xhr.status < 300,
+            status: xhr.status,
+            text: function() { return Promise.resolve(bodyText); },
+            json: function() { return Promise.resolve(JSON.parse(bodyText)); },
+            blob: function() { return Promise.resolve(new Blob([xhr.response])); }
+          });
+        };
+        xhr.onerror = function() { reject(new Error("Network error")); };
+        xhr.send(opts.body || null);
+      });
+    };
+  }
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
   const STORAGE_BESTSELLER_KEY = "bestSellerAmanLahLek";
