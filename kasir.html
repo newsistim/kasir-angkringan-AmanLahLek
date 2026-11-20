@@ -888,6 +888,291 @@
     @media (max-width: 480px) {
       .history-grid { grid-template-columns: 1fr; }
     }
+
+    /* ================= PRECISION RESPONSIVE LAYOUT (ALL DEVICES) ================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    .menu-section, .cart-section, .history-panel, .order-card, .card, .brand-text {
+      min-width: 0;
+    }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    }
+    .grid > .card {
+      min-width: 0;
+    }
+    .card h3 {
+      word-break: break-word;
+      line-height: 1.28;
+    }
+    .brand-text h1 {
+      line-height: 1.2;
+    }
+    #admin-info {
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+      gap: 5px;
+      line-height: 1.3;
+    }
+    .role-badge {
+      margin-left: 0;
+      vertical-align: middle;
+    }
+
+    /* Desktop besar (>= 1280px) */
+    @media (min-width: 1280px) {
+      .container {
+        grid-template-columns: minmax(0, 1fr) 410px;
+        gap: 24px;
+        padding: 24px 28px;
+      }
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      }
+    }
+
+    /* Tablet Landscape & Laptop Kecil (981px - 1180px, termasuk iPad Landscape 1024px) */
+    @media (min-width: 981px) and (max-width: 1180px) {
+      header { padding: 12px 18px; gap: 10px; }
+      .brand-logo-pos { width: 44px; height: 44px; }
+      .brand-text h1 { font-size: 1.12rem; }
+      .nav-tab-btn, .refresh-btn, .logout-btn { padding: 7px 11px; font-size: 0.78rem; }
+      .container {
+        grid-template-columns: minmax(0, 1fr) 350px;
+        gap: 18px;
+        padding: 18px;
+      }
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+        gap: 12px;
+      }
+      .cart-section { padding: 18px; top: 82px; }
+      .history-wrapper { padding: 0 18px; }
+    }
+
+    /* Tablet Portrait (769px - 980px, termasuk iPad Portrait 768px-834px) */
+    @media (min-width: 769px) and (max-width: 980px) {
+      header { padding: 12px 18px; gap: 10px; }
+      .container { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .kpi-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .history-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .history-wrapper { padding: 0 18px; }
+    }
+
+    /* HP Besar & Tablet Kecil (<= 768px) */
+    @media (max-width: 768px) {
+      header {
+        padding: 10px 14px;
+        padding-top: calc(10px + env(safe-area-inset-top, 0px));
+        padding-left: calc(14px + env(safe-area-inset-left, 0px));
+        padding-right: calc(14px + env(safe-area-inset-right, 0px));
+        gap: 9px;
+      }
+      .brand-wrap {
+        width: 100%;
+        -webkit-justify-content: flex-start;
+        justify-content: flex-start;
+        -webkit-align-items: center;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand-logo-pos { width: 40px; height: 40px; }
+      .brand-text { flex: 1; min-width: 0; }
+      .brand-text h1 {
+        font-size: 1.02rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .header-meta {
+        margin-top: 2px;
+        gap: 6px;
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+      }
+      .status-dot { flex-shrink: 0; }
+      #admin-info { font-size: 0.74rem; gap: 4px; }
+      .role-badge { font-size: 0.65rem; padding: 2px 7px; }
+      .header-actions {
+        width: 100%;
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 2px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .nav-tab-btn, .refresh-btn, .logout-btn {
+        padding: 7px 11px;
+        font-size: 0.76rem;
+        border-radius: 10px;
+        min-height: 36px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .nav-badge { font-size: 0.68rem; padding: 1px 6px; }
+      .menu-toolbar { padding: 13px; gap: 10px; border-radius: 18px; margin-bottom: 16px; }
+      #search-menu { padding: 10px 34px 10px 38px; border-radius: 11px; }
+      .search-icon { left: 13px; font-size: 0.9rem; }
+      .filter-bar-row {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        align-items: stretch;
+        gap: 9px;
+      }
+      .filter-bar {
+        width: 100%;
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 2px;
+      }
+      .cat-btn {
+        padding: 7px 13px;
+        font-size: 0.8rem;
+        min-height: 35px;
+      }
+      .toolbar-actions-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+      .toolbar-best-btn, .toolbar-stock-btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 0.77rem;
+        border-radius: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .category-header { margin-bottom: 10px; padding-bottom: 7px; }
+      .category-title { font-size: 1.05rem; }
+      .category-count { font-size: 0.72rem; padding: 3px 9px; }
+      .history-controls { -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: stretch; align-items: stretch; gap: 10px; }
+      .history-controls > div:last-child { width: 100%; min-width: 0 !important; }
+      .history-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* HP Standar & Kecil (<= 520px, termasuk iPhone SE / Android 320px-414px) */
+    @media (max-width: 520px) {
+      .container { padding: 12px; gap: 14px; }
+      .history-wrapper { padding: 0 12px 32px; }
+      .history-panel, .cart-section { padding: 15px 13px; border-radius: 18px; }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .card {
+        padding: 11px 10px;
+        min-height: 116px;
+        border-radius: 14px;
+      }
+      .card-top { margin-bottom: 8px; gap: 4px; }
+      .card h3 { font-size: 0.87rem; }
+      .card-qty-badge { min-width: 21px; height: 21px; font-size: 0.68rem; padding: 0 5px; }
+      .bestseller-tag { font-size: 0.6rem; padding: 2px 6px; margin-bottom: 4px; }
+      .soldout-badge { font-size: 0.6rem; padding: 2px 6px; }
+      .card-bottom {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: stretch;
+        align-items: stretch;
+        gap: 7px;
+        padding-top: 8px;
+      }
+      .card .price { font-size: 0.9rem; }
+      .card-bottom-right {
+        width: 100%;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+        gap: 4px;
+      }
+      .card-stock-quick-btn {
+        flex: 1;
+        text-align: center;
+        font-size: 0.66rem;
+        padding: 5px 4px;
+        white-space: nowrap;
+      }
+      .card-best-quick-btn { padding: 5px 7px; font-size: 0.72rem; }
+      .card-add-icon { width: 26px; height: 26px; flex-shrink: 0; font-size: 0.95rem; }
+      .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .kpi-card:last-child { grid-column: 1 / -1; }
+      .kpi-card { padding: 11px 12px; border-radius: 12px; }
+      .kpi-label { font-size: 0.72rem; }
+      .kpi-value { font-size: 1.04rem; }
+      .quick-table-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+      .table-chip { min-height: 36px; font-size: 0.72rem; padding: 5px 2px; }
+      .quick-cash { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+      .pay-method-pill, .pay-status-pill { min-height: 38px; font-size: 0.75rem; padding: 7px 4px; }
+      .order-card { padding: 13px; border-radius: 14px; }
+      .order-actions { gap: 5px; }
+      .btn-status-toggle { min-width: 110px; font-size: 0.74rem; padding: 8px; }
+      .total-box { padding: 13px 15px; }
+      #total-price { font-size: 1.15rem; }
+    }
+
+    /* HP Layar Sangat Kecil (<= 380px): tetap 2 kolom rapi, hanya 1 kolom jika <= 310px */
+    @media (max-width: 380px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .card { padding: 10px 9px; }
+      .card h3 { font-size: 0.83rem; }
+      .card .price { font-size: 0.85rem; }
+      .toolbar-best-btn, .toolbar-stock-btn { font-size: 0.73rem; padding: 7px 6px; }
+      .voucher-row-inputs { grid-template-columns: 1fr; }
+      .quick-table-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .brand-text h1 { font-size: 0.94rem; }
+    }
+    @media (max-width: 310px) {
+      .grid { grid-template-columns: 1fr; }
+      .toolbar-actions-group { grid-template-columns: 1fr; }
+    }
+
+    /* Perbaikan Flexbox fallback untuk iPad 2 / iOS 9-10.2 */
+    @supports not (display: grid) {
+      .toolbar-actions-group {
+        display: -webkit-flex;
+        display: flex;
+      }
+      .toolbar-actions-group > * {
+        -webkit-flex: 1;
+        flex: 1;
+      }
+      @media (min-width: 960px) {
+        .container {
+          display: -webkit-flex;
+          display: flex;
+          -webkit-align-items: flex-start;
+          align-items: flex-start;
+        }
+        .menu-section {
+          -webkit-flex: 1;
+          flex: 1;
+          margin-right: 18px;
+        }
+        .cart-section {
+          width: 350px;
+          -webkit-flex-shrink: 0;
+          flex-shrink: 0;
+          margin-top: 0;
+        }
+      }
+      @media (max-width: 959px) {
+        .cart-section {
+          margin-top: 18px;
+        }
+      }
+    }
   </style>
 </head>
 <body>
@@ -1182,7 +1467,7 @@
     <div class="menu-toolbar">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" id="search-menu" placeholder="Cari menu kopi, teh, minuman, atau camilan..." oninput="filterCariMenu()">
+        <input type="text" id="search-menu" placeholder="Cari kopi, teh, minuman, camilan..." oninput="filterCariMenu()">
         <button type="button" id="clear-search" class="clear-search-btn" onclick="resetPencarian()">✕</button>
       </div>
       <div class="filter-bar-row">
@@ -1361,16 +1646,18 @@
 </div>
 
 <script>
-  // Polyfill ES5 untuk iPad 2 (A1396 / iOS 9.3.5) & browser lama
+(function(){
   if (typeof Object.assign !== "function") {
     Object.assign = function(target) {
       if (target == null) throw new TypeError("Cannot convert undefined or null to object");
       var to = Object(target);
       for (var i = 1; i < arguments.length; i++) {
-        var src = arguments[i];
-        if (src != null) {
-          for (var k in src) {
-            if (Object.prototype.hasOwnProperty.call(src, k)) to[k] = src[k];
+        var nextSource = arguments[i];
+        if (nextSource != null) {
+          for (var nextKey in nextSource) {
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
           }
         }
       }
@@ -1378,32 +1665,49 @@
     };
   }
   if (!Array.prototype.includes) {
-    Array.prototype.includes = function(el, from) { return this.indexOf(el, from || 0) !== -1; };
+    Array.prototype.includes = function(search, start) {
+      return this.indexOf(search, start) !== -1;
+    };
   }
   if (!String.prototype.includes) {
-    String.prototype.includes = function(s, start) { return this.indexOf(s, start || 0) !== -1; };
+    String.prototype.includes = function(search, start) {
+      if (typeof start !== "number") start = 0;
+      if (start + search.length > this.length) return false;
+      return this.indexOf(search, start) !== -1;
+    };
   }
   if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(s, pos) { pos = pos || 0; return this.substr(pos, s.length) === s; };
+    String.prototype.startsWith = function(search, pos) {
+      pos = !pos || pos < 0 ? 0 : +pos;
+      return this.substring(pos, pos + search.length) === search;
+    };
   }
   if (!Array.prototype.find) {
-    Array.prototype.find = function(fn, thisArg) {
-      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return this[i]; }
+    Array.prototype.find = function(predicate) {
+      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
+      for (var i = 0; i < len; i++) {
+        var val = list[i];
+        if (predicate.call(thisArg, val, i, list)) return val;
+      }
       return undefined;
     };
   }
   if (!Array.prototype.findIndex) {
-    Array.prototype.findIndex = function(fn, thisArg) {
-      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return i; }
+    Array.prototype.findIndex = function(predicate) {
+      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
+      for (var i = 0; i < len; i++) {
+        if (predicate.call(thisArg, list[i], i, list)) return i;
+      }
       return -1;
     };
   }
-
+})();
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -2449,7 +2753,7 @@ function cekVoucherKasir() {
       body: JSON.stringify({
         action: "cekVoucherKasir",
         kodeVoucher: kode,
-        noHp,
+        noHp: noHp,
         total: subtotalBelanja
       })
     }).then(function (res) {
@@ -2458,8 +2762,8 @@ function cekVoucherKasir() {
       if (data.success) {
         diskonVoucher = Number(data.discountAmount || 0);
         voucherTerpasang = {
-          kode,
-          noHp,
+          kode: kode,
+          noHp: noHp,
           diskon: diskonVoucher
         };
         document.getElementById("voucher-applied-text").innerText = "\u2713 ".concat(kode, " (-Rp ").concat(diskonVoucher.toLocaleString("id-ID"), ")");
@@ -2631,11 +2935,11 @@ function parseDetailItemsKeKeranjangEdit(detailStr, fallbackTotal) {
     parsed.push({
       id: menuMatch ? menuMatch.id || namaBersih : namaBersih,
       nama: menuMatch ? bersihkanNamaMenu(menuMatch.nama) : namaBersih,
-      kategori,
-      hargaDasar,
-      qty,
-      suhu,
-      addons
+      kategori: kategori,
+      hargaDasar: hargaDasar,
+      qty: qty,
+      suhu: suhu,
+      addons: addons
     });
   });
   if (parsed.length === 0 && detailStr) {
@@ -3132,10 +3436,10 @@ function konfirmasiPesananKeProses() {
         status: "Sedang Diproses",
         metode: m,
         statusBayar: sb,
-        bayar,
-        kembali,
-        kasir,
-        noTrx
+        bayar: bayar,
+        kembali: kembali,
+        kasir: kasir,
+        noTrx: noTrx
       }, buktiKirimReview ? {
         buktiTransfer: buktiKirimReview
       } : {}));
@@ -3153,10 +3457,10 @@ function konfirmasiPesananKeProses() {
         idPesanan: idTarget,
         metode: m,
         statusBayar: sb,
-        total,
-        bayar,
-        kembali,
-        kasir,
+        total: total,
+        bayar: bayar,
+        kembali: kembali,
+        kasir: kasir,
         buktiTransfer: buktiKirimReview
       })
     }).then(function (res) {
@@ -3206,7 +3510,7 @@ function tandaiSudahDibayar(id) {
     riwayatPesanan[idx].statusBayar = "Sudah Dibayar";
     simpanEditedOrderLokal(id, {
       statusBayar: "Sudah Dibayar",
-      kasir
+      kasir: kasir
     });
     simpanRiwayatKeStorage();
     renderRiwayatPesanan();
@@ -3217,7 +3521,7 @@ function tandaiSudahDibayar(id) {
       action: "ubahStatusPesanan",
       idPesanan: id,
       statusBayar: "Sudah Dibayar",
-      kasir
+      kasir: kasir
     })
   }).catch(function () {});
   tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
@@ -3473,17 +3777,17 @@ function prosesBayar() {
       method: "POST",
       body: JSON.stringify({
         action: "transaksi",
-        atasNama,
-        mejaLabel,
-        detailItems,
+        atasNama: atasNama,
+        mejaLabel: mejaLabel,
+        detailItems: detailItems,
         subtotal: subtotalBelanja,
         detail: "[".concat(mejaLabel, " - ").concat(atasNama, "] ").concat(detailItems),
         total: totalBelanja,
-        metode,
+        metode: metode,
         statusBayar: statusBayarKasir,
         bayar: uang,
-        kembali,
-        kasir,
+        kembali: kembali,
+        kasir: kasir,
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "",
         noHpPelanggan: voucherTerpasang ? voucherTerpasang.noHp : document.getElementById("member-hp-kasir").value.trim(),
         diskon: diskonVoucher,
@@ -3502,16 +3806,16 @@ function prosesBayar() {
         id: data.idPesanan || "ORD-" + Date.now().toString().slice(-6),
         noTrx: data.noTrx || (statusBayarKasir === "Sudah Dibayar" ? "TRX-" + Date.now().toString().slice(-6) : "-"),
         waktu: waktuTrx,
-        atasNama,
-        mejaLabel,
-        detailItems,
+        atasNama: atasNama,
+        mejaLabel: mejaLabel,
+        detailItems: detailItems,
         subtotal: subtotalBelanja,
         total: totalBelanja,
-        metode,
+        metode: metode,
         statusBayar: statusBayarKasir,
         bayar: uang,
-        kembali,
-        kasir,
+        kembali: kembali,
+        kasir: kasir,
         status: "Sedang Diproses",
         kodeVoucher: voucherTerpasang ? voucherTerpasang.kode : "",
         diskon: diskonVoucher,
