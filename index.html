@@ -1711,6 +1711,281 @@
       .livechat-panel.has-est-bar { bottom: 12px; }
     }
 
+  
+    /* ================= MICRO-INTERACTIONS (BUTTONS, CARDS, SKELETON SHIMMER) ================= */
+    @-webkit-keyframes shimmerSweep {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes shimmerSweep {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @-webkit-keyframes badgePop {
+      0% { -webkit-transform: scale(0.6); transform: scale(0.6); opacity: 0.4; }
+      65% { -webkit-transform: scale(1.16); transform: scale(1.16); opacity: 1; }
+      100% { -webkit-transform: scale(1); transform: scale(1); opacity: 1; }
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0.6); opacity: 0.4; }
+      65% { transform: scale(1.16); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @-webkit-keyframes modalPopIn {
+      0% { opacity: 0; -webkit-transform: translateY(14px) scale(0.96); transform: translateY(14px) scale(0.96); }
+      100% { opacity: 1; -webkit-transform: translateY(0) scale(1); transform: translateY(0) scale(1); }
+    }
+    @keyframes modalPopIn {
+      0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @-webkit-keyframes barSlideUp {
+      0% { opacity: 0; -webkit-transform: translateX(-50%) translateY(20px); transform: translateX(-50%) translateY(20px); }
+      100% { opacity: 1; -webkit-transform: translateX(-50%) translateY(0); transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes barSlideUp {
+      0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @-webkit-keyframes dotPulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+      70% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    @keyframes dotPulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+      70% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    @-webkit-keyframes bubbleFadeUp {
+      0% { opacity: 0; -webkit-transform: translateY(8px); transform: translateY(8px); }
+      100% { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
+    }
+    @keyframes bubbleFadeUp {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Live pulse on online indicator */
+    .hero-dot, .lc-online-dot {
+      -webkit-animation: dotPulseRing 2.2s ease-out infinite;
+      animation: dotPulseRing 2.2s ease-out infinite;
+    }
+
+    /* Skeleton Shimmer Cards */
+    .skeleton-block {
+      background: linear-gradient(90deg, #ede4d6 25%, #f9f4ec 50%, #ede4d6 75%);
+      background-size: 200% 100%;
+      -webkit-animation: shimmerSweep 1.35s ease-in-out infinite;
+      animation: shimmerSweep 1.35s ease-in-out infinite;
+      border-radius: 8px;
+    }
+    .skeleton-header-row {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--espresso-200);
+    }
+    .skeleton-title { width: 150px; height: 22px; border-radius: 10px; }
+    .skeleton-pill { width: 68px; height: 20px; border-radius: 999px; }
+    .skeleton-card {
+      background: var(--bg-surface);
+      padding: 17px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--espresso-200);
+      min-height: 132px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+    .skeleton-line-lg { width: 76%; height: 17px; margin-bottom: 9px; }
+    .skeleton-line-sm { width: 52%; height: 12px; }
+    .skeleton-card-foot {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      align-items: center;
+      padding-top: 10px;
+      margin-top: 16px;
+      border-top: 1px dashed var(--espresso-200);
+    }
+    .skeleton-price { width: 78px; height: 18px; }
+    .skeleton-btn { width: 32px; height: 32px; border-radius: 10px; }
+    .skeleton-voucher-card {
+      background: #fffdf9;
+      border: 1.5px dashed var(--espresso-200);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 126px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+    }
+
+    /* Enhanced Card Hover & Tap Feedback */
+    .card {
+      overflow: hidden;
+      -webkit-transition: -webkit-transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, background-color 0.2s ease;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-primary));
+      opacity: 0;
+      -webkit-transform: scaleX(0.3);
+      transform: scaleX(0.3);
+      -webkit-transition: opacity 0.25s ease, -webkit-transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+    .card:hover:not(.out-of-stock),
+    .card.selected-card {
+      border-color: var(--accent-gold);
+    }
+    .card:hover:not(.out-of-stock)::before,
+    .card.selected-card::before {
+      opacity: 1;
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+    }
+    .card:hover:not(.out-of-stock) {
+      -webkit-transform: translateY(-5px);
+      transform: translateY(-5px);
+      box-shadow: 0 14px 28px rgba(35, 19, 13, 0.12);
+    }
+    .card:active:not(.out-of-stock) {
+      -webkit-transform: translateY(-1px) scale(0.98);
+      transform: translateY(-1px) scale(0.98);
+      box-shadow: var(--shadow-sm);
+    }
+    .card:hover:not(.out-of-stock) .pick-btn {
+      -webkit-transform: scale(1.1) rotate(90deg);
+      transform: scale(1.1) rotate(90deg);
+    }
+    .card:active:not(.out-of-stock) .pick-btn {
+      -webkit-transform: scale(0.92);
+      transform: scale(0.92);
+    }
+    .qty-badge {
+      -webkit-animation: badgePop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: badgePop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .voucher-card {
+      -webkit-transition: -webkit-transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, border-color 0.2s ease;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, border-color 0.2s ease;
+    }
+    .voucher-card:hover {
+      -webkit-transform: translateY(-4px);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(212, 154, 53, 0.18);
+      border-color: var(--accent-primary);
+    }
+
+    /* Tactile Button Animations + Gloss Sheen on Primary CTAs */
+    .primary-btn, .member-header-btn, .btn-detail-est, .claim-btn:not(:disabled), .lc-start-btn {
+      position: relative;
+      overflow: hidden;
+      -webkit-transition: -webkit-transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.2s ease;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.2s ease;
+    }
+    .primary-btn::after, .member-header-btn::after, .btn-detail-est::after, .claim-btn:not(:disabled)::after, .lc-start-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 65%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+      -webkit-transition: left 0.55s ease;
+      transition: left 0.55s ease;
+      pointer-events: none;
+    }
+    .primary-btn:hover:not(:disabled)::after,
+    .member-header-btn:hover::after,
+    .btn-detail-est:hover::after,
+    .claim-btn:hover:not(:disabled)::after,
+    .lc-start-btn:hover::after {
+      left: 140%;
+    }
+    .primary-btn:hover:not(:disabled), .btn-detail-est:hover, .lc-start-btn:hover {
+      -webkit-transform: translateY(-2px);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(200, 75, 23, 0.36);
+    }
+    button:active:not(:disabled),
+    .cat-btn:active,
+    .table-chip:active,
+    .cust-pay-pill:active,
+    .est-temp-chip:active,
+    .temp-shortcut-btn:active,
+    .est-step-btn:active,
+    .lc-quick-chip:active,
+    .lc-table-chip:active,
+    .livechat-fab:active {
+      -webkit-transform: scale(0.95) !important;
+      transform: scale(0.95) !important;
+    }
+    .cat-btn, .table-chip, .cust-pay-pill, .est-temp-chip, .temp-shortcut-btn, .est-step-btn, .btn-reset-est, .close-modal-btn, .lc-quick-chip, .lc-table-chip, .lc-send-btn {
+      -webkit-transition: -webkit-transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cat-btn:hover:not(.active), .table-chip:hover:not(.active), .cust-pay-pill:hover:not(.active), .lc-quick-chip:hover, .lc-table-chip:hover {
+      -webkit-transform: translateY(-1px);
+      transform: translateY(-1px);
+    }
+    .close-modal-btn:hover {
+      background: var(--espresso-200);
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+    }
+
+    /* Smooth Modal, Estimator Bar & Chat Entrance */
+    .modal-backdrop.show .modal-card {
+      -webkit-animation: modalPopIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: modalPopIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .estimator-bar.show {
+      -webkit-animation: barSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: barSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .livechat-panel.show {
+      -webkit-animation: modalPopIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: modalPopIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lc-msg-row {
+      -webkit-animation: bubbleFadeUp 0.22s ease-out;
+      animation: bubbleFadeUp 0.22s ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        -webkit-animation-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        -webkit-animation-iteration-count: 1 !important;
+        animation-iteration-count: 1 !important;
+        -webkit-transition-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1753,12 +2028,21 @@
       <h2>🎟️ Promo &amp; Voucher Member</h2>
       <button type="button" id="my-vouchers-btn" class="my-vouchers-btn" onclick="bukaModalMember()">Dompet Voucher (0)</button>
     </div>
-    <div id="promo-grid" class="promo-grid"></div>
+    <div id="promo-grid" class="promo-grid">
+      <div class="skeleton-voucher-card">
+        <div><div class="skeleton-block" style="width:86px;height:20px;margin-bottom:10px;"></div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div>
+        <div class="skeleton-block" style="width:100%;height:34px;border-radius:10px;margin-top:12px;"></div>
+      </div>
+      <div class="skeleton-voucher-card">
+        <div><div class="skeleton-block" style="width:86px;height:20px;margin-bottom:10px;"></div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div>
+        <div class="skeleton-block" style="width:100%;height:34px;border-radius:10px;margin-top:12px;"></div>
+      </div>
+    </div>
   </section>
 
   <div id="addon-box" class="addon-info" style="display:none;"></div>
   <div id="bestseller-container"></div>
-  <div id="menu-container"><div class="state-box">Memuat daftar menu...</div></div>
+  <div id="menu-container" aria-busy="true" aria-label="Memuat daftar menu"><div class="category-section"><div class="skeleton-header-row"><div class="skeleton-block skeleton-title"></div><div class="skeleton-block skeleton-pill"></div></div><div class="grid"><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div></div></div></div>
 </div>
 
 <!-- Bar Pesanan Pelanggan -->
