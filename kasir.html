@@ -1173,6 +1173,95 @@
         }
       }
     }
+  
+    /* ================= MODAL KONFIRMASI PERINGATAN ================= */
+    .confirm-modal-backdrop { z-index: 1150; }
+    .confirm-modal-card {
+      background: #fff;
+      max-width: 410px;
+      width: 100%;
+      border-radius: 22px;
+      padding: 24px 22px;
+      box-shadow: var(--shadow-lg);
+      border: 1.5px solid var(--danger-border);
+      text-align: center;
+    }
+    .confirm-icon-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      font-size: 1.65rem;
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1.5px solid var(--danger-border);
+    }
+    .confirm-icon-circle.warn {
+      background: var(--process-bg);
+      color: var(--process-text);
+      border-color: var(--process-border);
+    }
+    .confirm-detail-box {
+      background: var(--bg-subtle);
+      border: 1px dashed var(--espresso-200);
+      border-radius: 12px;
+      padding: 11px 13px;
+      margin: 12px 0 18px;
+      font-size: 0.83rem;
+      color: var(--espresso-800);
+      line-height: 1.48;
+      text-align: left;
+      word-break: break-word;
+    }
+    .confirm-actions {
+      display: -webkit-flex;
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .btn-confirm-cancel {
+      -webkit-flex: 1;
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: 1.5px solid var(--espresso-200);
+      background: var(--bg-subtle);
+      color: var(--espresso-800);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .btn-confirm-ok {
+      -webkit-flex: 1;
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: none;
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+      box-shadow: 0 6px 16px rgba(198, 40, 40, 0.28);
+    }
+    .btn-confirm-ok.warn {
+      background: linear-gradient(135deg, #e65100 0%, #c84b17 100%);
+      box-shadow: 0 6px 16px rgba(200, 75, 23, 0.28);
+    }
+    @supports not (inset: 0) {
+      .confirm-actions > * { margin-right: 10px; }
+      .confirm-actions > *:last-child { margin-right: 0; }
+    }
   </style>
 </head>
 <body>
@@ -1431,6 +1520,20 @@
     <div class="stock-modal-footer">
       <button type="button" class="reset-stock-btn" onclick="resetSemuaBestSeller()">↺ Hapus Semua Best Seller</button>
       <button type="button" class="pay-btn" style="margin-top:0; width:auto; padding:10px 22px;" onclick="tutupModalBestSeller()">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Konfirmasi Peringatan (Hapus Pesanan & Habiskan Stok) -->
+<div id="confirm-action-modal" class="modal-backdrop confirm-modal-backdrop">
+  <div class="confirm-modal-card">
+    <div id="confirm-action-icon" class="confirm-icon-circle">⚠️</div>
+    <h3 id="confirm-action-title" style="margin:0 0 6px; font-family:'Fraunces',Georgia,serif; font-size:1.2rem; color:var(--espresso-900);">Konfirmasi Tindakan</h3>
+    <p id="confirm-action-msg" style="margin:0; font-size:0.86rem; color:var(--espresso-600); line-height:1.45;"></p>
+    <div id="confirm-action-detail" class="confirm-detail-box" style="display:none;"></div>
+    <div class="confirm-actions">
+      <button type="button" class="btn-confirm-cancel" onclick="tutupModalKonfirmasi()">Batal</button>
+      <button type="button" id="confirm-action-ok-btn" class="btn-confirm-ok" onclick="jalankanAksiKonfirmasi()">Ya, Lanjutkan</button>
     </div>
   </div>
 </div>
@@ -2153,28 +2256,107 @@ function bersihkanKeranjangDariMenuHabis() {
   });
   renderKeranjang();
 }
+var pendingConfirmCallback = null;
+function bukaModalKonfirmasi(opts) {
+  var iconEl = document.getElementById("confirm-action-icon");
+  var titleEl = document.getElementById("confirm-action-title");
+  var msgEl = document.getElementById("confirm-action-msg");
+  var detailEl = document.getElementById("confirm-action-detail");
+  var okBtn = document.getElementById("confirm-action-ok-btn");
+  var isWarn = opts && opts.variant === "warn";
+  iconEl.innerText = opts && opts.icon || "⚠️";
+  iconEl.className = "confirm-icon-circle" + (isWarn ? " warn" : "");
+  titleEl.innerText = opts && opts.title || "Konfirmasi Tindakan";
+  msgEl.innerText = opts && opts.msg || "";
+  if (opts && opts.detailHtml) {
+    detailEl.innerHTML = opts.detailHtml;
+    detailEl.style.display = "block";
+  } else {
+    detailEl.innerHTML = "";
+    detailEl.style.display = "none";
+  }
+  okBtn.innerText = opts && opts.okText || "Ya, Lanjutkan";
+  okBtn.className = "btn-confirm-ok" + (isWarn ? " warn" : "");
+  pendingConfirmCallback = opts && typeof opts.onConfirm === "function" ? opts.onConfirm : null;
+  document.getElementById("confirm-action-modal").classList.add("show");
+}
+function tutupModalKonfirmasi() {
+  document.getElementById("confirm-action-modal").classList.remove("show");
+  pendingConfirmCallback = null;
+}
+function jalankanAksiKonfirmasi() {
+  var cb = pendingConfirmCallback;
+  tutupModalKonfirmasi();
+  if (typeof cb === "function") cb();
+}
+function eksekusiToggleStatusStok(nb, baru) {
+  var item = daftarMenu.find(function (m) {
+    return bersihkanNamaMenu(m.nama) === nb;
+  });
+  if (!item) return;
+  stokHabisMap[nb] = baru;
+  item.status = baru ? "Habis" : "Tersedia";
+  simpanStokHabisLokal();
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateStok",
+        nama: nb,
+        status: baru ? "Habis" : "Tersedia"
+      })
+    }).catch(function () {});
+  } catch (e) {}
+  bersihkanKeranjangDariMenuHabis();
+  renderMenuTerkelompok();
+  renderDaftarPengaturanStok();
+  perbaruiBadgeStokHabis();
+  tampilkanToast(baru ? "🚫 " + nb + " ditandai STOK HABIS" : "✓ " + nb + " kembali TERSEDIA");
+}
 function toggleStatusStokItem(nb) {
   var item = daftarMenu.find(function (m) {
     return bersihkanNamaMenu(m.nama) === nb;
   });
   if (!item) return;
   var baru = !apakahStokHabis(item);
-  stokHabisMap[nb] = baru;
-  item.status = baru ? "Habis" : "Tersedia";
-  simpanStokHabisLokal();
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "updateStok",
-      nama: nb,
-      status: baru ? "Habis" : "Tersedia"
-    })
-  }).catch(function () {});
-  bersihkanKeranjangDariMenuHabis();
+  if (baru) {
+    bukaModalKonfirmasi({
+      icon: "📦",
+      variant: "warn",
+      title: "Habiskan Stok Menu?",
+      msg: "Menu ini akan ditandai STOK HABIS dan tidak dapat dipesan pelanggan sampai diaktifkan kembali.",
+      detailHtml: "<strong>Menu:</strong> " + nb + "<br><strong>Kategori:</strong> " + (item.kategori || "-") + " • Rp " + Number(item.harga || 0).toLocaleString("id-ID"),
+      okText: "Ya, Habiskan Stok",
+      onConfirm: function onConfirm() {
+        eksekusiToggleStatusStok(nb, true);
+      }
+    });
+  } else {
+    eksekusiToggleStatusStok(nb, false);
+  }
+}
+function eksekusiToggleBestSeller(nb, baru) {
+  var item = daftarMenu.find(function (m) {
+    return bersihkanNamaMenu(m.nama) === nb;
+  });
+  if (!item) return;
+  bestSellerMap[nb] = baru;
+  item.bestSeller = baru;
+  simpanBestSellerLokal();
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateBestSeller",
+        nama: nb,
+        bestSeller: baru
+      })
+    }).catch(function () {});
+  } catch (e) {}
   renderMenuTerkelompok();
-  renderDaftarPengaturanStok();
-  perbaruiBadgeStokHabis();
-  tampilkanToast(baru ? "\uD83D\uDEAB ".concat(nb, " ditandai STOK HABIS") : "\u2713 ".concat(nb, " kembali TERSEDIA"));
+  renderDaftarBestSeller();
+  perbaruiBadgeBestSeller();
+  tampilkanToast(baru ? "⭐ " + nb + " ditambahkan ke Menu Best Seller" : "☆ " + nb + " dihapus dari Best Seller");
 }
 function toggleBestSellerItem(nb) {
   var item = daftarMenu.find(function (m) {
@@ -2182,41 +2364,74 @@ function toggleBestSellerItem(nb) {
   });
   if (!item) return;
   var baru = !apakahBestSeller(item);
-  bestSellerMap[nb] = baru;
-  item.bestSeller = baru;
-  simpanBestSellerLokal();
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "updateBestSeller",
-      nama: nb,
-      bestSeller: baru
-    })
-  }).catch(function () {});
-  renderMenuTerkelompok();
-  renderDaftarBestSeller();
-  perbaruiBadgeBestSeller();
-  tampilkanToast(baru ? "\u2B50 ".concat(nb, " ditambahkan ke Menu Best Seller") : "\u2606 ".concat(nb, " dihapus dari Best Seller"));
+  var detailStr = "<strong>Menu:</strong> " + nb + "<br><strong>Kategori:</strong> " + (item.kategori || "-") + " • Rp " + Number(item.harga || 0).toLocaleString("id-ID");
+  if (baru) {
+    bukaModalKonfirmasi({
+      icon: "⭐",
+      variant: "warn",
+      title: "Jadikan Menu Best Seller?",
+      msg: "Menu ini akan tampil di bagian paling atas halaman menu pelanggan sebagai Best Seller.",
+      detailHtml: detailStr,
+      okText: "Ya, Jadikan Best Seller",
+      onConfirm: function onConfirm() {
+        eksekusiToggleBestSeller(nb, true);
+      }
+    });
+  } else {
+    bukaModalKonfirmasi({
+      icon: "☆",
+      variant: "danger",
+      title: "Hapus dari Best Seller?",
+      msg: "Tanda Best Seller pada menu ini akan dicabut dari halaman menu pelanggan.",
+      detailHtml: detailStr,
+      okText: "Ya, Hapus Best Seller",
+      onConfirm: function onConfirm() {
+        eksekusiToggleBestSeller(nb, false);
+      }
+    });
+  }
 }
-function resetSemuaBestSeller() {
+function eksekusiResetSemuaBestSeller() {
   daftarMenu.forEach(function (i) {
     var nb = bersihkanNamaMenu(i.nama);
     bestSellerMap[nb] = false;
     i.bestSeller = false;
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "updateBestSeller",
-        nama: nb,
-        bestSeller: false
-      })
-    }).catch(function () {});
+    try {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "updateBestSeller",
+          nama: nb,
+          bestSeller: false
+        })
+      }).catch(function () {});
+    } catch (e) {}
   });
   simpanBestSellerLokal();
   renderMenuTerkelompok();
   renderDaftarBestSeller();
   perbaruiBadgeBestSeller();
   tampilkanToast("✓ Semua tanda Best Seller direset");
+}
+function resetSemuaBestSeller() {
+  var aktifCount = daftarMenu.filter(function (i) {
+    return apakahBestSeller(i);
+  }).length;
+  if (aktifCount === 0) {
+    tampilkanToast("Belum ada menu Best Seller yang aktif.");
+    return;
+  }
+  bukaModalKonfirmasi({
+    icon: "⚠️",
+    variant: "danger",
+    title: "Hapus Semua Best Seller?",
+    msg: "Seluruh tanda Best Seller pada semua menu akan dihapus dari kasir dan halaman menu pelanggan.",
+    detailHtml: "<strong>Jumlah menu Best Seller aktif:</strong> " + aktifCount + " menu",
+    okText: "Ya, Hapus Semua",
+    onConfirm: function onConfirm() {
+      eksekusiResetSemuaBestSeller();
+    }
+  });
 }
 function bukaModalBestSeller() {
   renderDaftarBestSeller();
@@ -3526,6 +3741,29 @@ function tandaiSudahDibayar(id) {
   }).catch(function () {});
   tampilkanToast("✅ Uang masuk dikonfirmasi (Sudah Dibayar)");
 }
+function eksekusiHapusSatuPesanan(id) {
+  tambahHiddenIds([id]);
+  riwayatPesanan = riwayatPesanan.filter(function (p) {
+    return p.id !== id;
+  });
+  simpanRiwayatKeStorage();
+  renderRiwayatPesanan();
+  if (isKepalaAdmin()) {
+    try {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "hapusPesanan",
+          idPesanan: id,
+          role: roleAdminAktif
+        })
+      }).catch(function () {});
+    } catch (e) {}
+    tampilkanToast("🗑️ Pesanan dihapus oleh Kepala Admin.");
+  } else {
+    tampilkanToast("🗑️ Pesanan dihapus dari daftar antrean.");
+  }
+}
 function hapusSatuPesanan(id) {
   var order = riwayatPesanan.find(function (p) {
     return p.id === id;
@@ -3534,23 +3772,39 @@ function hapusSatuPesanan(id) {
     tampilkanToast("🔒 Hanya Kepala Admin yang dapat menghapus pesanan berstatus Selesai.");
     return;
   }
-  tambahHiddenIds([id]);
+  var detailStr = order ? "<strong>Atas Nama:</strong> " + (order.atasNama || "Pelanggan") + " (" + (order.mejaLabel || "-") + ")<br><strong>Pesanan:</strong> " + (order.detailItems || "-") + "<br><strong>Total:</strong> Rp " + Number(order.total || 0).toLocaleString("id-ID") : "";
+  bukaModalKonfirmasi({
+    icon: "🗑️",
+    variant: "danger",
+    title: "Hapus Pesanan Ini?",
+    msg: "Pesanan yang dihapus akan hilang dari daftar antrean. Pastikan Anda tidak salah tekan.",
+    detailHtml: detailStr,
+    okText: "Ya, Hapus Pesanan",
+    onConfirm: function onConfirm() {
+      eksekusiHapusSatuPesanan(id);
+    }
+  });
+}
+function eksekusiHapusPesananSelesai(idsSelesai) {
+  tambahHiddenIds(idsSelesai);
   riwayatPesanan = riwayatPesanan.filter(function (p) {
-    return p.id !== id;
+    return normStatus(p.status) !== "Selesai";
   });
   simpanRiwayatKeStorage();
   renderRiwayatPesanan();
-  if (isKepalaAdmin()) {
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "hapusPesanan",
-        idPesanan: id,
-        role: roleAdminAktif
-      })
-    }).catch(function () {});
-    tampilkanToast("🗑️ Pesanan dihapus oleh Kepala Admin.");
-  }
+  idsSelesai.forEach(function (id) {
+    try {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "hapusPesanan",
+          idPesanan: id,
+          role: roleAdminAktif
+        })
+      }).catch(function () {});
+    } catch (e) {}
+  });
+  tampilkanToast("🗑️ " + idsSelesai.length + " pesanan selesai dibersihkan oleh Kepala Admin.");
 }
 function hapusPesananSelesai() {
   if (!isKepalaAdmin()) {
@@ -3562,23 +3816,18 @@ function hapusPesananSelesai() {
   }).map(function (p) {
     return p.id;
   });
-  tambahHiddenIds(idsSelesai);
-  riwayatPesanan = riwayatPesanan.filter(function (p) {
-    return normStatus(p.status) !== "Selesai";
+  if (idsSelesai.length === 0) return;
+  bukaModalKonfirmasi({
+    icon: "🗑️",
+    variant: "danger",
+    title: "Bersihkan Semua Pesanan Selesai?",
+    msg: "Seluruh pesanan berstatus Selesai akan dihapus dari antrean kasir dan Spreadsheet. Pastikan Anda tidak salah tekan.",
+    detailHtml: "<strong>Jumlah yang akan dihapus:</strong> " + idsSelesai.length + " pesanan selesai",
+    okText: "Ya, Bersihkan Semua",
+    onConfirm: function onConfirm() {
+      eksekusiHapusPesananSelesai(idsSelesai);
+    }
   });
-  simpanRiwayatKeStorage();
-  renderRiwayatPesanan();
-  idsSelesai.forEach(function (id) {
-    fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "hapusPesanan",
-        idPesanan: id,
-        role: roleAdminAktif
-      })
-    }).catch(function () {});
-  });
-  tampilkanToast("\uD83D\uDDD1\uFE0F ".concat(idsSelesai.length, " pesanan selesai dibersihkan oleh Kepala Admin."));
 }
 function filterStatusRiwayat(st, b) {
   filterStatusAktif = st;
