@@ -1262,6 +1262,154 @@
       .confirm-actions > * { margin-right: 10px; }
       .confirm-actions > *:last-child { margin-right: 0; }
     }
+  
+    /* Notifikasi Suara & PopUp Pesanan Baru */
+    .btn-notif-sound {
+      background: rgba(217, 119, 6, 0.24) !important;
+      border: 1px solid rgba(251, 191, 36, 0.5) !important;
+      color: #fef3c7 !important;
+    }
+    .btn-notif-sound.muted {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      color: rgba(255, 255, 255, 0.68) !important;
+    }
+    .new-order-backdrop {
+      z-index: 1180 !important;
+    }
+    .new-order-card {
+      background: #fffdf9;
+      border: 2px solid #d97706;
+      border-radius: 22px;
+      width: 92%;
+      max-width: 440px;
+      max-height: 88vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 24px 20px 20px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(28, 15, 9, 0.45);
+      box-sizing: border-box;
+    }
+    .new-order-bell {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #ffffff;
+      font-size: 30px;
+      line-height: 64px;
+      text-align: center;
+      margin: 0 auto 12px;
+      box-shadow: 0 10px 24px rgba(234, 88, 12, 0.35);
+      -webkit-animation: notifBellPulse 1.2s ease-in-out infinite;
+      animation: notifBellPulse 1.2s ease-in-out infinite;
+    }
+    @-webkit-keyframes notifBellPulse {
+      0% { -webkit-transform: scale(1); }
+      50% { -webkit-transform: scale(1.09); }
+      100% { -webkit-transform: scale(1); }
+    }
+    @keyframes notifBellPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.09); }
+      100% { transform: scale(1); }
+    }
+    .new-order-list {
+      text-align: left;
+      margin: 14px 0 18px;
+      max-height: 250px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .new-order-item {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .new-order-item:last-child {
+      margin-bottom: 0;
+    }
+    .new-order-item-top {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .new-order-customer {
+      font-weight: 800;
+      font-size: 0.94rem;
+      color: #2c1810;
+      margin-right: 8px;
+    }
+    .new-order-meja {
+      display: inline-block;
+      background: #ea580c;
+      color: #ffffff;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .new-order-items-txt {
+      font-size: 0.83rem;
+      color: #5c3a28;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    .new-order-total-row {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      align-items: center;
+      border-top: 1px dashed #fdba74;
+      padding-top: 7px;
+      font-size: 0.82rem;
+      color: #7c2d12;
+      font-weight: 700;
+    }
+    .new-order-actions {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+    }
+    .btn-new-order-later {
+      -webkit-flex: 1;
+      flex: 1;
+      margin-right: 8px;
+      padding: 12px 10px;
+      border-radius: 12px;
+      border: 1.5px solid #d6c5b3;
+      background: #ffffff;
+      color: #5c3a28;
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+    .btn-new-order-open {
+      -webkit-flex: 1.5;
+      flex: 1.5;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #ea580c, #c2410c);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(234, 88, 12, 0.3);
+    }
+
   </style>
 </head>
 <body>
@@ -1538,6 +1686,20 @@
   </div>
 </div>
 
+<!-- Modal PopUp Notifikasi Pesanan Baru Masuk -->
+<div id="new-order-popup-modal" class="modal-backdrop new-order-backdrop">
+  <div class="new-order-card">
+    <div class="new-order-bell">🔔</div>
+    <h3 id="new-order-popup-title" style="margin:0 0 4px; font-family:'Fraunces',Georgia,serif; font-size:1.25rem; color:var(--espresso-900);">Pesanan Baru Masuk!</h3>
+    <p id="new-order-popup-sub" style="margin:0; font-size:0.84rem; color:var(--espresso-600); line-height:1.4;">Pelanggan baru saja mengirim pesanan ke kasir.</p>
+    <div id="new-order-popup-list" class="new-order-list"></div>
+    <div class="new-order-actions">
+      <button type="button" class="btn-new-order-later" onclick="tutupPopupPesananBaru()">Nanti Saja</button>
+      <button type="button" class="btn-new-order-open" onclick="bukaPesananBaruDariPopup()">🔍 Tinjau &amp; Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="brand-wrap">
     <div class="brand-logo-pos">
@@ -1555,6 +1717,7 @@
     <button type="button" id="tab-history-btn" class="nav-tab-btn" onclick="scrollKeBagian('riwayat')">
       📋 Pesanan <span id="nav-review-badge" class="nav-badge info">0 Ditinjau</span> <span id="nav-process-badge" class="nav-badge">0 Diproses</span>
     </button>
+    <button type="button" id="sound-toggle-btn" class="refresh-btn btn-notif-sound" onclick="toggleSuaraNotifikasi()" title="Aktifkan/Matikan &amp; Tes Suara Notifikasi">🔔 Suara: Aktif</button>
     <button type="button" class="refresh-btn" onclick="sinkronPesananDariServer()">↻ Cek Pesanan</button>
     <button type="button" class="logout-btn" onclick="logoutAdmin()">Keluar</button>
   </div>
@@ -1749,62 +1912,32 @@
 </div>
 
 <script>
-(function(){
-  if (typeof Object.assign !== "function") {
-    Object.assign = function(target) {
-      if (target == null) throw new TypeError("Cannot convert undefined or null to object");
-      var to = Object(target);
+
+  /* ES5 Polyfills for Legacy iOS 9 / iPad 2 A1396 */
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function(s, idx) { return this.indexOf(s, idx) !== -1; };
+  }
+  if (!String.prototype.includes) {
+    String.prototype.includes = function(s, idx) { return this.indexOf(s, idx) !== -1; };
+  }
+  if (!Array.prototype.find) {
+    Array.prototype.find = function(p) {
+      for (var i = 0; i < this.length; i++) { if (p.call(arguments[1], this[i], i, this)) return this[i]; }
+      return undefined;
+    };
+  }
+  if (!Object.assign) {
+    Object.assign = function(t) {
+      if (t == null) throw new TypeError("Cannot convert undefined or null to object");
+      var to = Object(t);
       for (var i = 1; i < arguments.length; i++) {
-        var nextSource = arguments[i];
-        if (nextSource != null) {
-          for (var nextKey in nextSource) {
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey];
-            }
-          }
-        }
+        var s = arguments[i];
+        if (s != null) { for (var k in s) { if (Object.prototype.hasOwnProperty.call(s, k)) to[k] = s[k]; } }
       }
       return to;
     };
   }
-  if (!Array.prototype.includes) {
-    Array.prototype.includes = function(search, start) {
-      return this.indexOf(search, start) !== -1;
-    };
-  }
-  if (!String.prototype.includes) {
-    String.prototype.includes = function(search, start) {
-      if (typeof start !== "number") start = 0;
-      if (start + search.length > this.length) return false;
-      return this.indexOf(search, start) !== -1;
-    };
-  }
-  if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(search, pos) {
-      pos = !pos || pos < 0 ? 0 : +pos;
-      return this.substring(pos, pos + search.length) === search;
-    };
-  }
-  if (!Array.prototype.find) {
-    Array.prototype.find = function(predicate) {
-      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
-      for (var i = 0; i < len; i++) {
-        var val = list[i];
-        if (predicate.call(thisArg, val, i, list)) return val;
-      }
-      return undefined;
-    };
-  }
-  if (!Array.prototype.findIndex) {
-    Array.prototype.findIndex = function(predicate) {
-      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
-      for (var i = 0; i < len; i++) {
-        if (predicate.call(thisArg, list[i], i, list)) return i;
-      }
-      return -1;
-    };
-  }
-})();
+
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -2558,6 +2691,216 @@ function simpanRiwayatKeStorage() {
     localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(riwayatPesanan));
   } catch (e) {}
 }
+var STORAGE_NOTIF_SOUND_KEY = "angkringanNotifSuaraAktif";
+var notifSuaraAktif = true;
+var notifAudioCtx = null;
+var notifAudioUnlocked = false;
+var knownOrderIds = {};
+var initialOrderSyncDone = false;
+var pendingNewOrdersPopup = [];
+var pollTickCount = 0;
+function muatPreferensiSuara() {
+  try {
+    var saved = localStorage.getItem(STORAGE_NOTIF_SOUND_KEY);
+    if (saved === "0" || saved === "false") notifSuaraAktif = false;else notifSuaraAktif = true;
+  } catch (e) {
+    notifSuaraAktif = true;
+  }
+  updateTombolSuaraNotifikasi();
+}
+function updateTombolSuaraNotifikasi() {
+  var btn = document.getElementById("sound-toggle-btn");
+  if (!btn) return;
+  if (notifSuaraAktif) {
+    btn.classList.remove("muted");
+    btn.innerText = "🔔 Suara: Aktif";
+  } else {
+    btn.classList.add("muted");
+    btn.innerText = "🔕 Suara: Mati";
+  }
+}
+function aktifkanAudioNotifikasi() {
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    if (!notifAudioCtx) {
+      notifAudioCtx = new AudioCtx();
+    }
+    if (notifAudioCtx.state === "suspended" && typeof notifAudioCtx.resume === "function") {
+      notifAudioCtx.resume();
+    }
+    if (!notifAudioUnlocked) {
+      var osc = notifAudioCtx.createOscillator();
+      var gain = notifAudioCtx.createGain();
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(notifAudioCtx.destination);
+      osc.start(0);
+      osc.stop(notifAudioCtx.currentTime + 0.02);
+      notifAudioUnlocked = true;
+    }
+    return notifAudioCtx;
+  } catch (e) {
+    return null;
+  }
+}
+function putarSuaraNotifikasiPesanan() {
+  if (!notifSuaraAktif) return;
+  try {
+    if (navigator && typeof navigator.vibrate === "function") {
+      navigator.vibrate([220, 100, 220]);
+    }
+  } catch (e) {}
+  try {
+    var ctx = aktifkanAudioNotifikasi();
+    if (!ctx) return;
+    var now = ctx.currentTime + 0.02;
+    var notes = [{
+      freq: 1046.5,
+      start: 0.00,
+      dur: 0.16,
+      vol: 0.28
+    }, {
+      freq: 1318.5,
+      start: 0.14,
+      dur: 0.18,
+      vol: 0.30
+    }, {
+      freq: 1568.0,
+      start: 0.28,
+      dur: 0.26,
+      vol: 0.32
+    }, {
+      freq: 1318.5,
+      start: 0.60,
+      dur: 0.15,
+      vol: 0.24
+    }, {
+      freq: 1568.0,
+      start: 0.74,
+      dur: 0.30,
+      vol: 0.28
+    }];
+    for (var i = 0; i < notes.length; i++) {
+      var n = notes[i];
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(n.freq, now + n.start);
+      gain.gain.setValueAtTime(0.001, now + n.start);
+      gain.gain.linearRampToValueAtTime(n.vol, now + n.start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + n.start);
+      osc.stop(now + n.start + n.dur + 0.02);
+    }
+  } catch (e) {}
+}
+function toggleSuaraNotifikasi() {
+  notifSuaraAktif = !notifSuaraAktif;
+  try {
+    localStorage.setItem(STORAGE_NOTIF_SOUND_KEY, notifSuaraAktif ? "1" : "0");
+  } catch (e) {}
+  updateTombolSuaraNotifikasi();
+  if (notifSuaraAktif) {
+    aktifkanAudioNotifikasi();
+    putarSuaraNotifikasiPesanan();
+    tampilkanToast("🔔 Suara notifikasi pesanan diaktifkan (tes bunyi diputar).");
+  } else {
+    tampilkanToast("🔕 Suara notifikasi pesanan dimatikan.");
+  }
+}
+function escapeNotifHtml(str) {
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function tampilkanPopupPesananBaru(ordersBaru) {
+  if (!ordersBaru || !ordersBaru.length) return;
+  var _loop = function _loop() {
+    var ord = ordersBaru[i];
+    var sudahAda = pendingNewOrdersPopup.some(function (p) {
+      return p.id === ord.id;
+    });
+    if (!sudahAda) pendingNewOrdersPopup.unshift(ord);
+  };
+  for (var i = 0; i < ordersBaru.length; i++) {
+    _loop();
+  }
+  var jumlah = pendingNewOrdersPopup.length;
+  var titleEl = document.getElementById("new-order-popup-title");
+  var subEl = document.getElementById("new-order-popup-sub");
+  var listEl = document.getElementById("new-order-popup-list");
+  if (titleEl) {
+    titleEl.innerText = jumlah === 1 ? "1 Pesanan Baru Masuk!" : jumlah + " Pesanan Baru Masuk!";
+  }
+  if (subEl) {
+    subEl.innerText = jumlah === 1 ? "Pelanggan baru saja mengirim pesanan ke kasir." : "Ada beberapa pesanan pelanggan yang menunggu ditinjau.";
+  }
+  if (listEl) {
+    var cardsHtml = "";
+    for (var j = 0; j < pendingNewOrdersPopup.length; j++) {
+      var o = pendingNewOrdersPopup[j];
+      var nama = escapeNotifHtml(o.atasNama || "Pelanggan");
+      var meja = escapeNotifHtml(o.mejaLabel || "-");
+      var items = escapeNotifHtml(o.detailItems || o.detail || "-");
+      var metode = escapeNotifHtml(o.metode || "Tunai");
+      var stBayar = escapeNotifHtml(o.statusBayar || "Belum Dibayar");
+      var totalNum = Number(o.total || 0);
+      var totalFmt = "Rp " + totalNum.toLocaleString("id-ID");
+      cardsHtml += "<div class='new-order-item'>" + "<div class='new-order-item-top'>" + "<span class='new-order-customer'>👤 " + nama + "</span>" + "<span class='new-order-meja'>🪑 " + meja + "</span>" + "</div>" + "<div class='new-order-items-txt'>" + items + "</div>" + "<div class='new-order-total-row'>" + "<span>" + metode + " • " + stBayar + "</span>" + "<span>" + totalFmt + "</span>" + "</div>" + "</div>";
+    }
+    listEl.innerHTML = cardsHtml;
+  }
+  var modal = document.getElementById("new-order-popup-modal");
+  if (modal) modal.classList.add("show");
+}
+function tutupPopupPesananBaru() {
+  pendingNewOrdersPopup = [];
+  var modal = document.getElementById("new-order-popup-modal");
+  if (modal) modal.classList.remove("show");
+}
+function bukaPesananBaruDariPopup() {
+  var firstOrder = pendingNewOrdersPopup.length > 0 ? pendingNewOrdersPopup[0] : null;
+  tutupPopupPesananBaru();
+  scrollKeBagian("riwayat");
+  if (firstOrder && firstOrder.id && typeof bukaModalTinjau === "function") {
+    setTimeout(function () {
+      bukaModalTinjau(firstOrder.id);
+    }, 220);
+  }
+}
+function deteksiPesananPelangganBaru(daftarOrders, adalahSyncAwal) {
+  if (!Array.isArray(daftarOrders)) return;
+  if (!initialOrderSyncDone) {
+    for (var i = 0; i < daftarOrders.length; i++) {
+      if (daftarOrders[i] && daftarOrders[i].id) {
+        knownOrderIds[daftarOrders[i].id] = true;
+      }
+    }
+    if (adalahSyncAwal) initialOrderSyncDone = true;
+    return;
+  }
+  var pesananBaru = [];
+  for (var j = 0; j < daftarOrders.length; j++) {
+    var o = daftarOrders[j];
+    if (!o || !o.id) continue;
+    if (!knownOrderIds[o.id]) {
+      knownOrderIds[o.id] = true;
+      var st = String(o.status || "").trim();
+      if (st === "Sedang Ditinjau") {
+        pesananBaru.push(o);
+      }
+    }
+  }
+  if (pesananBaru.length > 0) {
+    var loginOverlay = document.getElementById("login-overlay");
+    var sudahLogin = !loginOverlay || loginOverlay.style.display === "none";
+    if (sudahLogin) {
+      putarSuaraNotifikasiPesanan();
+      tampilkanPopupPesananBaru(pesananBaru);
+    }
+  }
+}
 function sinkronPesananDariServer() {
   try {
     fetch(API_URL, {
@@ -2585,6 +2928,7 @@ function sinkronPesananDariServer() {
         riwayatPesanan = [].concat(_toConsumableArray(lokalBelumSync), _toConsumableArray(serverOrders));
         simpanRiwayatKeStorage();
         renderRiwayatPesanan();
+        deteksiPesananPelangganBaru(riwayatPesanan, !initialOrderSyncDone);
       }
     }).catch(function () {
       muatRiwayatDariStorage();
@@ -2599,13 +2943,17 @@ window.addEventListener("storage", function (e) {
   if (e.key === STORAGE_RIWAYAT_KEY || e.key === STORAGE_EDITED_KEY) {
     muatRiwayatDariStorage();
     renderRiwayatPesanan();
+    deteksiPesananPelangganBaru(riwayatPesanan, false);
   }
 });
 window.addEventListener("DOMContentLoaded", function () {
+  muatPreferensiSuara();
   muatStokHabisLokal();
   muatBestSellerLokal();
   muatRiwayatDariStorage();
   renderRiwayatPesanan();
+  document.addEventListener("touchstart", aktifkanAudioNotifikasi, false);
+  document.addEventListener("click", aktifkanAudioNotifikasi, false);
   var u = ambilSession("adminAngkringan");
   var r = ambilSession("adminAngkringanRole") || "Admin Biasa";
   if (u) bukaHalamanKasir(u, r);
@@ -2637,6 +2985,7 @@ function kembaliKeMenuPelanggan() {
   window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/index.html";
 }
 function prosesLogin() {
+  aktifkanAudioNotifikasi();
   var u = document.getElementById("admin-user").value.trim(),
     p = document.getElementById("admin-pass").value.trim();
   var btn = document.getElementById("login-btn"),
@@ -2684,13 +3033,18 @@ function bukaHalamanKasir(u, role) {
   var kepala = isKepalaAdmin();
   document.getElementById("login-overlay").style.display = "none";
   document.getElementById("admin-info").innerHTML = "Kasir aktif: <strong>".concat(u, "</strong> <span class=\"role-badge ").concat(kepala ? 'kepala' : 'biasa', "\">").concat(kepala ? '👑 Kepala Admin' : '👤 Admin Biasa', "</span>");
+  aktifkanAudioNotifikasi();
+  initialOrderSyncDone = false;
+  knownOrderIds = {};
+  pollTickCount = 0;
   muatMenu();
   sinkronPesananDariServer();
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(function () {
+    pollTickCount++;
     sinkronPesananDariServer();
-    muatMenu(true);
-  }, 20000);
+    if (pollTickCount % 3 === 0) muatMenu(true);
+  }, 8000);
 }
 function logoutAdmin() {
   hapusSession("adminAngkringan");
@@ -4051,8 +4405,10 @@ function prosesBayar() {
         btn.disabled = false;
         return;
       }
+      var kasirOrderId = data.idPesanan || "ORD-" + Date.now().toString().slice(-6);
+      knownOrderIds[kasirOrderId] = true;
       riwayatPesanan.unshift({
-        id: data.idPesanan || "ORD-" + Date.now().toString().slice(-6),
+        id: kasirOrderId,
         noTrx: data.noTrx || (statusBayarKasir === "Sudah Dibayar" ? "TRX-" + Date.now().toString().slice(-6) : "-"),
         waktu: waktuTrx,
         atasNama: atasNama,
