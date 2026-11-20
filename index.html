@@ -1463,666 +1463,1180 @@
 </footer>
 
 <script>
-  // Fallback fetch() untuk iPad / iOS versi lama (iOS 9 - 10.2)
-  if (typeof window.fetch !== "function") {
-    window.fetch = function(url, opts) {
-      opts = opts || {};
-      return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open(opts.method || "GET", url, true);
-        if (opts.headers) {
-          Object.keys(opts.headers).forEach(function(k) {
-            xhr.setRequestHeader(k, opts.headers[k]);
-          });
+  // Polyfill ES5 untuk iPad 2 (A1396 / iOS 9.3.5) & browser lama
+  if (typeof Object.assign !== "function") {
+    Object.assign = function(target) {
+      if (target == null) throw new TypeError("Cannot convert undefined or null to object");
+      var to = Object(target);
+      for (var i = 1; i < arguments.length; i++) {
+        var src = arguments[i];
+        if (src != null) {
+          for (var k in src) {
+            if (Object.prototype.hasOwnProperty.call(src, k)) to[k] = src[k];
+          }
         }
-        xhr.onload = function() {
-          var bodyText = xhr.responseText;
-          resolve({
-            ok: xhr.status >= 200 && xhr.status < 300,
-            status: xhr.status,
-            text: function() { return Promise.resolve(bodyText); },
-            json: function() { return Promise.resolve(JSON.parse(bodyText)); },
-            blob: function() { return Promise.resolve(new Blob([xhr.response])); }
-          });
-        };
-        xhr.onerror = function() { reject(new Error("Network error")); };
-        xhr.send(opts.body || null);
-      });
+      }
+      return to;
     };
   }
-  const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
-  const STORAGE_STOK_KEY = "stokHabisAmanLahLek";
-  const STORAGE_BESTSELLER_KEY = "bestSellerAmanLahLek";
-  const STORAGE_MEMBER_KEY = "memberAngkringanAmanLahLek";
-  const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
-
-  const MENU_CADANGAN = [
-    { id: "c1", nama: "Butterscotch", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c2", nama: "Vanilla Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c3", nama: "Caramel Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c4", nama: "Hazelnut Latte", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c5", nama: "Espresso", kategori: "Coffee", harga: 10000, status: "Tersedia" },
-    { id: "c6", nama: "Americano", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c7", nama: "Sanger", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c8", nama: "Kopi Susu Gula Aren", kategori: "Coffee", harga: 18000, status: "Tersedia", bestSeller: true },
-    { id: "c9", nama: "Long Black", kategori: "Coffee", harga: 15000, status: "Tersedia" },
-    { id: "c10", nama: "Caramel Machiato", kategori: "Coffee", harga: 23000, status: "Tersedia" },
-    { id: "c11", nama: "Triple Peach Americano", kategori: "Coffee", harga: 23000, status: "Tersedia" },
-    { id: "s1", nama: "Matcha", kategori: "Soft Drink", harga: 20000, status: "Tersedia", bestSeller: true },
-    { id: "s2", nama: "Taro", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
-    { id: "s3", nama: "Red Velvet", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
-    { id: "s4", nama: "Coklat", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
-    { id: "s5", nama: "Strawberry", kategori: "Soft Drink", harga: 20000, status: "Tersedia" },
-    { id: "t1", nama: "Lyche Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
-    { id: "t2", nama: "Lemon Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
-    { id: "t3", nama: "Peach Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
-    { id: "t4", nama: "Thai Tea", kategori: "Tea", harga: 20000, status: "Tersedia" },
-    { id: "m1", nama: "Indomie Kuah", kategori: "Makanan Ringan", harga: 12000, status: "Tersedia" },
-    { id: "m2", nama: "Indomie Goreng", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
-    { id: "m3", nama: "Sosis", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" },
-    { id: "m4", nama: "Nugget", kategori: "Makanan Ringan", harga: 6000, status: "Tersedia" }
-  ];
-
-  const VOUCHER_CADANGAN = [
-    { kode: "NGOPI5RB", judul: "Potongan Rp 5.000 Semua Menu", jenis: "NOMINAL", nilai: 5000, minBelanja: 20000, kuota: 100, status: "Aktif" },
-    { kode: "HEMAT10", judul: "Diskon 10% Khusus Member", jenis: "PERSEN", nilai: 10, minBelanja: 15000, kuota: 100, status: "Aktif" }
-  ];
-  const TAMBAHAN_CADANGAN = [{ nama: "ICE", harga: 0 }];
-
-  let daftarMenu = [], daftarTambahan = [...TAMBAHAN_CADANGAN], daftarVoucher = [...VOUCHER_CADANGAN];
-  let kategoriAktif = "Semua", catatanPesanan = [], stokHabisMap = {}, bestSellerMap = {}, memberAktif = null, modeAuth = "login", toastTimer = null;
-  let metodeBayarPelanggan = "QRIS";
-  let buktiTransferBase64 = "";
-
-  function tampilkanToast(pesan) {
-    const t = document.getElementById("toast-notice");
-    t.innerText = pesan; t.classList.add("show");
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function(el, from) { return this.indexOf(el, from || 0) !== -1; };
+  }
+  if (!String.prototype.includes) {
+    String.prototype.includes = function(s, start) { return this.indexOf(s, start || 0) !== -1; };
+  }
+  if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(s, pos) { pos = pos || 0; return this.substr(pos, s.length) === s; };
+  }
+  if (!Array.prototype.find) {
+    Array.prototype.find = function(fn, thisArg) {
+      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return this[i]; }
+      return undefined;
+    };
+  }
+  if (!Array.prototype.findIndex) {
+    Array.prototype.findIndex = function(fn, thisArg) {
+      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return i; }
+      return -1;
+    };
   }
 
-  function isMinuman(kategori) {
-    return !String(kategori || "").toLowerCase().includes("makanan");
-  }
-
-  function getHargaIce() {
-    return 0;
-  }
-
-  function toggleDownloadQris() {
-    const drawer = document.getElementById("qris-download-drawer");
-    const btn = document.getElementById("toggle-qris-dl-btn");
-    const terbuka = drawer.classList.toggle("show");
-    btn.innerText = terbuka ? "✕ Tutup Opsi Download" : "⬇️ Download Barcode QRIS";
-  }
-
-  function downloadGambarQris() {
-    const qrisUrl = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/QRIS.jpg";
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    try {
-      fetch(qrisUrl)
-        .then(res => {
-          if (!res.ok) throw new Error("not found");
-          return res.blob();
-        })
-        .then(blob => {
-          try {
-            const file = new File([blob], "QRIS-Angkringan-AmanLahLek.jpg", { type: "image/jpeg" });
-            if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
-              navigator.share({ files: [file], title: "QRIS AmanLahLek" }).catch(() => {});
-              return;
-            }
-          } catch (e) {}
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "QRIS-Angkringan-AmanLahLek.jpg";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(url), 1500);
-          tampilkanToast("✓ Barcode QRIS sedang diunduh!");
-        })
-        .catch(() => {
-          window.open(qrisUrl, "_blank", "noopener");
-          tampilkanToast(isIOS ? "Tekan & tahan gambar QRIS lalu pilih Simpan ke Foto." : "Membuka gambar QRIS untuk disimpan.");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+// Fallback fetch() untuk iPad / iOS versi lama (iOS 9 - 10.2)
+if (typeof window.fetch !== "function") {
+  window.fetch = function (url, opts) {
+    opts = opts || {};
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open(opts.method || "GET", url, true);
+      if (opts.headers) {
+        Object.keys(opts.headers).forEach(function (k) {
+          xhr.setRequestHeader(k, opts.headers[k]);
         });
-    } catch (e) {
-      window.open(qrisUrl, "_blank", "noopener");
-    }
-  }
-
-  function prosesUploadBukti(event) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-    if (file.type && !file.type.startsWith("image/")) {
-      tampilkanToast("Pilih file gambar (JPG/PNG) bukti transfer.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const img = new Image();
-      img.onload = function () {
-        const maxDim = 560;
-        let w = img.width, h = img.height;
-        if (w > maxDim || h > maxDim) {
-          if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-          else { w = Math.round((w * maxDim) / h); h = maxDim; }
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, w, h);
-        let compressed = canvas.toDataURL("image/jpeg", 0.55);
-        if (compressed.length > 38000) {
-          compressed = canvas.toDataURL("image/jpeg", 0.35);
-        }
-        buktiTransferBase64 = compressed;
-        document.getElementById("proof-preview-img").src = compressed;
-        document.getElementById("proof-preview-wrap").style.display = "block";
-        const box = document.getElementById("cust-proof-box");
-        box.classList.remove("error-highlight");
-        box.classList.add("has-file");
-        tampilkanToast("✓ Bukti pembayaran berhasil dilampirkan!");
+      }
+      xhr.onload = function () {
+        var bodyText = xhr.responseText;
+        resolve({
+          ok: xhr.status >= 200 && xhr.status < 300,
+          status: xhr.status,
+          text: function text() {
+            return Promise.resolve(bodyText);
+          },
+          json: function json() {
+            return Promise.resolve(JSON.parse(bodyText));
+          },
+          blob: function blob() {
+            return Promise.resolve(new Blob([xhr.response]));
+          }
+        });
       };
-      img.src = e.target.result;
+      xhr.onerror = function () {
+        reject(new Error("Network error"));
+      };
+      xhr.send(opts.body || null);
+    });
+  };
+}
+var API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
+var STORAGE_STOK_KEY = "stokHabisAmanLahLek";
+var STORAGE_BESTSELLER_KEY = "bestSellerAmanLahLek";
+var STORAGE_MEMBER_KEY = "memberAngkringanAmanLahLek";
+var STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
+var MENU_CADANGAN = [{
+  id: "c1",
+  nama: "Butterscotch",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c2",
+  nama: "Vanilla Latte",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c3",
+  nama: "Caramel Latte",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c4",
+  nama: "Hazelnut Latte",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c5",
+  nama: "Espresso",
+  kategori: "Coffee",
+  harga: 10000,
+  status: "Tersedia"
+}, {
+  id: "c6",
+  nama: "Americano",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c7",
+  nama: "Sanger",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c8",
+  nama: "Kopi Susu Gula Aren",
+  kategori: "Coffee",
+  harga: 18000,
+  status: "Tersedia",
+  bestSeller: true
+}, {
+  id: "c9",
+  nama: "Long Black",
+  kategori: "Coffee",
+  harga: 15000,
+  status: "Tersedia"
+}, {
+  id: "c10",
+  nama: "Caramel Machiato",
+  kategori: "Coffee",
+  harga: 23000,
+  status: "Tersedia"
+}, {
+  id: "c11",
+  nama: "Triple Peach Americano",
+  kategori: "Coffee",
+  harga: 23000,
+  status: "Tersedia"
+}, {
+  id: "s1",
+  nama: "Matcha",
+  kategori: "Soft Drink",
+  harga: 20000,
+  status: "Tersedia",
+  bestSeller: true
+}, {
+  id: "s2",
+  nama: "Taro",
+  kategori: "Soft Drink",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "s3",
+  nama: "Red Velvet",
+  kategori: "Soft Drink",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "s4",
+  nama: "Coklat",
+  kategori: "Soft Drink",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "s5",
+  nama: "Strawberry",
+  kategori: "Soft Drink",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "t1",
+  nama: "Lyche Tea",
+  kategori: "Tea",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "t2",
+  nama: "Lemon Tea",
+  kategori: "Tea",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "t3",
+  nama: "Peach Tea",
+  kategori: "Tea",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "t4",
+  nama: "Thai Tea",
+  kategori: "Tea",
+  harga: 20000,
+  status: "Tersedia"
+}, {
+  id: "m1",
+  nama: "Indomie Kuah",
+  kategori: "Makanan Ringan",
+  harga: 12000,
+  status: "Tersedia"
+}, {
+  id: "m2",
+  nama: "Indomie Goreng",
+  kategori: "Makanan Ringan",
+  harga: 6000,
+  status: "Tersedia"
+}, {
+  id: "m3",
+  nama: "Sosis",
+  kategori: "Makanan Ringan",
+  harga: 6000,
+  status: "Tersedia"
+}, {
+  id: "m4",
+  nama: "Nugget",
+  kategori: "Makanan Ringan",
+  harga: 6000,
+  status: "Tersedia"
+}];
+var VOUCHER_CADANGAN = [{
+  kode: "NGOPI5RB",
+  judul: "Potongan Rp 5.000 Semua Menu",
+  jenis: "NOMINAL",
+  nilai: 5000,
+  minBelanja: 20000,
+  kuota: 100,
+  status: "Aktif"
+}, {
+  kode: "HEMAT10",
+  judul: "Diskon 10% Khusus Member",
+  jenis: "PERSEN",
+  nilai: 10,
+  minBelanja: 15000,
+  kuota: 100,
+  status: "Aktif"
+}];
+var TAMBAHAN_CADANGAN = [{
+  nama: "ICE",
+  harga: 0
+}];
+var daftarMenu = [],
+  daftarTambahan = [].concat(TAMBAHAN_CADANGAN),
+  daftarVoucher = [].concat(VOUCHER_CADANGAN);
+var kategoriAktif = "Semua",
+  catatanPesanan = [],
+  stokHabisMap = {},
+  bestSellerMap = {},
+  memberAktif = null,
+  modeAuth = "login",
+  toastTimer = null;
+var metodeBayarPelanggan = "QRIS";
+var buktiTransferBase64 = "";
+function tampilkanToast(pesan) {
+  var t = document.getElementById("toast-notice");
+  t.innerText = pesan;
+  t.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () {
+    return t.classList.remove("show");
+  }, 3200);
+}
+function isMinuman(kategori) {
+  return !String(kategori || "").toLowerCase().includes("makanan");
+}
+function getHargaIce() {
+  return 0;
+}
+function toggleDownloadQris() {
+  var drawer = document.getElementById("qris-download-drawer");
+  var btn = document.getElementById("toggle-qris-dl-btn");
+  var terbuka = drawer.classList.toggle("show");
+  btn.innerText = terbuka ? "✕ Tutup Opsi Download" : "⬇️ Download Barcode QRIS";
+}
+function downloadGambarQris() {
+  var qrisUrl = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/QRIS.jpg";
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  try {
+    fetch(qrisUrl).then(function (res) {
+      if (!res.ok) throw new Error("not found");
+      return res.blob();
+    }).then(function (blob) {
+      try {
+        var file = new File([blob], "QRIS-Angkringan-AmanLahLek.jpg", {
+          type: "image/jpeg"
+        });
+        if (isIOS && navigator.canShare && navigator.canShare({
+          files: [file]
+        })) {
+          navigator.share({
+            files: [file],
+            title: "QRIS AmanLahLek"
+          }).catch(function () {});
+          return;
+        }
+      } catch (e) {}
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "QRIS-Angkringan-AmanLahLek.jpg";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () {
+        return URL.revokeObjectURL(url);
+      }, 1500);
+      tampilkanToast("✓ Barcode QRIS sedang diunduh!");
+    }).catch(function () {
+      window.open(qrisUrl, "_blank", "noopener");
+      tampilkanToast(isIOS ? "Tekan & tahan gambar QRIS lalu pilih Simpan ke Foto." : "Membuka gambar QRIS untuk disimpan.");
+    });
+  } catch (e) {
+    window.open(qrisUrl, "_blank", "noopener");
+  }
+}
+function prosesUploadBukti(event) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (file.type && !file.type.startsWith("image/")) {
+    tampilkanToast("Pilih file gambar (JPG/PNG) bukti transfer.");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var img = new Image();
+    img.onload = function () {
+      var maxDim = 560;
+      var w = img.width,
+        h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round(h * maxDim / w);
+          w = maxDim;
+        } else {
+          w = Math.round(w * maxDim / h);
+          h = maxDim;
+        }
+      }
+      var canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      var compressed = canvas.toDataURL("image/jpeg", 0.55);
+      if (compressed.length > 38000) {
+        compressed = canvas.toDataURL("image/jpeg", 0.35);
+      }
+      buktiTransferBase64 = compressed;
+      document.getElementById("proof-preview-img").src = compressed;
+      document.getElementById("proof-preview-wrap").style.display = "block";
+      var box = document.getElementById("cust-proof-box");
+      box.classList.remove("error-highlight");
+      box.classList.add("has-file");
+      tampilkanToast("✓ Bukti pembayaran berhasil dilampirkan!");
     };
-    reader.readAsDataURL(file);
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function hapusBuktiTransfer() {
+  buktiTransferBase64 = "";
+  document.getElementById("cust-proof-file").value = "";
+  document.getElementById("proof-preview-img").src = "";
+  document.getElementById("proof-preview-wrap").style.display = "none";
+  var box = document.getElementById("cust-proof-box");
+  box.classList.remove("has-file", "error-highlight");
+}
+function salinRekening(noRek) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(noRek).then(function () {
+      return tampilkanToast("✓ No. Rekening Bank JAGO disalin!");
+    }).catch(function () {
+      return fallbackSalin(noRek);
+    });
+  } else fallbackSalin(noRek);
+}
+function fallbackSalin(text) {
+  var el = document.createElement("textarea");
+  el.value = text;
+  el.setAttribute("readonly", "");
+  el.style.position = "fixed";
+  el.style.top = "-9999px";
+  el.style.fontSize = "16px";
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  try {
+    el.setSelectionRange(0, el.value.length);
+  } catch (e) {}
+  try {
+    document.execCommand("copy");
+    tampilkanToast("✓ No. Rekening Bank JAGO disalin!");
+  } catch (e) {}
+  document.body.removeChild(el);
+}
+function muatStokHabisLokal() {
+  try {
+    var r = localStorage.getItem(STORAGE_STOK_KEY);
+    stokHabisMap = r ? JSON.parse(r) || {} : {};
+  } catch (e) {
+    stokHabisMap = {};
   }
-
-  function hapusBuktiTransfer() {
-    buktiTransferBase64 = "";
-    document.getElementById("cust-proof-file").value = "";
-    document.getElementById("proof-preview-img").src = "";
-    document.getElementById("proof-preview-wrap").style.display = "none";
-    const box = document.getElementById("cust-proof-box");
-    box.classList.remove("has-file", "error-highlight");
+}
+function muatBestSellerLokal() {
+  try {
+    var r = localStorage.getItem(STORAGE_BESTSELLER_KEY);
+    bestSellerMap = r ? JSON.parse(r) || {} : {};
+  } catch (e) {
+    bestSellerMap = {};
   }
-
-  function salinRekening(noRek) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(noRek).then(() => tampilkanToast("✓ No. Rekening Bank JAGO disalin!")).catch(() => fallbackSalin(noRek));
-    } else fallbackSalin(noRek);
+}
+function muatMemberLokal() {
+  try {
+    var r = localStorage.getItem(STORAGE_MEMBER_KEY);
+    if (r) memberAktif = JSON.parse(r);
+  } catch (e) {
+    memberAktif = null;
   }
-  function fallbackSalin(text) {
-    const el = document.createElement("textarea");
-    el.value = text;
-    el.setAttribute("readonly", "");
-    el.style.position = "fixed";
-    el.style.top = "-9999px";
-    el.style.fontSize = "16px";
-    document.body.appendChild(el);
-    el.focus();
-    el.select();
-    try { el.setSelectionRange(0, el.value.length); } catch (e) {}
-    try { document.execCommand("copy"); tampilkanToast("✓ No. Rekening Bank JAGO disalin!"); } catch (e) {}
-    document.body.removeChild(el);
-  }
-
-  function muatStokHabisLokal() { try { const r = localStorage.getItem(STORAGE_STOK_KEY); stokHabisMap = r ? (JSON.parse(r) || {}) : {}; } catch (e) { stokHabisMap = {}; } }
-  function muatBestSellerLokal() { try { const r = localStorage.getItem(STORAGE_BESTSELLER_KEY); bestSellerMap = r ? (JSON.parse(r) || {}) : {}; } catch (e) { bestSellerMap = {}; } }
-  function muatMemberLokal() { try { const r = localStorage.getItem(STORAGE_MEMBER_KEY); if (r) memberAktif = JSON.parse(r); } catch (e) { memberAktif = null; } }
-  function simpanMemberLokal() { try { if (memberAktif) localStorage.setItem(STORAGE_MEMBER_KEY, JSON.stringify(memberAktif)); else localStorage.removeItem(STORAGE_MEMBER_KEY); } catch (e) {} }
-
-  function bersihkanNamaMenu(namaAsli) {
-    return String(namaAsli || "")
-      .replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "")
-      .replace(/\s*[\(\[]\s*best\s*seller\s*[\)\]]/gi, "")
-      .replace(/⭐/g, "")
-      .trim();
-  }
-
-  function apakahStokHabis(item) {
-    const namaBersih = bersihkanNamaMenu(item.nama);
-    if (stokHabisMap[namaBersih] === true) return true;
-    if (stokHabisMap[namaBersih] === false) return false;
-    const namaRaw = String(item.nama || "").toLowerCase();
-    if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) return true;
-    const st = String(item.status || item.stok || "").toLowerCase().trim();
-    return st === "habis" || st === "kosong" || st === "tidak tersedia" || st === "0" || item.habis === true;
-  }
-
-  function apakahBestSeller(item) {
-    const namaBersih = bersihkanNamaMenu(item.nama);
-    if (bestSellerMap[namaBersih] === true) return true;
-    if (bestSellerMap[namaBersih] === false) return false;
-    return item.bestSeller === true || /best\s*seller|⭐/i.test(String(item.nama || ""));
-  }
-
-  function muatDataMenuDariServer() {
-    muatStokHabisLokal();
-    muatBestSellerLokal();
-    try { fetch(API_URL).then(res => res.json()).then(data => {
-      const m = Array.isArray(data) ? data : (data.menu || []);
-      daftarMenu = m.length > 0 ? m : MENU_CADANGAN;
-      daftarTambahan = (!Array.isArray(data) && data.tambahan && data.tambahan.length > 0) ? data.tambahan : TAMBAHAN_CADANGAN;
-      daftarVoucher = (!Array.isArray(data) && data.vouchers && data.vouchers.length > 0) ? data.vouchers : VOUCHER_CADANGAN;
-      bersihkanPesananYangHabis(); terapkanFilter(); renderPromoVoucher(); tampilkanInfoTambahan(daftarTambahan);
-    }).catch(() => {
-      if (daftarMenu.length === 0) daftarMenu = MENU_CADANGAN;
-      bersihkanPesananYangHabis(); terapkanFilter(); renderPromoVoucher(); tampilkanInfoTambahan(daftarTambahan);
-    }); } catch (e) {}
-  }
-
-  window.addEventListener("storage", (e) => {
-    if (!e.key || e.key === STORAGE_STOK_KEY || e.key === STORAGE_BESTSELLER_KEY) {
-      muatStokHabisLokal();
-      muatBestSellerLokal();
+}
+function simpanMemberLokal() {
+  try {
+    if (memberAktif) localStorage.setItem(STORAGE_MEMBER_KEY, JSON.stringify(memberAktif));else localStorage.removeItem(STORAGE_MEMBER_KEY);
+  } catch (e) {}
+}
+function bersihkanNamaMenu(namaAsli) {
+  return String(namaAsli || "").replace(/\s*[\(\[]\s*(stok\s*)?(habis|kosong)\s*[\)\]]/gi, "").replace(/\s*[\(\[]\s*best\s*seller\s*[\)\]]/gi, "").replace(/⭐/g, "").trim();
+}
+function apakahStokHabis(item) {
+  var namaBersih = bersihkanNamaMenu(item.nama);
+  if (stokHabisMap[namaBersih] === true) return true;
+  if (stokHabisMap[namaBersih] === false) return false;
+  var namaRaw = String(item.nama || "").toLowerCase();
+  if (namaRaw.includes("(habis)") || namaRaw.includes("[habis]") || namaRaw.includes("(kosong)")) return true;
+  var st = String(item.status || item.stok || "").toLowerCase().trim();
+  return st === "habis" || st === "kosong" || st === "tidak tersedia" || st === "0" || item.habis === true;
+}
+function apakahBestSeller(item) {
+  var namaBersih = bersihkanNamaMenu(item.nama);
+  if (bestSellerMap[namaBersih] === true) return true;
+  if (bestSellerMap[namaBersih] === false) return false;
+  return item.bestSeller === true || /best\s*seller|⭐/i.test(String(item.nama || ""));
+}
+function cekStokHabisDariServer(item) {
+  var namaRaw = String(item.nama || "").toLowerCase();
+  if (namaRaw.indexOf("(habis)") !== -1 || namaRaw.indexOf("[habis]") !== -1 || namaRaw.indexOf("(kosong)") !== -1) return true;
+  var st = String(item.status !== undefined && item.status !== null ? item.status : item.stok !== undefined && item.stok !== null ? item.stok : "").toLowerCase().trim();
+  return st === "habis" || st === "kosong" || st === "tidak tersedia" || st === "0" || st === "false" || item.habis === true;
+}
+function muatDataMenuDariServer() {
+  muatStokHabisLokal();
+  muatBestSellerLokal();
+  try {
+    fetch(API_URL + "?t=" + Date.now()).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      var m = Array.isArray(data) ? data : data.menu || [];
+      if (m.length > 0) {
+        daftarMenu = m;
+        var freshStok = {};
+        var freshBest = {};
+        m.forEach(function (item) {
+          var nb = bersihkanNamaMenu(item.nama);
+          freshStok[nb] = cekStokHabisDariServer(item);
+          freshBest[nb] = item.bestSeller === true || /best\s*seller|⭐/i.test(String(item.nama || ""));
+        });
+        stokHabisMap = freshStok;
+        bestSellerMap = freshBest;
+        try {
+          localStorage.setItem(STORAGE_STOK_KEY, JSON.stringify(stokHabisMap));
+        } catch (e) {}
+        try {
+          localStorage.setItem(STORAGE_BESTSELLER_KEY, JSON.stringify(bestSellerMap));
+        } catch (e) {}
+      } else if (daftarMenu.length === 0) {
+        daftarMenu = MENU_CADANGAN;
+      }
+      daftarTambahan = !Array.isArray(data) && data.tambahan && data.tambahan.length > 0 ? data.tambahan : TAMBAHAN_CADANGAN;
+      daftarVoucher = !Array.isArray(data) && data.vouchers && data.vouchers.length > 0 ? data.vouchers : VOUCHER_CADANGAN;
       bersihkanPesananYangHabis();
       terapkanFilter();
-    }
-  });
-  window.addEventListener("focus", muatDataMenuDariServer);
-  window.addEventListener("DOMContentLoaded", () => { muatMemberLokal(); perbaruiUIMember(); muatDataMenuDariServer(); });
-
-  function perbaruiUIMember() {
-    const hb = document.getElementById("member-header-btn"), mvb = document.getElementById("my-vouchers-btn");
-    if (memberAktif) {
-      const t = (memberAktif.claimedVouchers || []).filter(v => v.statusPakai === "Tersedia").length;
-      hb.innerText = `👤 ${memberAktif.nama} (${memberAktif.noHp})`;
-      mvb.innerText = `🎟️ Voucher Saya (${t})`;
-    } else { hb.innerText = "👤 Masuk / Daftar Member"; mvb.innerText = "Dompet Voucher (0)"; }
-    renderPromoVoucher();
-  }
-
-  function renderPromoVoucher() {
-    const grid = document.getElementById("promo-grid"); grid.innerHTML = "";
-    const klaimList = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers : [];
-    daftarVoucher.forEach(v => {
-      const match = klaimList.find(c => c.kode === v.kode);
-      const labelDiskon = v.jenis === "PERSEN" ? `Diskon ${v.nilai}%` : `Potongan Rp ${Number(v.nilai).toLocaleString("id-ID")}`;
-      const minText = v.minBelanja > 0 ? `Min. belanja Rp ${Number(v.minBelanja).toLocaleString("id-ID")}` : "Tanpa minimal belanja";
-      let btnClass = "claim-btn", btnText = "🎟️ Klaim Voucher", disabled = false;
-      if (match) {
-        if (match.statusPakai === "Terpakai") { btnClass = "claim-btn used"; btnText = "Sudah Dipakai"; disabled = true; }
-        else { btnClass = "claim-btn claimed"; btnText = "✓ Sudah Diklaim"; disabled = true; }
-      }
-      const card = document.createElement("div"); card.className = "voucher-card";
-      card.innerHTML = `<div><span class="voucher-code-pill">${v.kode}</span><div class="voucher-title">${v.judul}</div><div class="voucher-meta">${labelDiskon} • ${minText} • Kuota: ${v.kuota}</div></div><button type="button" class="${btnClass}" ${disabled ? "disabled" : ""}>${btnText}</button>`;
-      if (!disabled) card.querySelector("button").addEventListener("click", () => klaimVoucher(v));
-      grid.appendChild(card);
+      renderPromoVoucher();
+      tampilkanInfoTambahan(daftarTambahan);
+    }).catch(function () {
+      if (daftarMenu.length === 0) daftarMenu = MENU_CADANGAN;
+      bersihkanPesananYangHabis();
+      terapkanFilter();
+      renderPromoVoucher();
+      tampilkanInfoTambahan(daftarTambahan);
     });
-  }
-
-  function klaimVoucher(v) {
-    if (!memberAktif) { tampilkanToast("👤 Masuk atau daftar akun member dulu"); bukaModalMember(); return; }
-    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "klaimVoucher", noHp: memberAktif.noHp, kodeVoucher: v.kode }) })
-      .then(res => res.json()).then(data => {
-        if (data.success) { memberAktif.claimedVouchers = data.claimedVouchers || []; simpanMemberLokal(); perbaruiUIMember(); tampilkanToast(`✓ Voucher ${v.kode} diklaim!`); }
-        else tampilkanToast(data.message || "Gagal klaim voucher.");
-      }).catch(() => tampilkanToast("Gagal terhubung ke server.")); } catch (e) {}
-  }
-
-  function bukaModalMember() {
-    document.getElementById("member-auth-msg").style.display = "none";
-    if (memberAktif) {
-      document.getElementById("member-auth-view").style.display = "none";
-      document.getElementById("member-profile-view").style.display = "block";
-      document.getElementById("profile-name-label").innerText = `Halo, ${memberAktif.nama}`;
-      document.getElementById("profile-phone-label").innerText = `No. WhatsApp: ${memberAktif.noHp}`;
-      const list = document.getElementById("profile-voucher-list"), items = memberAktif.claimedVouchers || [];
-      list.innerHTML = items.length === 0 ? `<div style="font-size:0.84rem; color:var(--espresso-600); padding:10px 0;">Belum ada voucher diklaim.</div>` :
-        items.map(v => `<div class="est-row"><div class="est-row-top"><div><strong>${v.kode}</strong> — ${v.judul}</div><span class="addon-pill">${v.statusPakai}</span></div></div>`).join("");
-    } else { document.getElementById("member-profile-view").style.display = "none"; document.getElementById("member-auth-view").style.display = "block"; }
-    document.getElementById("member-modal").classList.add("show");
-  }
-  function tutupModalMember() { document.getElementById("member-modal").classList.remove("show"); }
-  function ubahTabAuth(m) {
-    modeAuth = m;
-    document.getElementById("tab-login-member").classList.toggle("active", m === "login");
-    document.getElementById("tab-register-member").classList.toggle("active", m === "register");
-    document.getElementById("register-name-group").style.display = m === "register" ? "block" : "none";
-    document.getElementById("auth-submit-btn").innerText = m === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
-  }
-
-  function prosesAuthPelanggan() {
-    const nama = document.getElementById("member-name").value.trim(), noHp = document.getElementById("member-phone").value.trim(), pin = document.getElementById("member-pin").value.trim();
-    const msg = document.getElementById("member-auth-msg"), btn = document.getElementById("auth-submit-btn");
-    if (!noHp || pin.length < 4 || (modeAuth === "register" && !nama)) { msg.innerText = "Lengkapi semua kolom (PIN min 4 angka)."; msg.style.color = "var(--danger-text)"; msg.style.display = "block"; return; }
-    btn.disabled = true; btn.innerText = "Memproses...";
-    try { fetch(API_URL, { method: "POST", body: JSON.stringify({ action: modeAuth === "register" ? "registerPelanggan" : "loginPelanggan", nama, noHp, pin }) })
-      .then(res => res.json()).then(data => {
-        btn.disabled = false; btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
-        if (data.success) { memberAktif = { noHp: data.pelanggan.noHp, nama: data.pelanggan.nama, claimedVouchers: data.claimedVouchers || [] }; simpanMemberLokal(); perbaruiUIMember(); bukaModalMember(); tampilkanToast(`✓ Selamat datang, ${memberAktif.nama}!`); }
-        else { msg.innerText = data.message || "Gagal."; msg.style.color = "var(--danger-text)"; msg.style.display = "block"; }
-      }).catch(() => { btn.disabled = false; msg.innerText = "Gagal terhubung ke server."; msg.style.display = "block"; }); } catch (e) {}
-  }
-  function logoutPelanggan() { memberAktif = null; simpanMemberLokal(); perbaruiUIMember(); tutupModalMember(); }
-  function tampilkanInfoTambahan() {
-    const box = document.getElementById("addon-box");
-    box.innerHTML = `<div>🌡️ <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class="addon-pill">🔥 HOT (Gratis)</span> <span class="addon-pill">🧊 ICE (Gratis)</span></div>`;
-    box.style.display = "flex";
-  }
-  function bersihkanPesananYangHabis() { catatanPesanan = catatanPesanan.filter(p => !(daftarMenu.find(m => bersihkanNamaMenu(m.nama) === p.nama && apakahStokHabis(m)))); perbaruiBarEstimasi(); }
-  function bukaLoginKasir() { window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/kasir.html"; }
-  function pilihKategori(kat, btnEl) { kategoriAktif = kat; document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btnEl.classList.add("active"); terapkanFilter(); }
-  function resetCari() { document.getElementById("search-input").value = ""; document.getElementById("clear-search-btn").style.display = "none"; terapkanFilter(); }
-  function terapkanFilter() {
-    const kw = document.getElementById("search-input").value.toLowerCase();
-    document.getElementById("clear-search-btn").style.display = kw.length > 0 ? "inline-flex" : "none";
-    const hasil = daftarMenu.filter(item => bersihkanNamaMenu(item.nama).toLowerCase().includes(kw) && ((kategoriAktif === "Semua") || ((item.kategori || "").trim().toLowerCase() === kategoriAktif.toLowerCase())));
-    renderBestSellerSection(hasil);
-    renderMenuTerkelompok(hasil);
-  }
-  function hitungQtyMenu(n) { return catatanPesanan.filter(i => i.nama === n).reduce((s, i) => s + i.qty, 0); }
-
-  function tambahKeEstimasi(item) {
-    const namaBersih = bersihkanNamaMenu(item.nama);
-    if (apakahStokHabis(item)) { tampilkanToast(`🚫 Maaf, stok ${namaBersih} sedang habis`); return; }
-    const minuman = isMinuman(item.kategori);
-    const idx = catatanPesanan.findIndex(i => i.nama === namaBersih && (!minuman || i.suhu === ""));
-    if (idx !== -1) {
-      catatanPesanan[idx].qty++;
-    } else {
-      catatanPesanan.push({
-        id: item.id || namaBersih,
-        nama: namaBersih,
-        kategori: item.kategori || "",
-        hargaDasar: Number(item.harga),
-        qty: 1,
-        suhu: minuman ? "" : "N/A",
-        addons: []
-      });
-    }
-    perbaruiBarEstimasi(); terapkanFilter();
-  }
-
-  function aturSemuaSuhuEstimasi(suhuBaru) {
-    const hargaIce = getHargaIce();
-    const hasil = [];
-    catatanPesanan.forEach(item => {
-      if (isMinuman(item.kategori)) {
-        item.suhu = suhuBaru;
-        item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
-      }
-      const existing = hasil.find(x => x.nama === item.nama && x.suhu === item.suhu);
-      if (existing) {
-        existing.qty += item.qty;
-      } else {
-        hasil.push(item);
-      }
-    });
-    catatanPesanan = hasil;
-    perbaruiBarEstimasi();
-    renderIsiModalEstimasi();
+  } catch (e) {}
+}
+window.addEventListener("storage", function (e) {
+  if (!e.key || e.key === STORAGE_STOK_KEY || e.key === STORAGE_BESTSELLER_KEY) {
+    muatStokHabisLokal();
+    muatBestSellerLokal();
+    bersihkanPesananYangHabis();
     terapkanFilter();
-    tampilkanToast(suhuBaru === "ICE" ? "🧊 Semua minuman diatur ke ICE" : "🔥 Semua minuman diatur ke HOT");
   }
-
-  function pilihSuhuEstimasi(rIdx, suhuBaru) {
-    const item = catatanPesanan[rIdx];
-    if (!item || !isMinuman(item.kategori)) return;
-    const hargaIce = getHargaIce();
-
-    const sameIdx = catatanPesanan.findIndex((x, i) => i !== rIdx && x.nama === item.nama && x.suhu === suhuBaru);
-    if (sameIdx !== -1) {
-      catatanPesanan[sameIdx].qty += item.qty;
-      catatanPesanan.splice(rIdx, 1);
-    } else {
-      item.suhu = suhuBaru;
-      item.addons = suhuBaru === "ICE" ? [{ nama: "ICE", harga: hargaIce }] : [];
-    }
-    perbaruiBarEstimasi(); renderIsiModalEstimasi(); terapkanFilter();
+});
+window.addEventListener("focus", muatDataMenuDariServer);
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) muatDataMenuDariServer();
+});
+window.addEventListener("DOMContentLoaded", function () {
+  muatMemberLokal();
+  perbaruiUIMember();
+  muatDataMenuDariServer();
+  setInterval(function () {
+    if (!document.hidden) muatDataMenuDariServer();
+  }, 30000);
+});
+function perbaruiUIMember() {
+  var hb = document.getElementById("member-header-btn"),
+    mvb = document.getElementById("my-vouchers-btn");
+  if (memberAktif) {
+    var t = (memberAktif.claimedVouchers || []).filter(function (v) {
+      return v.statusPakai === "Tersedia";
+    }).length;
+    hb.innerText = "\uD83D\uDC64 ".concat(memberAktif.nama, " (").concat(memberAktif.noHp, ")");
+    mvb.innerText = "\uD83C\uDF9F\uFE0F Voucher Saya (".concat(t, ")");
+  } else {
+    hb.innerText = "👤 Masuk / Daftar Member";
+    mvb.innerText = "Dompet Voucher (0)";
   }
-
-  function ubahQtyEstimasi(rIdx, delta) {
-    if (!catatanPesanan[rIdx]) return;
-    catatanPesanan[rIdx].qty += delta;
-    if (catatanPesanan[rIdx].qty <= 0) catatanPesanan.splice(rIdx, 1);
-    perbaruiBarEstimasi(); renderIsiModalEstimasi(); terapkanFilter();
-  }
-  function resetEstimasi() { catatanPesanan = []; perbaruiBarEstimasi(); tutupModalEstimasi(); terapkanFilter(); }
-  function hitungTotalSemuaEstimasi() { return catatanPesanan.reduce((t, i) => t + ((i.hargaDasar + i.addons.reduce((s, a) => s + Number(a.harga), 0)) * i.qty), 0); }
-
-  function perbaruiBarEstimasi() {
-    const bar = document.getElementById("estimator-bar"), totalQty = catatanPesanan.reduce((s, i) => s + i.qty, 0), totalHarga = hitungTotalSemuaEstimasi();
-    if (totalQty > 0) { document.getElementById("estimator-count").innerText = `${totalQty} Menu Dipilih`; document.getElementById("estimator-total").innerText = `Rp ${totalHarga.toLocaleString("id-ID")}`; bar.classList.add("show"); }
-    else bar.classList.remove("show");
-  }
-
-  function pilihMejaPelanggan(val) { document.getElementById("cust-table-number").value = val; sinkronMejaPelanggan(); }
-  function sinkronMejaPelanggan() { const v = document.getElementById("cust-table-number").value.trim().toLowerCase(); document.querySelectorAll("#estimator-modal .table-chip").forEach(c => c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === v)); }
-
-  function pilihBayarPelanggan(metode) {
-    metodeBayarPelanggan = metode;
-    document.querySelectorAll(".cust-pay-pill").forEach(p => p.classList.toggle("active", p.getAttribute("data-cpay") === metode));
-    document.getElementById("cust-pay-qris").style.display = metode === "QRIS" ? "block" : "none";
-    document.getElementById("cust-pay-transfer").style.display = metode === "Transfer" ? "block" : "none";
-    document.getElementById("cust-pay-tunai").style.display = metode === "Tunai" ? "block" : "none";
-    document.getElementById("cust-proof-box").style.display = (metode === "QRIS" || metode === "Transfer") ? "block" : "none";
-    document.getElementById("cust-proof-box").classList.remove("error-highlight");
-
-    const btn = document.getElementById("submit-order-btn");
-    if (metode === "QRIS") btn.innerText = "✓ Saya Sudah Bayar via QRIS & Kirim Pesanan";
-    else if (metode === "Transfer") btn.innerText = "✓ Saya Sudah Transfer Bank JAGO & Kirim Pesanan";
-    else btn.innerText = "🚀 Kirim Pesanan & Bayar Tunai di Kasir";
-  }
-
-  function bukaModalEstimasi() {
-    document.getElementById("order-modal-title").innerText = "🛒 Konfirmasi Pesanan Anda";
-    document.getElementById("order-form-view").style.display = "block";
-    document.getElementById("order-sent-view").style.display = "none";
-    if (memberAktif && !document.getElementById("cust-order-name").value.trim()) document.getElementById("cust-order-name").value = memberAktif.nama;
-    isiDropdownVoucherEstimasi(); renderIsiModalEstimasi(); pilihBayarPelanggan("QRIS");
-    document.getElementById("estimator-modal").classList.add("show");
-  }
-  function tutupModalEstimasi() { document.getElementById("estimator-modal").classList.remove("show"); }
-
-  function isiDropdownVoucherEstimasi() {
-    const box = document.getElementById("est-voucher-box"), sel = document.getElementById("est-voucher-select");
-    const t = (memberAktif && memberAktif.claimedVouchers) ? memberAktif.claimedVouchers.filter(v => v.statusPakai === "Tersedia") : [];
-    if (!memberAktif || t.length === 0) { box.style.display = "none"; sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>`; return; }
-    box.style.display = "block";
-    sel.innerHTML = `<option value="">-- Tidak pakai voucher --</option>` + t.map(v => `<option value="${v.kode}">${v.kode} (${v.judul})</option>`).join("");
-  }
-
-  function hitungRincianOrder() {
-    const subtotal = hitungTotalSemuaEstimasi(), kode = document.getElementById("est-voucher-select").value;
-    let diskon = 0;
-    if (kode && memberAktif) {
-      const vObj = (memberAktif.claimedVouchers || []).find(v => v.kode === kode);
-      if (vObj && subtotal >= Number(vObj.minBelanja || 0)) diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round((subtotal * vObj.nilai) / 100)) : Math.min(subtotal, vObj.nilai);
-    }
-    return { subtotal, kodeVoucher: diskon > 0 ? kode : "", diskon, totalAkhir: Math.max(0, subtotal - diskon) };
-  }
-
-  function renderIsiModalEstimasi() {
-    const listEl = document.getElementById("est-list-container");
-    if (catatanPesanan.length === 0) { tutupModalEstimasi(); return; }
-    listEl.innerHTML = "";
-    const hargaIce = getHargaIce();
-    const minumanItems = catatanPesanan.filter(i => isMinuman(i.kategori));
-    const shortcutBar = document.getElementById("est-temp-shortcut");
-    if (shortcutBar) {
-      if (minumanItems.length > 0) {
-        shortcutBar.classList.add("show");
-        const semuaHot = minumanItems.every(i => i.suhu === "HOT");
-        const semuaIce = minumanItems.every(i => i.suhu === "ICE");
-        document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
-        document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
-        document.getElementById("est-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
-      } else {
-        shortcutBar.classList.remove("show");
-      }
-    }
-
-    catatanPesanan.forEach((item, rIdx) => {
-      const minuman = isMinuman(item.kategori);
-      const belumPilihSuhu = minuman && !item.suhu;
-      const sub = (item.hargaDasar + item.addons.reduce((s, a) => s + Number(a.harga), 0)) * item.qty;
-
-      let lbl = "";
-      if (minuman) {
-        if (item.suhu === "HOT") lbl = ` <span style="color:#d84315; font-size:0.78rem; font-weight:800;">[🔥 HOT]</span>`;
-        else if (item.suhu === "ICE") lbl = ` <span style="color:#0277bd; font-size:0.78rem; font-weight:800;">[🧊 ICE]</span>`;
-        else lbl = ` <span style="color:var(--danger-text); font-size:0.76rem; font-weight:800;">(Pilih HOT / ICE)</span>`;
-      }
-
-      const tempHTML = minuman
-        ? `<div class="est-addons">
-            <span class="temp-req-label">Suhu *:</span>
-            <button type="button" class="est-temp-chip ${item.suhu === 'HOT' ? 'selected-hot' : ''}" data-row="${rIdx}" data-suhu="HOT">🔥 HOT (Gratis)</button>
-            <button type="button" class="est-temp-chip ${item.suhu === 'ICE' ? 'selected-ice' : ''}" data-row="${rIdx}" data-suhu="ICE">🧊 ICE (Gratis)</button>
-          </div>`
-        : "";
-
-      const row = document.createElement("div");
-      row.className = "est-row" + (belumPilihSuhu ? " missing-temp" : "");
-      row.innerHTML = `<div class="est-row-top"><div><strong>${item.nama}</strong>${lbl}<br><small style="color:var(--espresso-600); font-weight:600;">Rp ${sub.toLocaleString("id-ID")}</small></div><div class="est-qty-box"><button type="button" class="est-step-btn" data-row="${rIdx}" data-delta="-1">−</button><span style="min-width:20px; text-align:center; font-weight:800;">${item.qty}</span><button type="button" class="est-step-btn" data-row="${rIdx}" data-delta="1">+</button></div></div>${tempHTML}`;
-      row.querySelectorAll(".est-step-btn").forEach(b => b.addEventListener("click", () => ubahQtyEstimasi(Number(b.getAttribute("data-row")), Number(b.getAttribute("data-delta")))));
-      row.querySelectorAll(".est-temp-chip").forEach(c => c.addEventListener("click", () => pilihSuhuEstimasi(Number(c.getAttribute("data-row")), c.getAttribute("data-suhu"))));
-      listEl.appendChild(row);
+  renderPromoVoucher();
+}
+function renderPromoVoucher() {
+  var grid = document.getElementById("promo-grid");
+  grid.innerHTML = "";
+  var klaimList = memberAktif && memberAktif.claimedVouchers ? memberAktif.claimedVouchers : [];
+  daftarVoucher.forEach(function (v) {
+    var match = klaimList.find(function (c) {
+      return c.kode === v.kode;
     });
-    const r = hitungRincianOrder();
-    if (r.diskon > 0) { document.getElementById("est-discount-line").style.display = "flex"; document.getElementById("est-discount-val").innerText = `-Rp ${r.diskon.toLocaleString("id-ID")}`; }
-    else document.getElementById("est-discount-line").style.display = "none";
-    document.getElementById("modal-est-total").innerText = `Rp ${r.totalAkhir.toLocaleString("id-ID")}`;
+    var labelDiskon = v.jenis === "PERSEN" ? "Diskon ".concat(v.nilai, "%") : "Potongan Rp ".concat(Number(v.nilai).toLocaleString("id-ID"));
+    var minText = v.minBelanja > 0 ? "Min. belanja Rp ".concat(Number(v.minBelanja).toLocaleString("id-ID")) : "Tanpa minimal belanja";
+    var btnClass = "claim-btn",
+      btnText = "🎟️ Klaim Voucher",
+      disabled = false;
+    if (match) {
+      if (match.statusPakai === "Terpakai") {
+        btnClass = "claim-btn used";
+        btnText = "Sudah Dipakai";
+        disabled = true;
+      } else {
+        btnClass = "claim-btn claimed";
+        btnText = "✓ Sudah Diklaim";
+        disabled = true;
+      }
+    }
+    var card = document.createElement("div");
+    card.className = "voucher-card";
+    card.innerHTML = "<div><span class=\"voucher-code-pill\">".concat(v.kode, "</span><div class=\"voucher-title\">").concat(v.judul, "</div><div class=\"voucher-meta\">").concat(labelDiskon, " \u2022 ").concat(minText, " \u2022 Kuota: ").concat(v.kuota, "</div></div><button type=\"button\" class=\"").concat(btnClass, "\" ").concat(disabled ? "disabled" : "", ">").concat(btnText, "</button>");
+    if (!disabled) card.querySelector("button").addEventListener("click", function () {
+      return klaimVoucher(v);
+    });
+    grid.appendChild(card);
+  });
+}
+function klaimVoucher(v) {
+  if (!memberAktif) {
+    tampilkanToast("👤 Masuk atau daftar akun member dulu");
+    bukaModalMember();
+    return;
   }
-
-  function kirimPesananKeKasir() {
-    const itemBelumPilihSuhu = catatanPesanan.find(i => isMinuman(i.kategori) && !i.suhu);
-    if (itemBelumPilihSuhu) {
-      renderIsiModalEstimasi();
-      document.getElementById("est-list-container").scrollIntoView({ behavior: "smooth", block: "center" });
-      tampilkanToast(`🌡️ Wajib pilih HOT atau ICE untuk ${itemBelumPilihSuhu.nama}!`);
-      return;
-    }
-
-    const atasNama = document.getElementById("cust-order-name").value.trim(), rawMeja = document.getElementById("cust-table-number").value.trim();
-    if (!atasNama) { tampilkanToast("Isi Atas Nama Pemesan terlebih dahulu."); return; }
-    if (!rawMeja) { tampilkanToast("Isi Nomor Meja atau pilih Bungkus."); return; }
-
-    if ((metodeBayarPelanggan === "QRIS" || metodeBayarPelanggan === "Transfer") && !buktiTransferBase64) {
-      const box = document.getElementById("cust-proof-box");
-      box.classList.add("error-highlight");
-      box.scrollIntoView({ behavior: "smooth", block: "center" });
-      tampilkanToast("📸 Wajib unggah foto/screenshot bukti transfer!");
-      return;
-    }
-
-    const mejaLabel = rawMeja.toLowerCase() === "bungkus" ? "Bungkus" : (rawMeja.toLowerCase().startsWith("meja") ? rawMeja : `Meja ${rawMeja}`);
-    const detailItems = catatanPesanan.map(i => {
-      const tagSuhu = isMinuman(i.kategori) && i.suhu ? ` [${i.suhu}]` : "";
-      return `${i.nama}${tagSuhu} (${i.qty}x)`;
-    }).join(", ");
-    const r = hitungRincianOrder(), noHp = memberAktif ? memberAktif.noHp : "";
-    const statusBayar = (metodeBayarPelanggan === "Tunai") ? "Belum Dibayar" : "Menunggu Cek Kasir";
-    const buktiKirim = (metodeBayarPelanggan === "Tunai") ? "" : buktiTransferBase64;
-
-    const btn = document.getElementById("submit-order-btn"); btn.disabled = true; btn.innerText = "Mengirim ke kasir...";
-
-    const simpanLokalDanTampilkan = (idOrder, waktuOrder) => {
-      try {
-        const raw = localStorage.getItem(STORAGE_RIWAYAT_KEY), list = raw ? JSON.parse(raw) : [];
-        list.unshift({
-          id: idOrder, noTrx: "-", waktu: waktuOrder, atasNama, mejaLabel, noHp, detailItems,
-          subtotal: r.subtotal, kodeVoucher: r.kodeVoucher, diskon: r.diskon, total: r.totalAkhir,
-          metode: metodeBayarPelanggan, statusBayar: statusBayar, buktiTransfer: buktiKirim,
-          kasir: "-", status: "Sedang Ditinjau"
-        });
-        localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(list));
-      } catch (e) {}
-
-      document.getElementById("order-modal-title").innerText = "✅ Pesanan Terkirim";
-      document.getElementById("order-form-view").style.display = "none";
-      document.getElementById("order-sent-view").style.display = "block";
-      document.getElementById("sent-status-pill").innerText = metodeBayarPelanggan === "Tunai"
-        ? `⏳ Belum Dibayar (Tunai) • Menunggu ke Kasir`
-        : `🔎 Menunggu Cek Kasir (${metodeBayarPelanggan}) • Bukti Terlampir`;
-      document.getElementById("sent-instruction-text").innerText = metodeBayarPelanggan === "Tunai"
-        ? "Silakan langsung menuju ke kasir untuk melakukan pembayaran Tunai agar pesanan Anda segera diproses."
-        : "Bukti pembayaran Anda sudah diterima. Kasir akan mengecek mutasi masuk terlebih dahulu sebelum memproses pesanan.";
-      document.getElementById("sent-summary-box").innerHTML = `
-        <div class="sent-row"><span>ID Pesanan</span><strong>${idOrder}</strong></div>
-        <div class="sent-row"><span>Atas Nama</span><strong>${atasNama}</strong></div>
-        <div class="sent-row"><span>Nomor Meja</span><strong>${mejaLabel}</strong></div>
-        <div class="sent-row"><span>Metode</span><strong>${metodeBayarPelanggan} (${statusBayar})</strong></div>
-        <div class="sent-row"><span>Menu</span><span style="text-align:right; max-width:60%;">${detailItems}</span></div>
-        <div class="sent-row" style="border-top:1px solid var(--espresso-200); padding-top:6px; margin-top:6px; font-weight:800;"><span>Total Tagihan</span><span style="color:var(--accent-primary);">Rp ${r.totalAkhir.toLocaleString("id-ID")}</span></div>
-      `;
-    };
-
-    try { fetch(API_URL, {
+  try {
+    fetch(API_URL, {
       method: "POST",
       body: JSON.stringify({
-        action: "kirimPesananPelanggan", atasNama, meja: mejaLabel, noHp, detail: detailItems,
-        subtotal: r.subtotal, kodeVoucher: r.kodeVoucher, diskon: r.diskon, total: r.totalAkhir,
-        metode: metodeBayarPelanggan, statusBayar: statusBayar, buktiTransfer: buktiKirim
+        action: "klaimVoucher",
+        noHp: memberAktif.noHp,
+        kodeVoucher: v.kode
       })
-    }).then(res => res.json()).then(data => {
-      btn.disabled = false; pilihBayarPelanggan(metodeBayarPelanggan);
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      if (data.success) {
+        memberAktif.claimedVouchers = data.claimedVouchers || [];
+        simpanMemberLokal();
+        perbaruiUIMember();
+        tampilkanToast("\u2713 Voucher ".concat(v.kode, " diklaim!"));
+      } else tampilkanToast(data.message || "Gagal klaim voucher.");
+    }).catch(function () {
+      return tampilkanToast("Gagal terhubung ke server.");
+    });
+  } catch (e) {}
+}
+function bukaModalMember() {
+  document.getElementById("member-auth-msg").style.display = "none";
+  if (memberAktif) {
+    document.getElementById("member-auth-view").style.display = "none";
+    document.getElementById("member-profile-view").style.display = "block";
+    document.getElementById("profile-name-label").innerText = "Halo, ".concat(memberAktif.nama);
+    document.getElementById("profile-phone-label").innerText = "No. WhatsApp: ".concat(memberAktif.noHp);
+    var list = document.getElementById("profile-voucher-list"),
+      items = memberAktif.claimedVouchers || [];
+    list.innerHTML = items.length === 0 ? "<div style=\"font-size:0.84rem; color:var(--espresso-600); padding:10px 0;\">Belum ada voucher diklaim.</div>" : items.map(function (v) {
+      return "<div class=\"est-row\"><div class=\"est-row-top\"><div><strong>".concat(v.kode, "</strong> \u2014 ").concat(v.judul, "</div><span class=\"addon-pill\">").concat(v.statusPakai, "</span></div></div>");
+    }).join("");
+  } else {
+    document.getElementById("member-profile-view").style.display = "none";
+    document.getElementById("member-auth-view").style.display = "block";
+  }
+  document.getElementById("member-modal").classList.add("show");
+}
+function tutupModalMember() {
+  document.getElementById("member-modal").classList.remove("show");
+}
+function ubahTabAuth(m) {
+  modeAuth = m;
+  document.getElementById("tab-login-member").classList.toggle("active", m === "login");
+  document.getElementById("tab-register-member").classList.toggle("active", m === "register");
+  document.getElementById("register-name-group").style.display = m === "register" ? "block" : "none";
+  document.getElementById("auth-submit-btn").innerText = m === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+}
+function prosesAuthPelanggan() {
+  var nama = document.getElementById("member-name").value.trim(),
+    noHp = document.getElementById("member-phone").value.trim(),
+    pin = document.getElementById("member-pin").value.trim();
+  var msg = document.getElementById("member-auth-msg"),
+    btn = document.getElementById("auth-submit-btn");
+  if (!noHp || pin.length < 4 || modeAuth === "register" && !nama) {
+    msg.innerText = "Lengkapi semua kolom (PIN min 4 angka).";
+    msg.style.color = "var(--danger-text)";
+    msg.style.display = "block";
+    return;
+  }
+  btn.disabled = true;
+  btn.innerText = "Memproses...";
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: modeAuth === "register" ? "registerPelanggan" : "loginPelanggan",
+        nama,
+        noHp,
+        pin
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      btn.disabled = false;
+      btn.innerText = modeAuth === "register" ? "Daftar & Masuk" : "Masuk ke Akun Member";
+      if (data.success) {
+        memberAktif = {
+          noHp: data.pelanggan.noHp,
+          nama: data.pelanggan.nama,
+          claimedVouchers: data.claimedVouchers || []
+        };
+        simpanMemberLokal();
+        perbaruiUIMember();
+        bukaModalMember();
+        tampilkanToast("\u2713 Selamat datang, ".concat(memberAktif.nama, "!"));
+      } else {
+        msg.innerText = data.message || "Gagal.";
+        msg.style.color = "var(--danger-text)";
+        msg.style.display = "block";
+      }
+    }).catch(function () {
+      btn.disabled = false;
+      msg.innerText = "Gagal terhubung ke server.";
+      msg.style.display = "block";
+    });
+  } catch (e) {}
+}
+function logoutPelanggan() {
+  memberAktif = null;
+  simpanMemberLokal();
+  perbaruiUIMember();
+  tutupModalMember();
+}
+function tampilkanInfoTambahan() {
+  var box = document.getElementById("addon-box");
+  box.innerHTML = "<div>\uD83C\uDF21\uFE0F <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class=\"addon-pill\">\uD83D\uDD25 HOT (Gratis)</span> <span class=\"addon-pill\">\uD83E\uDDCA ICE (Gratis)</span></div>";
+  box.style.display = "flex";
+}
+function bersihkanPesananYangHabis() {
+  catatanPesanan = catatanPesanan.filter(function (p) {
+    return !daftarMenu.find(function (m) {
+      return bersihkanNamaMenu(m.nama) === p.nama && apakahStokHabis(m);
+    });
+  });
+  perbaruiBarEstimasi();
+}
+function bukaLoginKasir() {
+  window.location.href = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/kasir.html";
+}
+function pilihKategori(kat, btnEl) {
+  kategoriAktif = kat;
+  document.querySelectorAll(".cat-btn").forEach(function (b) {
+    return b.classList.remove("active");
+  });
+  btnEl.classList.add("active");
+  terapkanFilter();
+}
+function resetCari() {
+  document.getElementById("search-input").value = "";
+  document.getElementById("clear-search-btn").style.display = "none";
+  terapkanFilter();
+}
+function terapkanFilter() {
+  var kw = document.getElementById("search-input").value.toLowerCase();
+  document.getElementById("clear-search-btn").style.display = kw.length > 0 ? "inline-flex" : "none";
+  var hasil = daftarMenu.filter(function (item) {
+    return bersihkanNamaMenu(item.nama).toLowerCase().includes(kw) && (kategoriAktif === "Semua" || (item.kategori || "").trim().toLowerCase() === kategoriAktif.toLowerCase());
+  });
+  renderBestSellerSection(hasil);
+  renderMenuTerkelompok(hasil);
+}
+function hitungQtyMenu(n) {
+  return catatanPesanan.filter(function (i) {
+    return i.nama === n;
+  }).reduce(function (s, i) {
+    return s + i.qty;
+  }, 0);
+}
+function tambahKeEstimasi(item) {
+  var namaBersih = bersihkanNamaMenu(item.nama);
+  if (apakahStokHabis(item)) {
+    tampilkanToast("\uD83D\uDEAB Maaf, stok ".concat(namaBersih, " sedang habis"));
+    return;
+  }
+  var minuman = isMinuman(item.kategori);
+  var idx = catatanPesanan.findIndex(function (i) {
+    return i.nama === namaBersih && (!minuman || i.suhu === "");
+  });
+  if (idx !== -1) {
+    catatanPesanan[idx].qty++;
+  } else {
+    catatanPesanan.push({
+      id: item.id || namaBersih,
+      nama: namaBersih,
+      kategori: item.kategori || "",
+      hargaDasar: Number(item.harga),
+      qty: 1,
+      suhu: minuman ? "" : "N/A",
+      addons: []
+    });
+  }
+  perbaruiBarEstimasi();
+  terapkanFilter();
+}
+function aturSemuaSuhuEstimasi(suhuBaru) {
+  var hargaIce = getHargaIce();
+  var hasil = [];
+  catatanPesanan.forEach(function (item) {
+    if (isMinuman(item.kategori)) {
+      item.suhu = suhuBaru;
+      item.addons = suhuBaru === "ICE" ? [{
+        nama: "ICE",
+        harga: hargaIce
+      }] : [];
+    }
+    var existing = hasil.find(function (x) {
+      return x.nama === item.nama && x.suhu === item.suhu;
+    });
+    if (existing) {
+      existing.qty += item.qty;
+    } else {
+      hasil.push(item);
+    }
+  });
+  catatanPesanan = hasil;
+  perbaruiBarEstimasi();
+  renderIsiModalEstimasi();
+  terapkanFilter();
+  tampilkanToast(suhuBaru === "ICE" ? "🧊 Semua minuman diatur ke ICE" : "🔥 Semua minuman diatur ke HOT");
+}
+function pilihSuhuEstimasi(rIdx, suhuBaru) {
+  var item = catatanPesanan[rIdx];
+  if (!item || !isMinuman(item.kategori)) return;
+  var hargaIce = getHargaIce();
+  var sameIdx = catatanPesanan.findIndex(function (x, i) {
+    return i !== rIdx && x.nama === item.nama && x.suhu === suhuBaru;
+  });
+  if (sameIdx !== -1) {
+    catatanPesanan[sameIdx].qty += item.qty;
+    catatanPesanan.splice(rIdx, 1);
+  } else {
+    item.suhu = suhuBaru;
+    item.addons = suhuBaru === "ICE" ? [{
+      nama: "ICE",
+      harga: hargaIce
+    }] : [];
+  }
+  perbaruiBarEstimasi();
+  renderIsiModalEstimasi();
+  terapkanFilter();
+}
+function ubahQtyEstimasi(rIdx, delta) {
+  if (!catatanPesanan[rIdx]) return;
+  catatanPesanan[rIdx].qty += delta;
+  if (catatanPesanan[rIdx].qty <= 0) catatanPesanan.splice(rIdx, 1);
+  perbaruiBarEstimasi();
+  renderIsiModalEstimasi();
+  terapkanFilter();
+}
+function resetEstimasi() {
+  catatanPesanan = [];
+  perbaruiBarEstimasi();
+  tutupModalEstimasi();
+  terapkanFilter();
+}
+function hitungTotalSemuaEstimasi() {
+  return catatanPesanan.reduce(function (t, i) {
+    return t + (i.hargaDasar + i.addons.reduce(function (s, a) {
+      return s + Number(a.harga);
+    }, 0)) * i.qty;
+  }, 0);
+}
+function perbaruiBarEstimasi() {
+  var bar = document.getElementById("estimator-bar"),
+    totalQty = catatanPesanan.reduce(function (s, i) {
+      return s + i.qty;
+    }, 0),
+    totalHarga = hitungTotalSemuaEstimasi();
+  if (totalQty > 0) {
+    document.getElementById("estimator-count").innerText = "".concat(totalQty, " Menu Dipilih");
+    document.getElementById("estimator-total").innerText = "Rp ".concat(totalHarga.toLocaleString("id-ID"));
+    bar.classList.add("show");
+  } else bar.classList.remove("show");
+}
+function pilihMejaPelanggan(val) {
+  document.getElementById("cust-table-number").value = val;
+  sinkronMejaPelanggan();
+}
+function sinkronMejaPelanggan() {
+  var v = document.getElementById("cust-table-number").value.trim().toLowerCase();
+  document.querySelectorAll("#estimator-modal .table-chip").forEach(function (c) {
+    return c.classList.toggle("active", c.getAttribute("data-meja").toLowerCase() === v);
+  });
+}
+function pilihBayarPelanggan(metode) {
+  metodeBayarPelanggan = metode;
+  document.querySelectorAll(".cust-pay-pill").forEach(function (p) {
+    return p.classList.toggle("active", p.getAttribute("data-cpay") === metode);
+  });
+  document.getElementById("cust-pay-qris").style.display = metode === "QRIS" ? "block" : "none";
+  document.getElementById("cust-pay-transfer").style.display = metode === "Transfer" ? "block" : "none";
+  document.getElementById("cust-pay-tunai").style.display = metode === "Tunai" ? "block" : "none";
+  document.getElementById("cust-proof-box").style.display = metode === "QRIS" || metode === "Transfer" ? "block" : "none";
+  document.getElementById("cust-proof-box").classList.remove("error-highlight");
+  var btn = document.getElementById("submit-order-btn");
+  if (metode === "QRIS") btn.innerText = "✓ Saya Sudah Bayar via QRIS & Kirim Pesanan";else if (metode === "Transfer") btn.innerText = "✓ Saya Sudah Transfer Bank JAGO & Kirim Pesanan";else btn.innerText = "🚀 Kirim Pesanan & Bayar Tunai di Kasir";
+}
+function bukaModalEstimasi() {
+  document.getElementById("order-modal-title").innerText = "🛒 Konfirmasi Pesanan Anda";
+  document.getElementById("order-form-view").style.display = "block";
+  document.getElementById("order-sent-view").style.display = "none";
+  if (memberAktif && !document.getElementById("cust-order-name").value.trim()) document.getElementById("cust-order-name").value = memberAktif.nama;
+  isiDropdownVoucherEstimasi();
+  renderIsiModalEstimasi();
+  pilihBayarPelanggan("QRIS");
+  document.getElementById("estimator-modal").classList.add("show");
+}
+function tutupModalEstimasi() {
+  document.getElementById("estimator-modal").classList.remove("show");
+}
+function isiDropdownVoucherEstimasi() {
+  var box = document.getElementById("est-voucher-box"),
+    sel = document.getElementById("est-voucher-select");
+  var t = memberAktif && memberAktif.claimedVouchers ? memberAktif.claimedVouchers.filter(function (v) {
+    return v.statusPakai === "Tersedia";
+  }) : [];
+  if (!memberAktif || t.length === 0) {
+    box.style.display = "none";
+    sel.innerHTML = "<option value=\"\">-- Tidak pakai voucher --</option>";
+    return;
+  }
+  box.style.display = "block";
+  sel.innerHTML = "<option value=\"\">-- Tidak pakai voucher --</option>" + t.map(function (v) {
+    return "<option value=\"".concat(v.kode, "\">").concat(v.kode, " (").concat(v.judul, ")</option>");
+  }).join("");
+}
+function hitungRincianOrder() {
+  var subtotal = hitungTotalSemuaEstimasi(),
+    kode = document.getElementById("est-voucher-select").value;
+  var diskon = 0;
+  if (kode && memberAktif) {
+    var vObj = (memberAktif.claimedVouchers || []).find(function (v) {
+      return v.kode === kode;
+    });
+    if (vObj && subtotal >= Number(vObj.minBelanja || 0)) diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round(subtotal * vObj.nilai / 100)) : Math.min(subtotal, vObj.nilai);
+  }
+  return {
+    subtotal,
+    kodeVoucher: diskon > 0 ? kode : "",
+    diskon,
+    totalAkhir: Math.max(0, subtotal - diskon)
+  };
+}
+function renderIsiModalEstimasi() {
+  var listEl = document.getElementById("est-list-container");
+  if (catatanPesanan.length === 0) {
+    tutupModalEstimasi();
+    return;
+  }
+  listEl.innerHTML = "";
+  var hargaIce = getHargaIce();
+  var minumanItems = catatanPesanan.filter(function (i) {
+    return isMinuman(i.kategori);
+  });
+  var shortcutBar = document.getElementById("est-temp-shortcut");
+  if (shortcutBar) {
+    if (minumanItems.length > 0) {
+      shortcutBar.classList.add("show");
+      var semuaHot = minumanItems.every(function (i) {
+        return i.suhu === "HOT";
+      });
+      var semuaIce = minumanItems.every(function (i) {
+        return i.suhu === "ICE";
+      });
+      document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
+      document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
+      document.getElementById("est-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
+    } else {
+      shortcutBar.classList.remove("show");
+    }
+  }
+  catatanPesanan.forEach(function (item, rIdx) {
+    var minuman = isMinuman(item.kategori);
+    var belumPilihSuhu = minuman && !item.suhu;
+    var sub = (item.hargaDasar + item.addons.reduce(function (s, a) {
+      return s + Number(a.harga);
+    }, 0)) * item.qty;
+    var lbl = "";
+    if (minuman) {
+      if (item.suhu === "HOT") lbl = " <span style=\"color:#d84315; font-size:0.78rem; font-weight:800;\">[\uD83D\uDD25 HOT]</span>";else if (item.suhu === "ICE") lbl = " <span style=\"color:#0277bd; font-size:0.78rem; font-weight:800;\">[\uD83E\uDDCA ICE]</span>";else lbl = " <span style=\"color:var(--danger-text); font-size:0.76rem; font-weight:800;\">(Pilih HOT / ICE)</span>";
+    }
+    var tempHTML = minuman ? "<div class=\"est-addons\">\n            <span class=\"temp-req-label\">Suhu *:</span>\n            <button type=\"button\" class=\"est-temp-chip ".concat(item.suhu === 'HOT' ? 'selected-hot' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"HOT\">\uD83D\uDD25 HOT (Gratis)</button>\n            <button type=\"button\" class=\"est-temp-chip ").concat(item.suhu === 'ICE' ? 'selected-ice' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"ICE\">\uD83E\uDDCA ICE (Gratis)</button>\n          </div>") : "";
+    var row = document.createElement("div");
+    row.className = "est-row" + (belumPilihSuhu ? " missing-temp" : "");
+    row.innerHTML = "<div class=\"est-row-top\"><div><strong>".concat(item.nama, "</strong>").concat(lbl, "<br><small style=\"color:var(--espresso-600); font-weight:600;\">Rp ").concat(sub.toLocaleString("id-ID"), "</small></div><div class=\"est-qty-box\"><button type=\"button\" class=\"est-step-btn\" data-row=\"").concat(rIdx, "\" data-delta=\"-1\">\u2212</button><span style=\"min-width:20px; text-align:center; font-weight:800;\">").concat(item.qty, "</span><button type=\"button\" class=\"est-step-btn\" data-row=\"").concat(rIdx, "\" data-delta=\"1\">+</button></div></div>").concat(tempHTML);
+    row.querySelectorAll(".est-step-btn").forEach(function (b) {
+      return b.addEventListener("click", function () {
+        return ubahQtyEstimasi(Number(b.getAttribute("data-row")), Number(b.getAttribute("data-delta")));
+      });
+    });
+    row.querySelectorAll(".est-temp-chip").forEach(function (c) {
+      return c.addEventListener("click", function () {
+        return pilihSuhuEstimasi(Number(c.getAttribute("data-row")), c.getAttribute("data-suhu"));
+      });
+    });
+    listEl.appendChild(row);
+  });
+  var r = hitungRincianOrder();
+  if (r.diskon > 0) {
+    document.getElementById("est-discount-line").style.display = "flex";
+    document.getElementById("est-discount-val").innerText = "-Rp ".concat(r.diskon.toLocaleString("id-ID"));
+  } else document.getElementById("est-discount-line").style.display = "none";
+  document.getElementById("modal-est-total").innerText = "Rp ".concat(r.totalAkhir.toLocaleString("id-ID"));
+}
+function kirimPesananKeKasir() {
+  var itemBelumPilihSuhu = catatanPesanan.find(function (i) {
+    return isMinuman(i.kategori) && !i.suhu;
+  });
+  if (itemBelumPilihSuhu) {
+    renderIsiModalEstimasi();
+    document.getElementById("est-list-container").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+    tampilkanToast("\uD83C\uDF21\uFE0F Wajib pilih HOT atau ICE untuk ".concat(itemBelumPilihSuhu.nama, "!"));
+    return;
+  }
+  var atasNama = document.getElementById("cust-order-name").value.trim(),
+    rawMeja = document.getElementById("cust-table-number").value.trim();
+  if (!atasNama) {
+    tampilkanToast("Isi Atas Nama Pemesan terlebih dahulu.");
+    return;
+  }
+  if (!rawMeja) {
+    tampilkanToast("Isi Nomor Meja atau pilih Bungkus.");
+    return;
+  }
+  if ((metodeBayarPelanggan === "QRIS" || metodeBayarPelanggan === "Transfer") && !buktiTransferBase64) {
+    var box = document.getElementById("cust-proof-box");
+    box.classList.add("error-highlight");
+    box.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+    tampilkanToast("📸 Wajib unggah foto/screenshot bukti transfer!");
+    return;
+  }
+  var mejaLabel = rawMeja.toLowerCase() === "bungkus" ? "Bungkus" : rawMeja.toLowerCase().startsWith("meja") ? rawMeja : "Meja ".concat(rawMeja);
+  var detailItems = catatanPesanan.map(function (i) {
+    var tagSuhu = isMinuman(i.kategori) && i.suhu ? " [".concat(i.suhu, "]") : "";
+    return "".concat(i.nama).concat(tagSuhu, " (").concat(i.qty, "x)");
+  }).join(", ");
+  var r = hitungRincianOrder(),
+    noHp = memberAktif ? memberAktif.noHp : "";
+  var statusBayar = metodeBayarPelanggan === "Tunai" ? "Belum Dibayar" : "Menunggu Cek Kasir";
+  var buktiKirim = metodeBayarPelanggan === "Tunai" ? "" : buktiTransferBase64;
+  var btn = document.getElementById("submit-order-btn");
+  btn.disabled = true;
+  btn.innerText = "Mengirim ke kasir...";
+  var simpanLokalDanTampilkan = function simpanLokalDanTampilkan(idOrder, waktuOrder) {
+    try {
+      var raw = localStorage.getItem(STORAGE_RIWAYAT_KEY),
+        list = raw ? JSON.parse(raw) : [];
+      list.unshift({
+        id: idOrder,
+        noTrx: "-",
+        waktu: waktuOrder,
+        atasNama,
+        mejaLabel,
+        noHp,
+        detailItems,
+        subtotal: r.subtotal,
+        kodeVoucher: r.kodeVoucher,
+        diskon: r.diskon,
+        total: r.totalAkhir,
+        metode: metodeBayarPelanggan,
+        statusBayar: statusBayar,
+        buktiTransfer: buktiKirim,
+        kasir: "-",
+        status: "Sedang Ditinjau"
+      });
+      localStorage.setItem(STORAGE_RIWAYAT_KEY, JSON.stringify(list));
+    } catch (e) {}
+    document.getElementById("order-modal-title").innerText = "✅ Pesanan Terkirim";
+    document.getElementById("order-form-view").style.display = "none";
+    document.getElementById("order-sent-view").style.display = "block";
+    document.getElementById("sent-status-pill").innerText = metodeBayarPelanggan === "Tunai" ? "\u23F3 Belum Dibayar (Tunai) \u2022 Menunggu ke Kasir" : "\uD83D\uDD0E Menunggu Cek Kasir (".concat(metodeBayarPelanggan, ") \u2022 Bukti Terlampir");
+    document.getElementById("sent-instruction-text").innerText = metodeBayarPelanggan === "Tunai" ? "Silakan langsung menuju ke kasir untuk melakukan pembayaran Tunai agar pesanan Anda segera diproses." : "Bukti pembayaran Anda sudah diterima. Kasir akan mengecek mutasi masuk terlebih dahulu sebelum memproses pesanan.";
+    document.getElementById("sent-summary-box").innerHTML = "\n        <div class=\"sent-row\"><span>ID Pesanan</span><strong>".concat(idOrder, "</strong></div>\n        <div class=\"sent-row\"><span>Atas Nama</span><strong>").concat(atasNama, "</strong></div>\n        <div class=\"sent-row\"><span>Nomor Meja</span><strong>").concat(mejaLabel, "</strong></div>\n        <div class=\"sent-row\"><span>Metode</span><strong>").concat(metodeBayarPelanggan, " (").concat(statusBayar, ")</strong></div>\n        <div class=\"sent-row\"><span>Menu</span><span style=\"text-align:right; max-width:60%;\">").concat(detailItems, "</span></div>\n        <div class=\"sent-row\" style=\"border-top:1px solid var(--espresso-200); padding-top:6px; margin-top:6px; font-weight:800;\"><span>Total Tagihan</span><span style=\"color:var(--accent-primary);\">Rp ").concat(r.totalAkhir.toLocaleString("id-ID"), "</span></div>\n      ");
+  };
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "kirimPesananPelanggan",
+        atasNama,
+        meja: mejaLabel,
+        noHp,
+        detail: detailItems,
+        subtotal: r.subtotal,
+        kodeVoucher: r.kodeVoucher,
+        diskon: r.diskon,
+        total: r.totalAkhir,
+        metode: metodeBayarPelanggan,
+        statusBayar: statusBayar,
+        buktiTransfer: buktiKirim
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      btn.disabled = false;
+      pilihBayarPelanggan(metodeBayarPelanggan);
       if (!data || !data.success) {
-        tampilkanToast("⚠️ Gagal ke server: " + ((data && data.message) || "Cek izin Apps Script"));
+        tampilkanToast("⚠️ Gagal ke server: " + (data && data.message || "Cek izin Apps Script"));
         return;
       }
-
       if (r.kodeVoucher && memberAktif && Array.isArray(memberAktif.claimedVouchers)) {
-        const vUsed = memberAktif.claimedVouchers.find(v => v.kode === r.kodeVoucher);
+        var vUsed = memberAktif.claimedVouchers.find(function (v) {
+          return v.kode === r.kodeVoucher;
+        });
         if (vUsed) vUsed.statusPakai = "Terpakai";
         simpanMemberLokal();
         perbaruiUIMember();
       }
-
-      simpanLokalDanTampilkan(data.idPesanan, data.waktu || (new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB"));
-    }).catch(() => {
-      btn.disabled = false; pilihBayarPelanggan(metodeBayarPelanggan);
+      simpanLokalDanTampilkan(data.idPesanan, data.waktu || new Date().toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }) + " WIB");
+    }).catch(function () {
+      btn.disabled = false;
+      pilihBayarPelanggan(metodeBayarPelanggan);
       tampilkanToast("⚠️ Koneksi ke server gagal. Coba beberapa saat lagi.");
-    }); } catch (e) {}
+    });
+  } catch (e) {}
+}
+function selesaiKirimPesanan() {
+  catatanPesanan = [];
+  hapusBuktiTransfer();
+  perbaruiBarEstimasi();
+  tutupModalEstimasi();
+  terapkanFilter();
+}
+function buatKartuMenu(item, ikon) {
+  var nb = bersihkanNamaMenu(item.nama),
+    habis = apakahStokHabis(item),
+    best = apakahBestSeller(item),
+    qty = hitungQtyMenu(nb);
+  var minuman = isMinuman(item.kategori);
+  var card = document.createElement("div");
+  card.className = "card" + (habis ? " out-of-stock" : qty > 0 ? " selected-card" : "");
+  var bestBadge = best ? "<span class=\"bestseller-pill\">\u2B50 BEST SELLER</span>" : "";
+  card.innerHTML = "<div class=\"card-top\"><div>".concat(bestBadge, "<h3>").concat(nb, "</h3><span class=\"card-cat-tag\">").concat(ikon, " ").concat(habis ? "Stok sedang kosong" : minuman ? "Pilihan HOT / ICE" : "Siap Saji", "</span></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(habis ? "<span class=\"soldout-footer-label\">Tidak Tersedia</span>" : "<span class=\"pick-btn\">+</span>", "</div>");
+  card.addEventListener("click", function () {
+    return tambahKeEstimasi(item);
+  });
+  return card;
+}
+function renderBestSellerSection(items) {
+  var container = document.getElementById("bestseller-container");
+  var bestItems = items.filter(function (i) {
+    return apakahBestSeller(i);
+  });
+  if (bestItems.length === 0) {
+    container.innerHTML = "";
+    return;
   }
-
-  function selesaiKirimPesanan() { catatanPesanan = []; hapusBuktiTransfer(); perbaruiBarEstimasi(); tutupModalEstimasi(); terapkanFilter(); }
-
-  function buatKartuMenu(item, ikon) {
-    const nb = bersihkanNamaMenu(item.nama), habis = apakahStokHabis(item), best = apakahBestSeller(item), qty = hitungQtyMenu(nb);
-    const minuman = isMinuman(item.kategori);
-    const card = document.createElement("div");
-    card.className = "card" + (habis ? " out-of-stock" : (qty > 0 ? " selected-card" : ""));
-    const bestBadge = best ? `<span class="bestseller-pill">⭐ BEST SELLER</span>` : "";
-    card.innerHTML = `<div class="card-top"><div>${bestBadge}<h3>${nb}</h3><span class="card-cat-tag">${ikon} ${habis ? "Stok sedang kosong" : (minuman ? "Pilihan HOT / ICE" : "Siap Saji")}</span></div>${habis ? `<span class="soldout-badge">🚫 STOK HABIS</span>` : (qty > 0 ? `<span class="qty-badge">${qty}x</span>` : "")}</div><div class="card-bottom"><div class="price">Rp ${Number(item.harga).toLocaleString("id-ID")}</div>${habis ? `<span class="soldout-footer-label">Tidak Tersedia</span>` : `<span class="pick-btn">+</span>`}</div>`;
-    card.addEventListener("click", () => tambahKeEstimasi(item));
-    return card;
+  var ikonMap = {
+    "Coffee": "☕",
+    "Soft Drink": "🥤",
+    "Tea": "🍵",
+    "Makanan Ringan": "🍟"
+  };
+  var sec = document.createElement("section");
+  sec.className = "bestseller-section";
+  sec.innerHTML = "<div class=\"bestseller-header\"><h2 class=\"bestseller-title\">\u2B50 Menu Best Seller</h2><span class=\"category-count\">".concat(bestItems.length, " favorit</span></div>");
+  var grid = document.createElement("div");
+  grid.className = "grid";
+  bestItems.forEach(function (item) {
+    var ikon = ikonMap[(item.kategori || "").trim()] || "⭐";
+    grid.appendChild(buatKartuMenu(item, ikon));
+  });
+  sec.appendChild(grid);
+  container.innerHTML = "";
+  container.appendChild(sec);
+}
+function renderMenuTerkelompok(items) {
+  var container = document.getElementById("menu-container");
+  if (items.length === 0) {
+    container.innerHTML = "<div class=\"state-box\">Menu tidak ditemukan.</div>";
+    return;
   }
-
-  function renderBestSellerSection(items) {
-    const container = document.getElementById("bestseller-container");
-    const bestItems = items.filter(i => apakahBestSeller(i));
-    if (bestItems.length === 0) {
-      container.innerHTML = "";
-      return;
-    }
-    const ikonMap = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" };
-    const sec = document.createElement("section");
-    sec.className = "bestseller-section";
-    sec.innerHTML = `<div class="bestseller-header"><h2 class="bestseller-title">⭐ Menu Best Seller</h2><span class="category-count">${bestItems.length} favorit</span></div>`;
-    const grid = document.createElement("div");
+  container.innerHTML = "";
+  var urutan = ["Coffee", "Soft Drink", "Tea", "Makanan Ringan"],
+    ikonMap = {
+      "Coffee": "☕",
+      "Soft Drink": "🥤",
+      "Tea": "🍵",
+      "Makanan Ringan": "🍟"
+    },
+    grup = {};
+  items.forEach(function (i) {
+    var k = (i.kategori || "Lainnya").trim();
+    if (!grup[k]) grup[k] = [];
+    grup[k].push(i);
+  });
+  _toConsumableArray(new Set([].concat(urutan, _toConsumableArray(Object.keys(grup))))).forEach(function (kat) {
+    var km = Object.keys(grup).find(function (k) {
+      return k.toLowerCase() === kat.toLowerCase();
+    }) || kat;
+    if (!grup[km] || grup[km].length === 0) return;
+    var list = grup[km];
+    delete grup[km];
+    var sec = document.createElement("div");
+    sec.className = "category-section";
+    var ikon = ikonMap[kat] || "🍽️";
+    sec.innerHTML = "<div class=\"category-header\"><h2 class=\"category-title\">".concat(ikon, " ").concat(km, "</h2><span class=\"category-count\">").concat(list.length, " menu</span></div>");
+    var grid = document.createElement("div");
     grid.className = "grid";
-    bestItems.forEach(item => {
-      const ikon = ikonMap[(item.kategori || "").trim()] || "⭐";
-      grid.appendChild(buatKartuMenu(item, ikon));
+    list.forEach(function (item) {
+      return grid.appendChild(buatKartuMenu(item, ikon));
     });
     sec.appendChild(grid);
-    container.innerHTML = "";
     container.appendChild(sec);
-  }
-
-  function renderMenuTerkelompok(items) {
-    const container = document.getElementById("menu-container");
-    if (items.length === 0) { container.innerHTML = `<div class="state-box">Menu tidak ditemukan.</div>`; return; }
-    container.innerHTML = "";
-    const urutan = ["Coffee", "Soft Drink", "Tea", "Makanan Ringan"], ikonMap = { "Coffee": "☕", "Soft Drink": "🥤", "Tea": "🍵", "Makanan Ringan": "🍟" }, grup = {};
-    items.forEach(i => { const k = (i.kategori || "Lainnya").trim(); if (!grup[k]) grup[k] = []; grup[k].push(i); });
-    [...new Set([...urutan, ...Object.keys(grup)])].forEach(kat => {
-      const km = Object.keys(grup).find(k => k.toLowerCase() === kat.toLowerCase()) || kat;
-      if (!grup[km] || grup[km].length === 0) return;
-      const list = grup[km]; delete grup[km];
-      const sec = document.createElement("div"); sec.className = "category-section";
-      const ikon = ikonMap[kat] || "🍽️";
-      sec.innerHTML = `<div class="category-header"><h2 class="category-title">${ikon} ${km}</h2><span class="category-count">${list.length} menu</span></div>`;
-      const grid = document.createElement("div"); grid.className = "grid";
-      list.forEach(item => grid.appendChild(buatKartuMenu(item, ikon)));
-      sec.appendChild(grid); container.appendChild(sec);
-    });
-  }
+  });
+}
 </script>
 
 </body>
