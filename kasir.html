@@ -2023,6 +2023,7 @@
 </div>
 
 <audio id="notif-audio-player" preload="auto" playsinline src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/notif.mp3" style="display:none;"></audio>
+<audio id="notif-chat-audio-player" preload="auto" playsinline src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/Notif%20Chat.mp3" style="display:none;"></audio>
 <!-- Modal PopUp Notifikasi Pesanan Baru Masuk -->
 <div id="new-order-popup-modal" class="modal-backdrop new-order-backdrop">
   <div class="new-order-card">
@@ -3063,10 +3064,12 @@ function simpanRiwayatKeStorage() {
 }
 var STORAGE_NOTIF_SOUND_KEY = "angkringanNotifSuaraAktif";
 var NOTIF_AUDIO_URL = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/notif.mp3";
+var NOTIF_CHAT_AUDIO_URL = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/Notif%20Chat.mp3";
 var notifSuaraAktif = true;
 var notifAudioCtx = null;
 var notifAudioUnlocked = false;
 var notifMp3Unlocked = false;
+var notifChatMp3Unlocked = false;
 var knownOrderIds = {};
 var initialOrderSyncDone = false;
 var pendingNewOrdersPopup = [];
@@ -3121,6 +3124,39 @@ function aktifkanAudioNotifikasi() {
       } catch (e) {
         try {
           audioEl.muted = false;
+        } catch (e2) {}
+      }
+    }
+  }
+  if (!notifChatMp3Unlocked) {
+    var chatAudioEl = document.getElementById("notif-chat-audio-player");
+    if (chatAudioEl) {
+      try {
+        if (!chatAudioEl.src) chatAudioEl.src = NOTIF_CHAT_AUDIO_URL;
+        chatAudioEl.muted = true;
+        var playChatRes = chatAudioEl.play();
+        if (playChatRes && typeof playChatRes.then === "function") {
+          playChatRes.then(function () {
+            chatAudioEl.pause();
+            try {
+              chatAudioEl.currentTime = 0;
+            } catch (e0) {}
+            chatAudioEl.muted = false;
+            notifChatMp3Unlocked = true;
+          }).catch(function () {
+            chatAudioEl.muted = false;
+          });
+        } else {
+          chatAudioEl.pause();
+          try {
+            chatAudioEl.currentTime = 0;
+          } catch (e1) {}
+          chatAudioEl.muted = false;
+          notifChatMp3Unlocked = true;
+        }
+      } catch (e) {
+        try {
+          chatAudioEl.muted = false;
         } catch (e2) {}
       }
     }
@@ -4891,14 +4927,8 @@ function klcFormatJam(waktu) {
   return s.substring(0, 5);
 }
 
-// Suara notifikasi KHUSUS Live Chat (berbeda dari notif.mp3 Pesanan Masuk)
-function putarSuaraNotifikasiChat() {
-  if (typeof notifSuaraAktif !== "undefined" && !notifSuaraAktif) return;
-  try {
-    if (navigator && typeof navigator.vibrate === "function") {
-      navigator.vibrate([90, 60, 90]);
-    }
-  } catch (e) {}
+// Fallback Web Audio jika Notif Chat.mp3 gagal dimuat atau offline
+function putarSuaraChatFallbackWebAudio() {
   try {
     var ctx = typeof aktifkanAudioNotifikasi === "function" ? aktifkanAudioNotifikasi() : null;
     if (!ctx) {
@@ -4910,7 +4940,6 @@ function putarSuaraNotifikasiChat() {
       ctx.resume();
     }
     var now = ctx.currentTime + 0.02;
-    // Nada "pop-ting" halus 2 ketukan khas chat masuk
     var tones = [{
       freq: 783.99,
       start: 0.00,
@@ -4937,6 +4966,35 @@ function putarSuaraNotifikasiChat() {
       osc.stop(now + t.start + t.dur + 0.02);
     }
   } catch (e) {}
+}
+
+// Suara notifikasi KHUSUS Live Chat: memutar Notif Chat.mp3 (terpisah dari notif.mp3 Pesanan Masuk)
+function putarSuaraNotifikasiChat() {
+  if (typeof notifSuaraAktif !== "undefined" && !notifSuaraAktif) return;
+  try {
+    if (navigator && typeof navigator.vibrate === "function") {
+      navigator.vibrate([90, 60, 90]);
+    }
+  } catch (e) {}
+  var chatAudioEl = document.getElementById("notif-chat-audio-player");
+  if (chatAudioEl && !chatAudioEl.error) {
+    try {
+      if (!chatAudioEl.src) chatAudioEl.src = NOTIF_CHAT_AUDIO_URL;
+      chatAudioEl.muted = false;
+      chatAudioEl.volume = 1.0;
+      try {
+        chatAudioEl.currentTime = 0;
+      } catch (e0) {}
+      var p = chatAudioEl.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(function () {
+          putarSuaraChatFallbackWebAudio();
+        });
+      }
+      return;
+    } catch (e) {}
+  }
+  putarSuaraChatFallbackWebAudio();
 }
 function tampilkanToastChatKasir(teks, sessionId) {
   klcLastNotifSessionId = sessionId || "";
