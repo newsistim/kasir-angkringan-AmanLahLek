@@ -1235,6 +1235,122 @@
     @media (max-width: 480px) {
       .promo-grid { grid-template-columns: 1fr; }
     }
+
+    /* ================= PRECISION RESPONSIVE LAYOUT (ALL DEVICES) ================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    .container, .filter-panel, .promo-section, .bestseller-section, .card, .voucher-card {
+      min-width: 0;
+    }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    .grid > .card {
+      min-width: 0;
+    }
+    .card h3 {
+      word-break: break-word;
+      line-height: 1.28;
+    }
+
+    /* Tablet (601px - 980px, termasuk iPad Portrait & Landscape) */
+    @media (min-width: 601px) and (max-width: 980px) {
+      .container { padding: 0 18px; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+      .promo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    }
+
+    /* HP Standar & Besar (<= 600px) */
+    @media (max-width: 600px) {
+      header {
+        padding: 16px 14px 44px;
+        padding-top: calc(16px + env(safe-area-inset-top, 0px));
+        padding-left: calc(14px + env(safe-area-inset-left, 0px));
+        padding-right: calc(14px + env(safe-area-inset-right, 0px));
+      }
+      .header-top-row {
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .hero-badge, .member-header-btn {
+        font-size: 0.72rem;
+        padding: 6px 11px;
+        max-width: 100%;
+      }
+      .brand-logo-frame { width: 82px; height: 82px; }
+      .brand-kicker { font-size: 0.66rem; padding: 3px 10px; }
+      header h1 { font-size: 1.55rem; line-height: 1.2; }
+      header p { font-size: 0.83rem; line-height: 1.45; }
+      .container { margin-top: -26px; padding: 0 12px; }
+      .filter-panel {
+        padding: 12px;
+        border-radius: 18px;
+        margin-bottom: 16px;
+        top: 6px;
+        top: calc(6px + env(safe-area-inset-top, 0px));
+      }
+      .search-wrapper { margin-bottom: 10px; }
+      .search-box { padding: 10px 34px 10px 38px; border-radius: 12px; }
+      .search-icon { left: 13px; font-size: 0.9rem; }
+      .cat-tabs { gap: 6px; }
+      .cat-btn { padding: 7px 13px; font-size: 0.8rem; min-height: 35px; }
+      .promo-section, .bestseller-section { padding: 15px 13px; border-radius: 18px; margin-bottom: 16px; }
+      .promo-header h2, .bestseller-title, .category-title { font-size: 1.05rem; }
+      .promo-grid { grid-template-columns: 1fr; gap: 10px; }
+      .voucher-card { padding: 13px; gap: 9px; }
+      .addon-info {
+        padding: 12px 13px;
+        font-size: 0.8rem;
+        gap: 8px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+      }
+      .addon-pill { font-size: 0.74rem; padding: 4px 10px; }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .card {
+        padding: 12px 11px;
+        min-height: 118px;
+        border-radius: 15px;
+      }
+      .card-top { margin-bottom: 10px; gap: 5px; }
+      .card h3 { font-size: 0.9rem; }
+      .card-cat-tag { font-size: 0.69rem; }
+      .card .price { font-size: 0.94rem; }
+      .pick-btn { width: 30px; height: 30px; border-radius: 9px; font-size: 1rem; flex-shrink: 0; }
+      .bestseller-pill, .soldout-badge { font-size: 0.62rem; padding: 2px 7px; }
+      .estimator-bar {
+        width: calc(100% - 20px);
+        padding: 11px 13px;
+        border-radius: 16px;
+        gap: 8px;
+      }
+      .estimator-label { font-size: 0.72rem; }
+      .estimator-total { font-size: 1rem; }
+      .btn-detail-est { padding: 9px 12px; font-size: 0.78rem; }
+      .btn-reset-est { padding: 9px 9px; font-size: 0.75rem; }
+    }
+
+    /* HP Layar Kecil (<= 380px): tetap 2 kolom rapi & header simetris */
+    @media (max-width: 380px) {
+      .header-top-row { -webkit-justify-content: center; justify-content: center; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .card { padding: 10px 9px; min-height: 112px; }
+      .card h3 { font-size: 0.84rem; }
+      .card .price { font-size: 0.86rem; }
+      .pick-btn { width: 28px; height: 28px; font-size: 0.95rem; }
+      .quick-table-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .estimator-bar { -webkit-flex-direction: row; flex-direction: row; -webkit-align-items: center; align-items: center; }
+      .btn-detail-est { padding: 8px 10px; font-size: 0.74rem; }
+      .btn-reset-est { padding: 8px 8px; font-size: 0.72rem; }
+    }
+    @media (max-width: 310px) {
+      .grid { grid-template-columns: 1fr; }
+      .estimator-bar { -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: stretch; align-items: stretch; }
+    }
   </style>
 </head>
 <body>
@@ -1260,7 +1376,7 @@
   <div class="filter-panel">
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
-      <input type="text" id="search-input" class="search-box" placeholder="Cari menu (misal: kopi, matcha, americano)..." oninput="terapkanFilter()">
+      <input type="text" id="search-input" class="search-box" placeholder="Cari menu (kopi, matcha, teh)..." oninput="terapkanFilter()">
       <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="resetCari()">✕</button>
     </div>
     <div class="cat-tabs">
@@ -1463,16 +1579,18 @@
 </footer>
 
 <script>
-  // Polyfill ES5 untuk iPad 2 (A1396 / iOS 9.3.5) & browser lama
+(function(){
   if (typeof Object.assign !== "function") {
     Object.assign = function(target) {
       if (target == null) throw new TypeError("Cannot convert undefined or null to object");
       var to = Object(target);
       for (var i = 1; i < arguments.length; i++) {
-        var src = arguments[i];
-        if (src != null) {
-          for (var k in src) {
-            if (Object.prototype.hasOwnProperty.call(src, k)) to[k] = src[k];
+        var nextSource = arguments[i];
+        if (nextSource != null) {
+          for (var nextKey in nextSource) {
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
           }
         }
       }
@@ -1480,27 +1598,43 @@
     };
   }
   if (!Array.prototype.includes) {
-    Array.prototype.includes = function(el, from) { return this.indexOf(el, from || 0) !== -1; };
+    Array.prototype.includes = function(search, start) {
+      return this.indexOf(search, start) !== -1;
+    };
   }
   if (!String.prototype.includes) {
-    String.prototype.includes = function(s, start) { return this.indexOf(s, start || 0) !== -1; };
+    String.prototype.includes = function(search, start) {
+      if (typeof start !== "number") start = 0;
+      if (start + search.length > this.length) return false;
+      return this.indexOf(search, start) !== -1;
+    };
   }
   if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(s, pos) { pos = pos || 0; return this.substr(pos, s.length) === s; };
+    String.prototype.startsWith = function(search, pos) {
+      pos = !pos || pos < 0 ? 0 : +pos;
+      return this.substring(pos, pos + search.length) === search;
+    };
   }
   if (!Array.prototype.find) {
-    Array.prototype.find = function(fn, thisArg) {
-      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return this[i]; }
+    Array.prototype.find = function(predicate) {
+      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
+      for (var i = 0; i < len; i++) {
+        var val = list[i];
+        if (predicate.call(thisArg, val, i, list)) return val;
+      }
       return undefined;
     };
   }
   if (!Array.prototype.findIndex) {
-    Array.prototype.findIndex = function(fn, thisArg) {
-      for (var i = 0; i < this.length; i++) { if (fn.call(thisArg, this[i], i, this)) return i; }
+    Array.prototype.findIndex = function(predicate) {
+      var list = Object(this), len = list.length >>> 0, thisArg = arguments[1];
+      for (var i = 0; i < len; i++) {
+        if (predicate.call(thisArg, list[i], i, list)) return i;
+      }
       return -1;
     };
   }
-
+})();
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -2108,9 +2242,9 @@ function prosesAuthPelanggan() {
       method: "POST",
       body: JSON.stringify({
         action: modeAuth === "register" ? "registerPelanggan" : "loginPelanggan",
-        nama,
-        noHp,
-        pin
+        nama: nama,
+        noHp: noHp,
+        pin: pin
       })
     }).then(function (res) {
       return res.json();
@@ -2359,9 +2493,9 @@ function hitungRincianOrder() {
     if (vObj && subtotal >= Number(vObj.minBelanja || 0)) diskon = vObj.jenis === "PERSEN" ? Math.min(subtotal, Math.round(subtotal * vObj.nilai / 100)) : Math.min(subtotal, vObj.nilai);
   }
   return {
-    subtotal,
+    subtotal: subtotal,
     kodeVoucher: diskon > 0 ? kode : "",
-    diskon,
+    diskon: diskon,
     totalAkhir: Math.max(0, subtotal - diskon)
   };
 }
@@ -2479,10 +2613,10 @@ function kirimPesananKeKasir() {
         id: idOrder,
         noTrx: "-",
         waktu: waktuOrder,
-        atasNama,
-        mejaLabel,
-        noHp,
-        detailItems,
+        atasNama: atasNama,
+        mejaLabel: mejaLabel,
+        noHp: noHp,
+        detailItems: detailItems,
         subtotal: r.subtotal,
         kodeVoucher: r.kodeVoucher,
         diskon: r.diskon,
@@ -2507,9 +2641,9 @@ function kirimPesananKeKasir() {
       method: "POST",
       body: JSON.stringify({
         action: "kirimPesananPelanggan",
-        atasNama,
+        atasNama: atasNama,
         meja: mejaLabel,
-        noHp,
+        noHp: noHp,
         detail: detailItems,
         subtotal: r.subtotal,
         kodeVoucher: r.kodeVoucher,
