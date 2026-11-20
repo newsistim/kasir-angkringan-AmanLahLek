@@ -3157,8 +3157,8 @@ function lcEscapeHtml(str) {
 }
 function lcFormatJam(waktu) {
   var s = String(waktu || "");
-  var parts = s.split(" ");
-  if (parts.length >= 2) return parts[1].substring(0, 5);
+  var m = s.match(/(\d{1,2}:\d{2})/);
+  if (m) return m[1];
   return s.substring(0, 5);
 }
 function lcBunyiBalasan() {
@@ -3385,7 +3385,7 @@ function kirimPesanLiveChat() {
   var tempMsg = {
     id: "TEMP-" + Date.now(),
     sessionId: lcSession.sessionId,
-    waktu: "Hari ini " + hh + ":" + mm + ":00",
+    waktu: hh + ":" + mm + ":00",
     pengirim: "Pelanggan",
     nama: lcSession.nama,
     meja: lcSession.meja,
