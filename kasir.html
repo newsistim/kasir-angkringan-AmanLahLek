@@ -1436,6 +1436,10 @@
       max-width: 860px;
       height: 82vh;
       max-height: 640px;
+      background: #fdfaf5;
+      border-radius: 22px;
+      border: 1.5px solid #d4a359;
+      box-shadow: 0 24px 60px rgba(22, 12, 8, 0.45);
       padding: 0;
       display: -webkit-flex;
       display: flex;
@@ -2058,10 +2062,10 @@
 </header>
 
 
-<div id="kasir-chat-toast" class="kasir-chat-toast" onclick="bukaModalLiveChat()"></div>
+<div id="kasir-chat-toast" class="kasir-chat-toast" onclick="bukaModalLiveChat(klcLastNotifSessionId)"></div>
 
-<div id="livechat-modal" class="modal-overlay">
-  <div class="modal-card klc-modal-card">
+<div id="livechat-modal" class="modal-backdrop" onclick="if(event.target===this){tutupModalLiveChat();}">
+  <div class="klc-modal-card">
     <div class="klc-top-bar">
       <div class="klc-top-title">
         <span>💬 Live Chat Pelanggan</span>
@@ -4873,6 +4877,7 @@ function prosesBayar() {
 /* === KASIR LIVE CHAT === */
 var klcSessions = [];
 var klcActiveSessionId = "";
+var klcLastNotifSessionId = "";
 var klcKnownMsgIds = {};
 var klcInitialSyncDone = false;
 var klcToastTimer = null;
@@ -4881,11 +4886,60 @@ function klcEscapeHtml(str) {
 }
 function klcFormatJam(waktu) {
   var s = String(waktu || "");
-  var parts = s.split(" ");
-  if (parts.length >= 2) return parts[1].substring(0, 5);
+  var m = s.match(/(\d{1,2}:\d{2})/);
+  if (m) return m[1];
   return s.substring(0, 5);
 }
-function tampilkanToastChatKasir(teks) {
+
+// Suara notifikasi KHUSUS Live Chat (berbeda dari notif.mp3 Pesanan Masuk)
+function putarSuaraNotifikasiChat() {
+  if (typeof notifSuaraAktif !== "undefined" && !notifSuaraAktif) return;
+  try {
+    if (navigator && typeof navigator.vibrate === "function") {
+      navigator.vibrate([90, 60, 90]);
+    }
+  } catch (e) {}
+  try {
+    var ctx = typeof aktifkanAudioNotifikasi === "function" ? aktifkanAudioNotifikasi() : null;
+    if (!ctx) {
+      var AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      ctx = new AudioCtx();
+    }
+    if (ctx.state === "suspended" && typeof ctx.resume === "function") {
+      ctx.resume();
+    }
+    var now = ctx.currentTime + 0.02;
+    // Nada "pop-ting" halus 2 ketukan khas chat masuk
+    var tones = [{
+      freq: 783.99,
+      start: 0.00,
+      dur: 0.12,
+      vol: 0.22
+    }, {
+      freq: 1174.66,
+      start: 0.13,
+      dur: 0.22,
+      vol: 0.25
+    }];
+    for (var i = 0; i < tones.length; i++) {
+      var t = tones[i];
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(t.freq, now + t.start);
+      gain.gain.setValueAtTime(0.001, now + t.start);
+      gain.gain.linearRampToValueAtTime(t.vol, now + t.start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + t.start + t.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + t.start);
+      osc.stop(now + t.start + t.dur + 0.02);
+    }
+  } catch (e) {}
+}
+function tampilkanToastChatKasir(teks, sessionId) {
+  klcLastNotifSessionId = sessionId || "";
   var t = document.getElementById("kasir-chat-toast");
   if (!t) return;
   t.innerText = teks;
@@ -4893,20 +4947,22 @@ function tampilkanToastChatKasir(teks) {
   if (klcToastTimer) clearTimeout(klcToastTimer);
   klcToastTimer = setTimeout(function () {
     t.classList.remove("show");
-  }, 5500);
+  }, 6500);
 }
-function bukaModalLiveChat() {
+function bukaModalLiveChat(targetSid) {
   var m = document.getElementById("livechat-modal");
   if (m) m.classList.add("show");
   var t = document.getElementById("kasir-chat-toast");
   if (t) t.classList.remove("show");
-  sinkronChatDariServer();
   renderDaftarSesiChat();
-  if (klcActiveSessionId) {
+  if (targetSid && cariSesiChatById(targetSid)) {
+    pilihSesiChat(targetSid);
+  } else if (klcActiveSessionId && cariSesiChatById(klcActiveSessionId)) {
     pilihSesiChat(klcActiveSessionId);
   } else if (klcSessions.length > 0 && window.innerWidth > 720) {
     pilihSesiChat(klcSessions[0].sessionId);
   }
+  sinkronChatDariServer();
 }
 function tutupModalLiveChat() {
   var m = document.getElementById("livechat-modal");
@@ -4940,6 +4996,9 @@ function sinkronChatDariServer() {
       return res.json();
     }).then(function (data) {
       if (data && data.success && Array.isArray(data.sessions)) {
+        var prevActiveCount = 0;
+        var oldActive = cariSesiChatById(klcActiveSessionId);
+        if (oldActive && oldActive.messages) prevActiveCount = oldActive.messages.length;
         klcSessions = data.sessions;
         perbaruiBadgeChatNav(data.totalUnread || 0);
         var newCustomerMsg = null;
@@ -4961,18 +5020,50 @@ function sinkronChatDariServer() {
           }
         }
         klcInitialSyncDone = true;
-        if (newCustomerMsg) {
-          if (typeof putarSuaraNotifikasiPesanan === "function") putarSuaraNotifikasiPesanan();
-          tampilkanToastChatKasir("💬 Pesan baru dari " + newCustomerMsg.nama + " (" + newCustomerMsg.meja + ") — Klik untuk balas");
+
+        // Selalu perbarui daftar sesi & percakapan aktif agar pesan baru langsung terlihat
+        renderDaftarSesiChat();
+        if (klcActiveSessionId) {
+          var newActive = cariSesiChatById(klcActiveSessionId);
+          var newActiveCount = newActive && newActive.messages ? newActive.messages.length : 0;
+          renderThreadChatAktif(newActiveCount > prevActiveCount);
+          var modalOpen = document.getElementById("livechat-modal");
+          if (modalOpen && modalOpen.classList.contains("show") && newActive && newActive.unreadCount > 0) {
+            tandaiSesiAktifDibaca(klcActiveSessionId);
+          }
+        } else if (klcSessions.length > 0 && window.innerWidth > 720) {
+          var mEl = document.getElementById("livechat-modal");
+          if (mEl && mEl.classList.contains("show")) {
+            pilihSesiChat(klcSessions[0].sessionId);
+          }
         }
-        var modal = document.getElementById("livechat-modal");
-        if (modal && modal.classList.contains("show")) {
-          renderDaftarSesiChat();
-          if (klcActiveSessionId) {
-            renderThreadChatAktif(false);
+        if (newCustomerMsg) {
+          var loginOverlay = document.getElementById("login-overlay");
+          var sudahLogin = !loginOverlay || loginOverlay.style.display === "none";
+          if (sudahLogin) {
+            putarSuaraNotifikasiChat();
+            tampilkanToastChatKasir("💬 Pesan baru dari " + newCustomerMsg.nama + " (" + newCustomerMsg.meja + ") — Klik untuk balas", newCustomerMsg.sessionId);
           }
         }
       }
+    }).catch(function () {});
+  } catch (e) {}
+}
+function tandaiSesiAktifDibaca(sid) {
+  var s = cariSesiChatById(sid);
+  if (!s || !s.unreadCount) return;
+  s.unreadCount = 0;
+  var total = 0;
+  for (var i = 0; i < klcSessions.length; i++) total += klcSessions[i].unreadCount || 0;
+  perbaruiBadgeChatNav(total);
+  renderDaftarSesiChat();
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "tandaiChatDibaca",
+        sessionId: sid
+      })
     }).catch(function () {});
   } catch (e) {}
 }
@@ -5004,23 +5095,7 @@ function pilihSesiChat(sid) {
   if (body) body.classList.add("klc-mobile-thread");
   renderDaftarSesiChat();
   renderThreadChatAktif(true);
-  var s = cariSesiChatById(sid);
-  if (s && s.unreadCount > 0) {
-    s.unreadCount = 0;
-    var total = 0;
-    for (var i = 0; i < klcSessions.length; i++) total += klcSessions[i].unreadCount || 0;
-    perbaruiBadgeChatNav(total);
-    renderDaftarSesiChat();
-    try {
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "tandaiChatDibaca",
-          sessionId: sid
-        })
-      }).catch(function () {});
-    } catch (e) {}
-  }
+  tandaiSesiAktifDibaca(sid);
 }
 function renderThreadChatAktif(scrollBottom) {
   var head = document.getElementById("klc-thread-head");
@@ -5086,7 +5161,7 @@ function kirimBalasanKasir() {
     s.messages.push({
       id: "TEMP-" + Date.now(),
       sessionId: klcActiveSessionId,
-      waktu: "Hari ini " + hh + ":" + mm + ":00",
+      waktu: hh + ":" + mm + ":00",
       pengirim: "Kasir",
       nama: "Kasir (" + kasirNama + ")",
       meja: s.meja || "-",
@@ -5094,6 +5169,7 @@ function kirimBalasanKasir() {
     });
     s.lastMessage = teks;
     s.lastSender = "Kasir";
+    s.lastTime = hh + ":" + mm + ":00";
     renderThreadChatAktif(true);
     renderDaftarSesiChat();
   }
