@@ -1686,6 +1686,7 @@
   </div>
 </div>
 
+<audio id="notif-audio-player" preload="auto" playsinline src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/notif.mp3" style="display:none;"></audio>
 <!-- Modal PopUp Notifikasi Pesanan Baru Masuk -->
 <div id="new-order-popup-modal" class="modal-backdrop new-order-backdrop">
   <div class="new-order-card">
@@ -2692,9 +2693,11 @@ function simpanRiwayatKeStorage() {
   } catch (e) {}
 }
 var STORAGE_NOTIF_SOUND_KEY = "angkringanNotifSuaraAktif";
+var NOTIF_AUDIO_URL = "https://newsistim.github.io/kasir-angkringan-AmanLahLek/notif.mp3";
 var notifSuaraAktif = true;
 var notifAudioCtx = null;
 var notifAudioUnlocked = false;
+var notifMp3Unlocked = false;
 var knownOrderIds = {};
 var initialOrderSyncDone = false;
 var pendingNewOrdersPopup = [];
@@ -2720,6 +2723,39 @@ function updateTombolSuaraNotifikasi() {
   }
 }
 function aktifkanAudioNotifikasi() {
+  if (!notifMp3Unlocked) {
+    var audioEl = document.getElementById("notif-audio-player");
+    if (audioEl) {
+      try {
+        if (!audioEl.src) audioEl.src = NOTIF_AUDIO_URL;
+        audioEl.muted = true;
+        var playRes = audioEl.play();
+        if (playRes && typeof playRes.then === "function") {
+          playRes.then(function () {
+            audioEl.pause();
+            try {
+              audioEl.currentTime = 0;
+            } catch (e0) {}
+            audioEl.muted = false;
+            notifMp3Unlocked = true;
+          }).catch(function () {
+            audioEl.muted = false;
+          });
+        } else {
+          audioEl.pause();
+          try {
+            audioEl.currentTime = 0;
+          } catch (e1) {}
+          audioEl.muted = false;
+          notifMp3Unlocked = true;
+        }
+      } catch (e) {
+        try {
+          audioEl.muted = false;
+        } catch (e2) {}
+      }
+    }
+  }
   try {
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return null;
@@ -2744,13 +2780,7 @@ function aktifkanAudioNotifikasi() {
     return null;
   }
 }
-function putarSuaraNotifikasiPesanan() {
-  if (!notifSuaraAktif) return;
-  try {
-    if (navigator && typeof navigator.vibrate === "function") {
-      navigator.vibrate([220, 100, 220]);
-    }
-  } catch (e) {}
+function putarSuaraFallbackWebAudio() {
   try {
     var ctx = aktifkanAudioNotifikasi();
     if (!ctx) return;
@@ -2796,6 +2826,33 @@ function putarSuaraNotifikasiPesanan() {
       osc.stop(now + n.start + n.dur + 0.02);
     }
   } catch (e) {}
+}
+function putarSuaraNotifikasiPesanan() {
+  if (!notifSuaraAktif) return;
+  try {
+    if (navigator && typeof navigator.vibrate === "function") {
+      navigator.vibrate([220, 100, 220]);
+    }
+  } catch (e) {}
+  var audioEl = document.getElementById("notif-audio-player");
+  if (audioEl && !audioEl.error) {
+    try {
+      if (!audioEl.src) audioEl.src = NOTIF_AUDIO_URL;
+      audioEl.muted = false;
+      audioEl.volume = 1.0;
+      try {
+        audioEl.currentTime = 0;
+      } catch (e0) {}
+      var p = audioEl.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(function () {
+          putarSuaraFallbackWebAudio();
+        });
+      }
+      return;
+    } catch (e) {}
+  }
+  putarSuaraFallbackWebAudio();
 }
 function toggleSuaraNotifikasi() {
   notifSuaraAktif = !notifSuaraAktif;
