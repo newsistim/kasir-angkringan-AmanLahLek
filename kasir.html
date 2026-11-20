@@ -98,7 +98,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 14px;
-      position: sticky;
+      position: -webkit-sticky; position: sticky;
       top: 0;
       z-index: 100;
       border-bottom: 1px solid rgba(251, 230, 178, 0.18);
@@ -351,7 +351,7 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
       border: 1.5px solid var(--espresso-200);
-      position: sticky;
+      position: -webkit-sticky; position: sticky;
       top: 90px;
     }
     .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1.5px solid var(--espresso-100); }
@@ -556,7 +556,12 @@
     /* PREMIUM ADMIN LOGIN OVERLAY */
     #login-overlay {
       position: fixed;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background:
         radial-gradient(circle at 50% 18%, rgba(212, 154, 53, 0.2) 0%, transparent 50%),
         radial-gradient(circle at top right, #4e2f23 0%, #160c08 72%);
@@ -609,7 +614,7 @@
     .back-link-wrap { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--espresso-100); }
     .back-link-btn { background: none; border: none; color: var(--espresso-600); font-weight: 700; cursor: pointer; }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(22, 12, 8, 0.65); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1050; padding: 16px; }
+    .modal-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; background: rgba(22, 12, 8, 0.65); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1050; padding: 16px; }
     .modal-backdrop.show { display: flex; }
     .receipt-card, .stock-modal-card { background: #fff; max-width: 460px; width: 100%; max-height: 92vh; overflow-y: auto; border-radius: 22px; padding: 24px; box-shadow: var(--shadow-lg); }
     .receipt-card { text-align: center; }
@@ -634,23 +639,31 @@
     html {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      overflow-x: hidden;
       overflow-x: clip;
     }
     body {
+      overflow-x: hidden;
       overflow-x: clip;
+      min-height: 100vh;
       min-height: 100dvh;
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     header {
+      padding-top: 14px;
       padding-top: calc(14px + env(safe-area-inset-top, 0px));
+      padding-left: 16px;
       padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: 16px;
       padding-right: calc(16px + env(safe-area-inset-right, 0px));
     }
     .modal-backdrop {
       -webkit-backdrop-filter: blur(5px);
+      padding: 14px;
       padding: calc(14px + env(safe-area-inset-top, 0px)) 14px calc(14px + env(safe-area-inset-bottom, 0px));
     }
     #login-overlay {
+      padding: 20px 16px;
       padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(20px + env(safe-area-inset-bottom, 0px));
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -676,12 +689,14 @@
       overscroll-behavior: contain;
     }
     .edit-modal-card, .stock-modal-card, .receipt-card {
+      max-height: 90vh;
       max-height: 90dvh;
     }
     .history-grid {
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     }
     .toast-notice {
+      top: 18px;
       top: calc(18px + env(safe-area-inset-top, 0px));
       max-width: calc(100vw - 32px);
       text-align: center;
@@ -764,6 +779,100 @@
       .voucher-row-inputs { grid-template-columns: 1fr; }
       .quick-cash { grid-template-columns: repeat(3, 1fr); }
       .quick-table-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ================= LEGACY iPAD / iOS 9 - 14 COMPATIBILITY ================= */
+    @supports not (inset: 0) {
+      .brand-wrap > *,
+      .header-meta > *,
+      .header-actions > *,
+      .filter-bar > *,
+      .toolbar-actions-group > *,
+      .status-tabs > *,
+      .order-actions > *,
+      .item-addons > *,
+      .temp-shortcut-btns > *,
+      .edit-temp-row > *,
+      .stock-modal-footer > *,
+      .nav-btn > * {
+        margin-right: 8px;
+        margin-bottom: 6px;
+      }
+      .brand-wrap > *:last-child,
+      .header-meta > *:last-child,
+      .nav-btn > *:last-child {
+        margin-right: 0;
+        margin-bottom: 0;
+      }
+    }
+    @supports not (display: grid) {
+      .container {
+        display: block;
+      }
+      .cart-panel {
+        margin-top: 20px;
+      }
+      .grid, .history-grid, .kpi-row {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin: -6px;
+      }
+      .grid > .card {
+        width: calc(33.333% - 12px);
+        margin: 6px;
+      }
+      .history-grid > * {
+        width: calc(50% - 12px);
+        margin: 6px;
+      }
+      .kpi-row > * {
+        width: calc(25% - 12px);
+        margin: 6px;
+      }
+      .quick-table-grid, .quick-cash {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin: -3px;
+      }
+      .quick-table-grid > *, .quick-cash > * {
+        width: calc(20% - 6px);
+        margin: 3px;
+      }
+      .voucher-row-inputs, .proof-btn-grid, .pay-status-pills, .edit-form-grid, .edit-footer-btns {
+        display: -webkit-flex;
+        display: flex;
+        margin: -4px;
+      }
+      .voucher-row-inputs > *, .proof-btn-grid > *, .pay-status-pills > *, .edit-form-grid > *, .edit-footer-btns > * {
+        -webkit-flex: 1;
+        flex: 1;
+        margin: 4px;
+      }
+      .payment-pills, .pay-status-pills-3 {
+        display: -webkit-flex;
+        display: flex;
+        margin: -4px;
+      }
+      .payment-pills > *, .pay-status-pills-3 > * {
+        -webkit-flex: 1;
+        flex: 1;
+        margin: 4px;
+      }
+      @media (max-width: 768px) {
+        .grid > .card { width: calc(50% - 12px); }
+        .history-grid > * { width: calc(100% - 12px); }
+        .kpi-row > * { width: calc(50% - 12px); }
+      }
+      @media (max-width: 600px) {
+        .quick-table-grid > * { width: calc(25% - 6px); }
+      }
+    }
+    @media (max-width: 480px) {
+      .history-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1238,6 +1347,33 @@
 </div>
 
 <script>
+  // Fallback fetch() untuk iPad / iOS versi lama (iOS 9 - 10.2)
+  if (typeof window.fetch !== "function") {
+    window.fetch = function(url, opts) {
+      opts = opts || {};
+      return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(opts.method || "GET", url, true);
+        if (opts.headers) {
+          Object.keys(opts.headers).forEach(function(k) {
+            xhr.setRequestHeader(k, opts.headers[k]);
+          });
+        }
+        xhr.onload = function() {
+          var bodyText = xhr.responseText;
+          resolve({
+            ok: xhr.status >= 200 && xhr.status < 300,
+            status: xhr.status,
+            text: function() { return Promise.resolve(bodyText); },
+            json: function() { return Promise.resolve(JSON.parse(bodyText)); },
+            blob: function() { return Promise.resolve(new Blob([xhr.response])); }
+          });
+        };
+        xhr.onerror = function() { reject(new Error("Network error")); };
+        xhr.send(opts.body || null);
+      });
+    };
+  }
   const API_URL = "https://script.google.com/macros/s/AKfycbz1NjdAcdePA0Zo8_A3D3nWdrCLBvZETZa5V7ebbq2uvmBQLqbtpBCXpIfs--yqijl6hw/exec";
   const STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
   const STORAGE_HIDDEN_KEY = "hiddenOrdersAmanLahLek";
@@ -1316,7 +1452,7 @@
   function simpanEditedOrderLokal(id, patchData) {
     try {
       const map = ambilEditedOrdersMap();
-      map[id] = { ...(map[id] || {}), ...patchData, updatedAt: Date.now() };
+      map[id] = Object.assign({}, map[id] || {}, patchData, { updatedAt: Date.now() });
       localStorage.setItem(STORAGE_EDITED_KEY, JSON.stringify(map));
     } catch (e) {}
   }
@@ -1527,7 +1663,7 @@
       if (r) {
         const p = JSON.parse(r);
         if (Array.isArray(p)) {
-          riwayatPesanan = p.filter(o => !hidden.includes(o.id)).map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+          riwayatPesanan = p.filter(o => !hidden.includes(o.id)).map(o => editedMap[o.id] ? Object.assign({}, o, editedMap[o.id]) : o);
         }
       }
     } catch (e) { riwayatPesanan = []; }
@@ -1542,7 +1678,7 @@
           const editedMap = ambilEditedOrdersMap();
           const serverOrders = data.orders
             .filter(o => !hidden.includes(o.id))
-            .map(o => editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+            .map(o => editedMap[o.id] ? Object.assign({}, o, editedMap[o.id]) : o);
           const serverIds = new Set(serverOrders.map(o => o.id));
           const lokalBelumSync = riwayatPesanan.filter(o => !serverIds.has(o.id) && !hidden.includes(o.id));
           riwayatPesanan = [...lokalBelumSync, ...serverOrders];
@@ -2234,11 +2370,7 @@
     const terapkanPerubahanLokal = (noTrxServer) => {
       const idx = riwayatPesanan.findIndex(p => p.id === idTarget);
       if (idx !== -1) {
-        riwayatPesanan[idx] = {
-          ...riwayatPesanan[idx],
-          ...patchObj,
-          noTrx: noTrxServer || riwayatPesanan[idx].noTrx || "-"
-        };
+        riwayatPesanan[idx] = Object.assign({}, riwayatPesanan[idx], patchObj, { noTrx: noTrxServer || riwayatPesanan[idx].noTrx || "-" });
       }
       simpanEditedOrderLokal(idTarget, patchObj);
       simpanRiwayatKeStorage();
