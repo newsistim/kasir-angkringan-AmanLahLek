@@ -2861,8 +2861,12 @@ function normStatusBayar(sb) {
   if (raw.includes("menunggu") || raw.includes("cek")) return "Menunggu Cek Kasir";
   return "Belum Dibayar";
 }
-function getHargaIce() {
-  return 0;
+function isMenuMineral(itemOrNama) {
+  var nama = typeof itemOrNama === "object" && itemOrNama !== null ? itemOrNama.nama || "" : itemOrNama || "";
+  return /mineral/i.test(String(nama));
+}
+function getHargaIce(itemOrNama) {
+  return isMenuMineral(itemOrNama) ? 2000 : 0;
 }
 function isMinuman(kategori) {
   return !String(kategori || "").toLowerCase().includes("makanan");
@@ -3962,14 +3966,14 @@ function tambahItem(item) {
   renderMenuTerkelompok();
 }
 function aturSemuaSuhuKeranjang(suhuBaru) {
-  var hargaIce = getHargaIce();
   var hasil = [];
   keranjang.forEach(function (item) {
     if (isMinuman(item.kategori)) {
+      var hargaIceItem = getHargaIce(item);
       item.suhu = suhuBaru;
       item.addons = suhuBaru === "ICE" ? [{
         nama: "ICE",
-        harga: hargaIce
+        harga: hargaIceItem
       }] : [];
     }
     var existing = hasil.find(function (x) {
@@ -3989,7 +3993,7 @@ function aturSemuaSuhuKeranjang(suhuBaru) {
 function pilihSuhuKeranjang(cIdx, suhuBaru) {
   var item = keranjang[cIdx];
   if (!item || !isMinuman(item.kategori)) return;
-  var hargaIce = getHargaIce();
+  var hargaIce = getHargaIce(item);
   var sameIdx = keranjang.findIndex(function (x, i) {
     return i !== cIdx && x.nama === item.nama && x.suhu === suhuBaru;
   });
@@ -4076,7 +4080,6 @@ function hapusVoucherKasir() {
 function renderKeranjang() {
   var c = document.getElementById("cart-items");
   subtotalBelanja = 0;
-  var hargaIce = getHargaIce();
   document.getElementById("cart-count-badge").innerText = "".concat(keranjang.reduce(function (s, i) {
     return s + i.qty;
   }, 0), " item");
@@ -4088,13 +4091,16 @@ function renderKeranjang() {
   if (cartShortcut) {
     if (minumanCart.length > 0) {
       cartShortcut.classList.add("show");
+      var adaIceBerbayarCart = minumanCart.some(function (i) {
+        return getHargaIce(i) > 0;
+      });
       document.getElementById("cart-all-hot-btn").classList.toggle("active", minumanCart.every(function (i) {
         return i.suhu === "HOT";
       }));
       document.getElementById("cart-all-ice-btn").classList.toggle("active", minumanCart.every(function (i) {
         return i.suhu === "ICE";
       }));
-      document.getElementById("cart-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
+      document.getElementById("cart-all-ice-btn").innerText = adaIceBerbayarCart ? "🧊 Semua ICE (Mineral +2rb)" : "🧊 Semua ICE (Gratis)";
     } else {
       cartShortcut.classList.remove("show");
     }
@@ -4110,6 +4116,8 @@ function renderKeranjang() {
   c.innerHTML = "";
   keranjang.forEach(function (item, idx) {
     var minuman = isMinuman(item.kategori);
+    var hargaIceItem = getHargaIce(item);
+    var labelIceBtn = hargaIceItem > 0 ? "\uD83E\uDDCA ICE (+Rp " + hargaIceItem.toLocaleString("id-ID") + ")" : "\uD83E\uDDCA ICE (Gratis)";
     var belumPilihSuhu = minuman && !item.suhu;
     var sub = (item.hargaDasar + item.addons.reduce(function (s, a) {
       return s + Number(a.harga);
@@ -4119,7 +4127,7 @@ function renderKeranjang() {
     if (minuman) {
       if (item.suhu === "HOT") labelSuhu = " <span style=\"color:#d84315; font-size:0.76rem; font-weight:800;\">[\uD83D\uDD25 HOT]</span>";else if (item.suhu === "ICE") labelSuhu = " <span style=\"color:#0277bd; font-size:0.76rem; font-weight:800;\">[\uD83E\uDDCA ICE]</span>";else labelSuhu = " <span style=\"color:var(--danger-text); font-size:0.74rem; font-weight:800;\">(Pilih HOT / ICE *)</span>";
     }
-    var addHTML = minuman ? "<div class=\"item-addons\">\n            <span class=\"temp-req-label\">Suhu *:</span>\n            <button type=\"button\" class=\"addon-toggle ".concat(item.suhu === 'HOT' ? 'selected-hot' : '', "\" onclick=\"pilihSuhuKeranjang(").concat(idx, ", 'HOT')\">\uD83D\uDD25 HOT (Gratis)</button>\n            <button type=\"button\" class=\"addon-toggle ").concat(item.suhu === 'ICE' ? 'selected-ice' : '', "\" onclick=\"pilihSuhuKeranjang(").concat(idx, ", 'ICE')\">\uD83E\uDDCA ICE (Gratis)</button>\n          </div>") : "";
+    var addHTML = minuman ? "<div class=\"item-addons\">\n            <span class=\"temp-req-label\">Suhu *:</span>\n            <button type=\"button\" class=\"addon-toggle ".concat(item.suhu === 'HOT' ? 'selected-hot' : '', "\" onclick=\"pilihSuhuKeranjang(").concat(idx, ", 'HOT')\">\uD83D\uDD25 HOT (Gratis)</button>\n            <button type=\"button\" class=\"addon-toggle ").concat(item.suhu === 'ICE' ? 'selected-ice' : '', "\" onclick=\"pilihSuhuKeranjang(").concat(idx, ", 'ICE')\">").concat(labelIceBtn, "</button>\n          </div>") : "";
     c.innerHTML += "<div class=\"cart-item ".concat(belumPilihSuhu ? 'missing-temp' : '', "\"><div class=\"cart-item-top\"><div><strong>").concat(item.nama, "</strong>").concat(labelSuhu, "<span class=\"cart-item-price\">Rp ").concat(sub.toLocaleString("id-ID"), "</span></div><div class=\"qty-controls\"><button type=\"button\" class=\"qty-btn\" onclick=\"ubahQty(").concat(idx, ", -1)\">\u2212</button><span class=\"qty-num\">").concat(item.qty, "</span><button type=\"button\" class=\"qty-btn\" onclick=\"ubahQty(").concat(idx, ", 1)\">+</button></div></div>").concat(addHTML, "</div>");
   });
   totalBelanja = Math.max(0, subtotalBelanja - diskonVoucher);
@@ -4190,7 +4198,6 @@ function hitungKembalian() {
 // ================= FITUR EDIT PESANAN (PELANGGAN & KASIR) =================
 function parseDetailItemsKeKeranjangEdit(detailStr, fallbackTotal) {
   var listMenuSumber = daftarMenu.length > 0 ? daftarMenu : MENU_CADANGAN;
-  var hargaIce = getHargaIce();
   var parts = String(detailStr || "").split(",").map(function (s) {
     return s.trim();
   }).filter(Boolean);
@@ -4218,14 +4225,16 @@ function parseDetailItemsKeKeranjangEdit(detailStr, fallbackTotal) {
     var kategori = menuMatch ? menuMatch.kategori || "" : pakaiIce || pakaiHot ? "Coffee" : "Lainnya";
     var minuman = isMinuman(kategori);
     var hargaDasar = menuMatch ? Number(menuMatch.harga || 0) : 15000;
+    var namaFinal = menuMatch ? bersihkanNamaMenu(menuMatch.nama) : namaBersih;
+    var hargaIceItem = getHargaIce(namaFinal);
     var suhu = minuman ? pakaiIce ? "ICE" : "HOT" : "N/A";
     var addons = minuman && suhu === "ICE" ? [{
       nama: "ICE",
-      harga: hargaIce
+      harga: hargaIceItem
     }] : [];
     parsed.push({
       id: menuMatch ? menuMatch.id || namaBersih : namaBersih,
-      nama: menuMatch ? bersihkanNamaMenu(menuMatch.nama) : namaBersih,
+      nama: namaFinal,
       kategori: kategori,
       hargaDasar: hargaDasar,
       qty: qty,
@@ -4386,14 +4395,14 @@ function hapusBarisItemEdit(idx) {
   renderDaftarItemEdit();
 }
 function aturSemuaSuhuEdit(suhuBaru) {
-  var hargaIce = getHargaIce();
   var hasil = [];
   keranjangEdit.forEach(function (item) {
     if (isMinuman(item.kategori)) {
+      var hargaIceItem = getHargaIce(item);
       item.suhu = suhuBaru;
       item.addons = suhuBaru === "ICE" ? [{
         nama: "ICE",
-        harga: hargaIce
+        harga: hargaIceItem
       }] : [];
     }
     var existing = hasil.find(function (x) {
@@ -4412,7 +4421,7 @@ function aturSemuaSuhuEdit(suhuBaru) {
 function ubahSuhuItemEdit(idx, suhuBaru) {
   var item = keranjangEdit[idx];
   if (!item || !isMinuman(item.kategori)) return;
-  var hargaIce = getHargaIce();
+  var hargaIce = getHargaIce(item);
   var sameIdx = keranjangEdit.findIndex(function (x, i) {
     return i !== idx && x.nama === item.nama && x.suhu === suhuBaru;
   });
@@ -4443,7 +4452,6 @@ function hitungSubtotalEdit() {
 }
 function renderDaftarItemEdit() {
   var container = document.getElementById("edit-order-items-list");
-  var hargaIce = getHargaIce();
   var minumanEdit = keranjangEdit.filter(function (i) {
     return isMinuman(i.kategori);
   });
@@ -4451,13 +4459,16 @@ function renderDaftarItemEdit() {
   if (editShortcut) {
     if (minumanEdit.length > 0) {
       editShortcut.classList.add("show");
+      var adaIceBerbayarEdit = minumanEdit.some(function (i) {
+        return getHargaIce(i) > 0;
+      });
       document.getElementById("edit-all-hot-btn").classList.toggle("active", minumanEdit.every(function (i) {
         return i.suhu === "HOT";
       }));
       document.getElementById("edit-all-ice-btn").classList.toggle("active", minumanEdit.every(function (i) {
         return i.suhu === "ICE";
       }));
-      document.getElementById("edit-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
+      document.getElementById("edit-all-ice-btn").innerText = adaIceBerbayarEdit ? "🧊 Semua ICE (Mineral +2rb)" : "🧊 Semua ICE (Gratis)";
     } else {
       editShortcut.classList.remove("show");
     }
@@ -4468,13 +4479,15 @@ function renderDaftarItemEdit() {
     container.innerHTML = "";
     keranjangEdit.forEach(function (item, idx) {
       var minuman = isMinuman(item.kategori);
+      var hargaIceItem = getHargaIce(item);
+      var labelIceBtn = hargaIceItem > 0 ? "\uD83E\uDDCA ICE (+Rp " + hargaIceItem.toLocaleString("id-ID") + ")" : "\uD83E\uDDCA ICE (Gratis)";
       var hargaAddon = (item.addons || []).reduce(function (s, a) {
         return s + Number(a.harga || 0);
       }, 0);
       var sub = (Number(item.hargaDasar || 0) + hargaAddon) * item.qty;
       var belumPilihSuhuEdit = minuman && !item.suhu;
       var suhuBadge = minuman ? item.suhu === "ICE" ? "<span style=\"color:#0277bd; font-size:0.76rem; font-weight:800; margin-left:4px;\">[\uD83E\uDDCA ICE]</span>" : item.suhu === "HOT" ? "<span style=\"color:#d84315; font-size:0.76rem; font-weight:800; margin-left:4px;\">[\uD83D\uDD25 HOT]</span>" : "<span style=\"color:var(--danger-text); font-size:0.74rem; font-weight:800; margin-left:4px;\">(Pilih HOT / ICE *)</span>" : "";
-      var suhuControls = minuman ? "<div class=\"edit-temp-row\">\n              <span class=\"temp-req-label\">Suhu *:</span>\n              <button type=\"button\" class=\"edit-temp-chip ".concat(item.suhu === 'HOT' ? 'hot-active' : '', "\" data-eidx=\"").concat(idx, "\" data-esuhu=\"HOT\">\uD83D\uDD25 HOT (Gratis)</button>\n              <button type=\"button\" class=\"edit-temp-chip ").concat(item.suhu === 'ICE' ? 'ice-active' : '', "\" data-eidx=\"").concat(idx, "\" data-esuhu=\"ICE\">\uD83E\uDDCA ICE (Gratis)</button>\n            </div>") : "";
+      var suhuControls = minuman ? "<div class=\"edit-temp-row\">\n              <span class=\"temp-req-label\">Suhu *:</span>\n              <button type=\"button\" class=\"edit-temp-chip ".concat(item.suhu === 'HOT' ? 'hot-active' : '', "\" data-eidx=\"").concat(idx, "\" data-esuhu=\"HOT\">\uD83D\uDD25 HOT (Gratis)</button>\n              <button type=\"button\" class=\"edit-temp-chip ").concat(item.suhu === 'ICE' ? 'ice-active' : '', "\" data-eidx=\"").concat(idx, "\" data-esuhu=\"ICE\">").concat(labelIceBtn, "</button>\n            </div>") : "";
       var row = document.createElement("div");
       row.className = "edit-item-row" + (belumPilihSuhuEdit ? " missing-temp" : "");
       row.innerHTML = "\n          <div class=\"edit-item-top\">\n            <div>\n              <strong>".concat(item.nama, "</strong>").concat(suhuBadge, "\n              <span class=\"cart-item-price\">Rp ").concat(sub.toLocaleString("id-ID"), " <small style=\"color:var(--espresso-600); font-weight:600;\">(@Rp ").concat((Number(item.hargaDasar) + hargaAddon).toLocaleString("id-ID"), ")</small></span>\n            </div>\n            <div style=\"display:flex; align-items:center; gap:6px;\">\n              <div class=\"qty-controls\">\n                <button type=\"button\" class=\"qty-btn\" data-eqty=\"").concat(idx, "\" data-edelta=\"-1\">\u2212</button>\n                <span class=\"qty-num\">").concat(item.qty, "</span>\n                <button type=\"button\" class=\"qty-btn\" data-eqty=\"").concat(idx, "\" data-edelta=\"1\">+</button>\n              </div>\n              <button type=\"button\" class=\"btn-order-delete\" data-edel=\"").concat(idx, "\" title=\"Hapus Item\" style=\"padding:5px 8px; font-size:0.75rem;\">\u2715</button>\n            </div>\n          </div>\n          ").concat(suhuControls, "\n        ");
