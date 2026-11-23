@@ -3275,24 +3275,82 @@ function hapusSession(k) {
     sessionStorage.removeItem(k);
   } catch (e) {}
 }
-function ambilHiddenIds() {
+var HIDDEN_TTL_MS = 20000;
+var EDITED_TTL_MS = 15000;
+function ambilHiddenMap() {
   try {
     var r = localStorage.getItem(STORAGE_HIDDEN_KEY);
-    return r ? JSON.parse(r) || [] : [];
+    if (!r) return {};
+    var parsed = JSON.parse(r);
+    if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") {
+      localStorage.removeItem(STORAGE_HIDDEN_KEY);
+      return {};
+    }
+    var now = Date.now();
+    var active = {};
+    var changed = false;
+    var keys = Object.keys(parsed);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var ts = Number(parsed[k] || 0);
+      if (ts && now - ts < HIDDEN_TTL_MS) {
+        active[k] = ts;
+      } else {
+        changed = true;
+      }
+    }
+    if (changed) {
+      if (Object.keys(active).length === 0) {
+        localStorage.removeItem(STORAGE_HIDDEN_KEY);
+      } else {
+        localStorage.setItem(STORAGE_HIDDEN_KEY, JSON.stringify(active));
+      }
+    }
+    return active;
   } catch (e) {
-    return [];
+    return {};
   }
+}
+function ambilHiddenIds() {
+  return Object.keys(ambilHiddenMap());
 }
 function tambahHiddenIds(ids) {
   try {
-    var set = new Set([].concat(_toConsumableArray(ambilHiddenIds()), _toConsumableArray(ids)));
-    localStorage.setItem(STORAGE_HIDDEN_KEY, JSON.stringify(_toConsumableArray(set)));
+    var map = ambilHiddenMap();
+    var now = Date.now();
+    for (var i = 0; i < ids.length; i++) {
+      if (ids[i]) map[String(ids[i])] = now;
+    }
+    localStorage.setItem(STORAGE_HIDDEN_KEY, JSON.stringify(map));
   } catch (e) {}
 }
 function ambilEditedOrdersMap() {
   try {
     var r = localStorage.getItem(STORAGE_EDITED_KEY);
-    return r ? JSON.parse(r) || {} : {};
+    if (!r) return {};
+    var parsed = JSON.parse(r) || {};
+    var now = Date.now();
+    var active = {};
+    var changed = false;
+    var keys = Object.keys(parsed);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var entry = parsed[k];
+      var ts = entry && entry.updatedAt ? Number(entry.updatedAt) : 0;
+      if (ts && now - ts < EDITED_TTL_MS) {
+        active[k] = entry;
+      } else {
+        changed = true;
+      }
+    }
+    if (changed) {
+      if (Object.keys(active).length === 0) {
+        localStorage.removeItem(STORAGE_EDITED_KEY);
+      } else {
+        localStorage.setItem(STORAGE_EDITED_KEY, JSON.stringify(active));
+      }
+    }
+    return active;
   } catch (e) {
     return {};
   }
@@ -4094,17 +4152,11 @@ function sinkronPesananDariServer() {
         var hidden = ambilHiddenIds();
         var editedMap = ambilEditedOrdersMap();
         var serverOrders = data.orders.filter(function (o) {
-          return !hidden.includes(o.id);
+          return hidden.indexOf(o.id) === -1;
         }).map(function (o) {
           return editedMap[o.id] ? Object.assign({}, o, editedMap[o.id]) : o;
         });
-        var serverIds = new Set(serverOrders.map(function (o) {
-          return o.id;
-        }));
-        var lokalBelumSync = riwayatPesanan.filter(function (o) {
-          return !serverIds.has(o.id) && !hidden.includes(o.id);
-        });
-        riwayatPesanan = [].concat(_toConsumableArray(lokalBelumSync), _toConsumableArray(serverOrders));
+        riwayatPesanan = serverOrders;
         simpanRiwayatKeStorage();
         renderRiwayatPesanan();
         deteksiPesananPelangganBaru(riwayatPesanan, !initialOrderSyncDone);
@@ -5305,20 +5357,29 @@ function eksekusiHapusSatuPesanan(id) {
   });
   simpanRiwayatKeStorage();
   renderRiwayatPesanan();
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "hapusPesanan",
+        idPesanan: id,
+        role: roleAdminAktif
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (d) {
+      if (d && d.success) {
+        setTimeout(sinkronPesananDariServer, 400);
+      } else if (d && d.message) {
+        tampilkanToast("⚠️ " + d.message);
+        setTimeout(sinkronPesananDariServer, 400);
+      }
+    }).catch(function () {});
+  } catch (e) {}
   if (isKepalaAdmin()) {
-    try {
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "hapusPesanan",
-          idPesanan: id,
-          role: roleAdminAktif
-        })
-      }).catch(function () {});
-    } catch (e) {}
     tampilkanToast("🗑️ Pesanan dihapus oleh Kepala Admin.");
   } else {
-    tampilkanToast("🗑️ Pesanan dihapus dari daftar antrean.");
+    tampilkanToast("🗑️ Pesanan dihapus dari antrean & Spreadsheet.");
   }
 }
 function hapusSatuPesanan(id) {
@@ -5342,6 +5403,28 @@ function hapusSatuPesanan(id) {
     }
   });
 }
+function hapusPesananBerurutanFallback(ids, idx) {
+  if (!ids || idx >= ids.length) {
+    setTimeout(sinkronPesananDariServer, 500);
+    return;
+  }
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "hapusPesanan",
+        idPesanan: ids[idx],
+        role: roleAdminAktif
+      })
+    }).then(function () {
+      hapusPesananBerurutanFallback(ids, idx + 1);
+    }).catch(function () {
+      hapusPesananBerurutanFallback(ids, idx + 1);
+    });
+  } catch (e) {
+    hapusPesananBerurutanFallback(ids, idx + 1);
+  }
+}
 function eksekusiHapusPesananSelesai(idsSelesai) {
   tambahHiddenIds(idsSelesai);
   riwayatPesanan = riwayatPesanan.filter(function (p) {
@@ -5349,18 +5432,28 @@ function eksekusiHapusPesananSelesai(idsSelesai) {
   });
   simpanRiwayatKeStorage();
   renderRiwayatPesanan();
-  idsSelesai.forEach(function (id) {
-    try {
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "hapusPesanan",
-          idPesanan: id,
-          role: roleAdminAktif
-        })
-      }).catch(function () {});
-    } catch (e) {}
-  });
+  try {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "hapusBanyakPesanan",
+        ids: idsSelesai,
+        role: roleAdminAktif
+      })
+    }).then(function (res) {
+      return res.json();
+    }).then(function (d) {
+      if (d && d.success) {
+        setTimeout(sinkronPesananDariServer, 500);
+      } else if (d && d.message && String(d.message).toLowerCase().indexOf("tidak dikenali") !== -1) {
+        hapusPesananBerurutanFallback(idsSelesai, 0);
+      } else {
+        setTimeout(sinkronPesananDariServer, 500);
+      }
+    }).catch(function () {
+      hapusPesananBerurutanFallback(idsSelesai, 0);
+    });
+  } catch (e) {}
   tampilkanToast("🗑️ " + idsSelesai.length + " pesanan selesai dibersihkan oleh Kepala Admin.");
 }
 function hapusPesananSelesai() {
