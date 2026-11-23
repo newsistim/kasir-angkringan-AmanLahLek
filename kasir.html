@@ -4100,7 +4100,7 @@ function renderKeranjang() {
       document.getElementById("cart-all-ice-btn").classList.toggle("active", minumanCart.every(function (i) {
         return i.suhu === "ICE";
       }));
-      document.getElementById("cart-all-ice-btn").innerText = adaIceBerbayarCart ? "🧊 Semua ICE (Mineral +2rb)" : "🧊 Semua ICE (Gratis)";
+      document.getElementById("cart-all-ice-btn").innerText = adaIceBerbayarCart ? "🧊 Semua ICE" : "🧊 Semua ICE (Gratis)";
     } else {
       cartShortcut.classList.remove("show");
     }
@@ -4468,7 +4468,7 @@ function renderDaftarItemEdit() {
       document.getElementById("edit-all-ice-btn").classList.toggle("active", minumanEdit.every(function (i) {
         return i.suhu === "ICE";
       }));
-      document.getElementById("edit-all-ice-btn").innerText = adaIceBerbayarEdit ? "🧊 Semua ICE (Mineral +2rb)" : "🧊 Semua ICE (Gratis)";
+      document.getElementById("edit-all-ice-btn").innerText = adaIceBerbayarEdit ? "🧊 Semua ICE" : "🧊 Semua ICE (Gratis)";
     } else {
       editShortcut.classList.remove("show");
     }
