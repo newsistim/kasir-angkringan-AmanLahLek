@@ -2527,8 +2527,12 @@ function tampilkanToast(pesan) {
 function isMinuman(kategori) {
   return !String(kategori || "").toLowerCase().includes("makanan");
 }
-function getHargaIce() {
-  return 0;
+function isMenuMineral(itemOrNama) {
+  var nama = typeof itemOrNama === "object" && itemOrNama !== null ? itemOrNama.nama || "" : itemOrNama || "";
+  return /mineral/i.test(String(nama));
+}
+function getHargaIce(itemOrNama) {
+  return isMenuMineral(itemOrNama) ? 2000 : 0;
 }
 function toggleDownloadQris() {
   var drawer = document.getElementById("qris-download-drawer");
@@ -2935,7 +2939,7 @@ function logoutPelanggan() {
 }
 function tampilkanInfoTambahan() {
   var box = document.getElementById("addon-box");
-  box.innerHTML = "<div>\uD83C\uDF21\uFE0F <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class=\"addon-pill\">\uD83D\uDD25 HOT (Gratis)</span> <span class=\"addon-pill\">\uD83E\uDDCA ICE (Gratis)</span></div>";
+  box.innerHTML = "<div>\uD83C\uDF21\uFE0F <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class=\"addon-pill\">\uD83D\uDD25 HOT (Gratis)</span> <span class=\"addon-pill\">\uD83E\uDDCA ICE (Gratis \u2022 Khusus Mineral +Rp 2.000)</span></div>";
   box.style.display = "flex";
 }
 function bersihkanPesananYangHabis() {
@@ -3005,14 +3009,14 @@ function tambahKeEstimasi(item) {
   terapkanFilter();
 }
 function aturSemuaSuhuEstimasi(suhuBaru) {
-  var hargaIce = getHargaIce();
   var hasil = [];
   catatanPesanan.forEach(function (item) {
     if (isMinuman(item.kategori)) {
+      var hargaIceItem = getHargaIce(item);
       item.suhu = suhuBaru;
       item.addons = suhuBaru === "ICE" ? [{
         nama: "ICE",
-        harga: hargaIce
+        harga: hargaIceItem
       }] : [];
     }
     var existing = hasil.find(function (x) {
@@ -3033,7 +3037,7 @@ function aturSemuaSuhuEstimasi(suhuBaru) {
 function pilihSuhuEstimasi(rIdx, suhuBaru) {
   var item = catatanPesanan[rIdx];
   if (!item || !isMinuman(item.kategori)) return;
-  var hargaIce = getHargaIce();
+  var hargaIce = getHargaIce(item);
   var sameIdx = catatanPesanan.findIndex(function (x, i) {
     return i !== rIdx && x.nama === item.nama && x.suhu === suhuBaru;
   });
@@ -3161,7 +3165,6 @@ function renderIsiModalEstimasi() {
     return;
   }
   listEl.innerHTML = "";
-  var hargaIce = getHargaIce();
   var minumanItems = catatanPesanan.filter(function (i) {
     return isMinuman(i.kategori);
   });
@@ -3175,15 +3178,20 @@ function renderIsiModalEstimasi() {
       var semuaIce = minumanItems.every(function (i) {
         return i.suhu === "ICE";
       });
+      var adaIceBerbayar = minumanItems.some(function (i) {
+        return getHargaIce(i) > 0;
+      });
       document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
       document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
-      document.getElementById("est-all-ice-btn").innerText = "🧊 Semua ICE (Gratis)";
+      document.getElementById("est-all-ice-btn").innerText = adaIceBerbayar ? "🧊 Semua ICE" : "🧊 Semua ICE (Gratis)";
     } else {
       shortcutBar.classList.remove("show");
     }
   }
   catatanPesanan.forEach(function (item, rIdx) {
     var minuman = isMinuman(item.kategori);
+    var hargaIceItem = getHargaIce(item);
+    var labelIceBtn = hargaIceItem > 0 ? "\uD83E\uDDCA ICE (+Rp " + hargaIceItem.toLocaleString("id-ID") + ")" : "\uD83E\uDDCA ICE (Gratis)";
     var belumPilihSuhu = minuman && !item.suhu;
     var sub = (item.hargaDasar + item.addons.reduce(function (s, a) {
       return s + Number(a.harga);
@@ -3192,7 +3200,7 @@ function renderIsiModalEstimasi() {
     if (minuman) {
       if (item.suhu === "HOT") lbl = " <span style=\"color:#d84315; font-size:0.78rem; font-weight:800;\">[\uD83D\uDD25 HOT]</span>";else if (item.suhu === "ICE") lbl = " <span style=\"color:#0277bd; font-size:0.78rem; font-weight:800;\">[\uD83E\uDDCA ICE]</span>";else lbl = " <span style=\"color:var(--danger-text); font-size:0.76rem; font-weight:800;\">(Pilih HOT / ICE)</span>";
     }
-    var tempHTML = minuman ? "<div class=\"est-addons\">\n            <span class=\"temp-req-label\">Suhu *:</span>\n            <button type=\"button\" class=\"est-temp-chip ".concat(item.suhu === 'HOT' ? 'selected-hot' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"HOT\">\uD83D\uDD25 HOT (Gratis)</button>\n            <button type=\"button\" class=\"est-temp-chip ").concat(item.suhu === 'ICE' ? 'selected-ice' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"ICE\">\uD83E\uDDCA ICE (Gratis)</button>\n          </div>") : "";
+    var tempHTML = minuman ? "<div class=\"est-addons\">\n            <span class=\"temp-req-label\">Suhu *:</span>\n            <button type=\"button\" class=\"est-temp-chip ".concat(item.suhu === 'HOT' ? 'selected-hot' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"HOT\">\uD83D\uDD25 HOT (Gratis)</button>\n            <button type=\"button\" class=\"est-temp-chip ").concat(item.suhu === 'ICE' ? 'selected-ice' : '', "\" data-row=\"").concat(rIdx, "\" data-suhu=\"ICE\">").concat(labelIceBtn, "</button>\n          </div>") : "";
     var row = document.createElement("div");
     row.className = "est-row" + (belumPilihSuhu ? " missing-temp" : "");
     row.innerHTML = "<div class=\"est-row-top\"><div><strong>".concat(item.nama, "</strong>").concat(lbl, "<br><small style=\"color:var(--espresso-600); font-weight:600;\">Rp ").concat(sub.toLocaleString("id-ID"), "</small></div><div class=\"est-qty-box\"><button type=\"button\" class=\"est-step-btn\" data-row=\"").concat(rIdx, "\" data-delta=\"-1\">\u2212</button><span style=\"min-width:20px; text-align:center; font-weight:800;\">").concat(item.qty, "</span><button type=\"button\" class=\"est-step-btn\" data-row=\"").concat(rIdx, "\" data-delta=\"1\">+</button></div></div>").concat(tempHTML);
@@ -3352,7 +3360,8 @@ function buatKartuMenu(item, ikon) {
   var card = document.createElement("div");
   card.className = "card" + (habis ? " out-of-stock" : qty > 0 ? " selected-card" : "");
   var bestBadge = best ? "<span class=\"bestseller-pill\">\u2B50 BEST SELLER</span>" : "";
-  card.innerHTML = "<div class=\"card-top\"><div>".concat(bestBadge, "<h3>").concat(nb, "</h3><span class=\"card-cat-tag\">").concat(ikon, " ").concat(habis ? "Stok sedang kosong" : minuman ? "Pilihan HOT / ICE" : "Siap Saji", "</span></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(habis ? "<span class=\"soldout-footer-label\">Tidak Tersedia</span>" : "<span class=\"pick-btn\">+</span>", "</div>");
+  var tagKartu = habis ? "Stok sedang kosong" : minuman ? (isMenuMineral(nb) ? "HOT Gratis / ICE +2rb" : "Pilihan HOT / ICE") : "Siap Saji";
+  card.innerHTML = "<div class=\"card-top\"><div>".concat(bestBadge, "<h3>").concat(nb, "</h3><span class=\"card-cat-tag\">").concat(ikon, " ").concat(tagKartu, "</span></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(habis ? "<span class=\"soldout-footer-label\">Tidak Tersedia</span>" : "<span class=\"pick-btn\">+</span>", "</div>");
   card.addEventListener("click", function () {
     return tambahKeEstimasi(item);
   });
