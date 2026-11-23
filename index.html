@@ -403,6 +403,157 @@
     .claim-btn.claimed { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); box-shadow: none; cursor: default; }
     .claim-btn.used { background: var(--espresso-100); color: var(--espresso-600); box-shadow: none; cursor: default; }
 
+    /* BOARD GAME SECTION (PELANGGAN) */
+    .boardgame-section {
+      background: linear-gradient(180deg, #ffffff 0%, #fcf8f2 100%);
+      border: 1.5px solid var(--espresso-200);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .boardgame-header {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .boardgame-header h2 {
+      margin: 0;
+      font-size: 1.06rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      gap: 7px;
+    }
+    .boardgame-summary-pill {
+      background: var(--espresso-100);
+      color: var(--espresso-800);
+      border: 1px solid var(--espresso-200);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .boardgame-sub {
+      margin: 0 0 13px;
+      font-size: 0.8rem;
+      color: var(--espresso-600);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .bg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 11px;
+    }
+    .bg-card {
+      background: #ffffff;
+      border: 1.5px solid var(--success-border);
+      border-radius: 14px;
+      padding: 12px 13px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(28, 15, 10, 0.04);
+      -webkit-transition: -webkit-transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .bg-card:hover {
+      -webkit-transform: translateY(-2px);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .bg-card.in-use {
+      background: #fbf8f3;
+      border: 1.5px dashed #e2b878;
+      opacity: 0.9;
+    }
+    .bg-card-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      line-height: 1.28;
+      word-break: break-word;
+    }
+    .bg-card-players {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--espresso-600);
+      margin-top: 3px;
+    }
+    .bg-status-row {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding-top: 7px;
+      border-top: 1px dashed var(--espresso-200);
+    }
+    .bg-status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .bg-status-badge.tersedia {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+    .bg-status-badge.dipakai {
+      background: #fff8e1;
+      color: #c84b17;
+      border: 1px solid #ffe082;
+    }
+    .bg-meja-tag {
+      font-size: 0.69rem;
+      font-weight: 700;
+      color: var(--espresso-700);
+    }
+    @media (max-width: 600px) {
+      .boardgame-section { padding: 15px 13px; border-radius: 18px; margin-bottom: 16px; }
+      .bg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .bg-card { padding: 10px 10px; border-radius: 13px; }
+      .bg-card-title { font-size: 0.84rem; }
+    }
+    @supports not (display: grid) {
+      .bg-grid {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin: -5px;
+      }
+      .bg-grid > .bg-card {
+        width: calc(33.333% - 10px);
+        margin: 5px;
+      }
+      @media (max-width: 600px) {
+        .bg-grid > .bg-card { width: calc(50% - 10px); }
+      }
+    }
+
     /* TEMPERATURE INFO BANNER */
     .addon-info {
       background: linear-gradient(135deg, #2b1710 0%, #432419 100%);
@@ -2040,6 +2191,15 @@
     </div>
   </section>
 
+  <section id="boardgame-section" class="boardgame-section" style="display:none;">
+    <div class="boardgame-header">
+      <h2>🎲 Board Game Tersedia</h2>
+      <span id="boardgame-summary-pill" class="boardgame-summary-pill">Memuat...</span>
+    </div>
+    <p class="boardgame-sub">Main gratis sambil nongkrong! Cek status board game di bawah, lalu pinjam langsung di kasir atau tanya lewat Live Chat.</p>
+    <div id="boardgame-grid" class="bg-grid"></div>
+  </section>
+
   <div id="addon-box" class="addon-info" style="display:none;"></div>
   <div id="bestseller-container"></div>
   <div id="menu-container" aria-busy="true" aria-label="Memuat daftar menu"><div class="category-section"><div class="skeleton-header-row"><div class="skeleton-block skeleton-title"></div><div class="skeleton-block skeleton-pill"></div></div><div class="grid"><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div><div class="skeleton-card"><div><div class="skeleton-block skeleton-line-lg"></div><div class="skeleton-block skeleton-line-sm"></div></div><div class="skeleton-card-foot"><div class="skeleton-block skeleton-price"></div><div class="skeleton-block skeleton-btn"></div></div></div></div></div></div>
@@ -2335,6 +2495,99 @@ var STORAGE_STOK_KEY = "stokHabisAmanLahLek";
 var STORAGE_BESTSELLER_KEY = "bestSellerAmanLahLek";
 var STORAGE_MEMBER_KEY = "memberAngkringanAmanLahLek";
 var STORAGE_RIWAYAT_KEY = "riwayatPesananAmanLahLek";
+var STORAGE_BOARDGAME_KEY = "boardGamesAmanLahLek";
+var BOARDGAME_CADANGAN = [{
+  id: "BG-1",
+  nama: "Uno",
+  pemain: "2-10 Orang",
+  status: "Tersedia",
+  meja: ""
+}, {
+  id: "BG-2",
+  nama: "Catur",
+  pemain: "2 Orang",
+  status: "Tersedia",
+  meja: ""
+}, {
+  id: "BG-3",
+  nama: "Ludo",
+  pemain: "2-4 Orang",
+  status: "Tersedia",
+  meja: ""
+}, {
+  id: "BG-4",
+  nama: "Monopoli",
+  pemain: "2-6 Orang",
+  status: "Tersedia",
+  meja: ""
+}, {
+  id: "BG-5",
+  nama: "Jenga / Balok Susun",
+  pemain: "2+ Orang",
+  status: "Tersedia",
+  meja: ""
+}];
+var daftarBoardGame = [];
+function bgEscapeHtml(str) {
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function muatBoardGameLokal() {
+  try {
+    var r = localStorage.getItem(STORAGE_BOARDGAME_KEY);
+    if (r) {
+      var parsed = JSON.parse(r);
+      if (Array.isArray(parsed)) {
+        daftarBoardGame = parsed;
+        return;
+      }
+    }
+  } catch (e) {}
+  if (daftarBoardGame.length === 0) daftarBoardGame = [].concat(BOARDGAME_CADANGAN);
+}
+function simpanBoardGameLokal() {
+  try {
+    localStorage.setItem(STORAGE_BOARDGAME_KEY, JSON.stringify(daftarBoardGame));
+  } catch (e) {}
+}
+function renderBoardGameSection() {
+  var sec = document.getElementById("boardgame-section");
+  var grid = document.getElementById("boardgame-grid");
+  var pill = document.getElementById("boardgame-summary-pill");
+  if (!sec || !grid) return;
+  if (!Array.isArray(daftarBoardGame) || daftarBoardGame.length === 0) {
+    sec.style.display = "none";
+    return;
+  }
+  sec.style.display = "block";
+  var jTersedia = 0;
+  var jDipakai = 0;
+  for (var i = 0; i < daftarBoardGame.length; i++) {
+    if (String(daftarBoardGame[i].status || "").toLowerCase().indexOf("pakai") !== -1) jDipakai++;
+    else jTersedia++;
+  }
+  if (pill) {
+    pill.innerText = jDipakai > 0 ? jTersedia + " Tersedia • " + jDipakai + " Dipakai" : jTersedia + " Permainan Tersedia";
+  }
+  grid.innerHTML = "";
+  daftarBoardGame.forEach(function (bg) {
+    var sedangDipakai = String(bg.status || "").toLowerCase().indexOf("pakai") !== -1;
+    var card = document.createElement("div");
+    card.className = "bg-card" + (sedangDipakai ? " in-use" : "");
+    var pemainHtml = bg.pemain ? "<div class=\"bg-card-players\">👥 " + bgEscapeHtml(bg.pemain) + "</div>" : "";
+    var mejaHtml = sedangDipakai && bg.meja ? "<span class=\"bg-meja-tag\">🪑 " + bgEscapeHtml(bg.meja) + "</span>" : "";
+    var badgeHtml = sedangDipakai ? "<span class=\"bg-status-badge dipakai\">⏳ Sedang Dipakai</span>" : "<span class=\"bg-status-badge tersedia\">✅ Tersedia</span>";
+    card.innerHTML = "<div><div class=\"bg-card-title\">🎲 " + bgEscapeHtml(bg.nama) + "</div>" + pemainHtml + "</div><div class=\"bg-status-row\">" + badgeHtml + mejaHtml + "</div>";
+    card.addEventListener("click", function () {
+      if (sedangDipakai) {
+        tampilkanToast("⏳ " + bg.nama + " sedang dipakai" + (bg.meja ? " (" + bg.meja + ")" : "") + ". Coba board game lain yang tersedia!");
+      } else {
+        tampilkanToast("🎲 " + bg.nama + " TERSEDIA! Silakan pinjam di kasir atau tanya lewat Live Chat.");
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
 var MENU_CADANGAN = [{
   id: "c1",
   nama: "Butterscotch",
@@ -2717,6 +2970,7 @@ function cekStokHabisDariServer(item) {
 function muatDataMenuDariServer() {
   muatStokHabisLokal();
   muatBestSellerLokal();
+  muatBoardGameLokal();
   try {
     fetch(API_URL + "?t=" + Date.now()).then(function (res) {
       return res.json();
@@ -2744,25 +2998,33 @@ function muatDataMenuDariServer() {
       }
       daftarTambahan = !Array.isArray(data) && data.tambahan && data.tambahan.length > 0 ? data.tambahan : TAMBAHAN_CADANGAN;
       daftarVoucher = !Array.isArray(data) && data.vouchers && data.vouchers.length > 0 ? data.vouchers : VOUCHER_CADANGAN;
+      if (!Array.isArray(data) && Array.isArray(data.boardGames)) {
+        daftarBoardGame = data.boardGames;
+        simpanBoardGameLokal();
+      }
       bersihkanPesananYangHabis();
       terapkanFilter();
       renderPromoVoucher();
+      renderBoardGameSection();
       tampilkanInfoTambahan(daftarTambahan);
     }).catch(function () {
       if (daftarMenu.length === 0) daftarMenu = MENU_CADANGAN;
       bersihkanPesananYangHabis();
       terapkanFilter();
       renderPromoVoucher();
+      renderBoardGameSection();
       tampilkanInfoTambahan(daftarTambahan);
     });
   } catch (e) {}
 }
 window.addEventListener("storage", function (e) {
-  if (!e.key || e.key === STORAGE_STOK_KEY || e.key === STORAGE_BESTSELLER_KEY) {
+  if (!e.key || e.key === STORAGE_STOK_KEY || e.key === STORAGE_BESTSELLER_KEY || e.key === STORAGE_BOARDGAME_KEY) {
     muatStokHabisLokal();
     muatBestSellerLokal();
+    muatBoardGameLokal();
     bersihkanPesananYangHabis();
     terapkanFilter();
+    renderBoardGameSection();
   }
 });
 window.addEventListener("focus", muatDataMenuDariServer);
@@ -3183,7 +3445,7 @@ function renderIsiModalEstimasi() {
       });
       document.getElementById("est-all-hot-btn").classList.toggle("active", semuaHot);
       document.getElementById("est-all-ice-btn").classList.toggle("active", semuaIce);
-      document.getElementById("est-all-ice-btn").innerText = adaIceBerbayar ? "🧊 Semua ICE" : "🧊 Semua ICE (Gratis)";
+      document.getElementById("est-all-ice-btn").innerText = adaIceBerbayar ? "🧊 Semua ICE (Mineral +2rb)" : "🧊 Semua ICE (Gratis)";
     } else {
       shortcutBar.classList.remove("show");
     }
