@@ -2183,6 +2183,306 @@
       color: var(--espresso-800);
     }
 
+  
+    /* ================= UI POLISH v2 & DIRECT MENU STEPPER ("-" / "+") ================= */
+    :root {
+      --bg-main: #f6f0e8;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fbf8f3;
+      --espresso-200: #e7ddd0;
+      --shadow-sm: 0 3px 12px rgba(28, 15, 10, 0.05);
+      --shadow-md: 0 10px 28px rgba(28, 15, 10, 0.09);
+      --shadow-lg: 0 18px 42px rgba(22, 12, 8, 0.14);
+    }
+    header {
+      padding: 22px 20px 60px;
+      padding-top: calc(22px + env(safe-area-inset-top, 0px));
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -1px;
+      -webkit-transform: translateX(-50%);
+      transform: translateX(-50%);
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(251, 230, 178, 0.38) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .brand-logo-frame {
+      width: 96px;
+      height: 96px;
+      box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.45),
+        0 0 0 5px rgba(251, 230, 178, 0.12);
+    }
+    header h1 {
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    header p {
+      color: #e6d7cc;
+      font-size: 0.91rem;
+    }
+
+    /* Sleeker Sticky Filter Panel */
+    .filter-panel {
+      background: rgba(255, 255, 255, 0.96);
+      padding: 14px 16px;
+      border-radius: 22px;
+      box-shadow: 0 12px 32px rgba(28, 15, 10, 0.1);
+      border: 1px solid rgba(226, 214, 198, 0.95);
+    }
+    .search-wrapper { margin-bottom: 11px; }
+    .search-box {
+      padding: 12px 40px 12px 42px;
+      border-radius: 13px;
+      background: #faf7f2;
+      border: 1.5px solid #e6dccf;
+    }
+    .cat-btn {
+      padding: 8px 16px;
+      font-size: 0.84rem;
+      background: #faf7f2;
+      border-color: #e6dccf;
+    }
+    .cat-btn.active {
+      box-shadow: 0 5px 14px rgba(200, 75, 23, 0.26);
+    }
+
+    /* Promo & Voucher Coupon Polish */
+    .promo-section, .boardgame-section {
+      border-radius: 22px;
+      border: 1.5px solid #e7ddd0;
+      box-shadow: var(--shadow-sm);
+    }
+    .voucher-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #fff8ee 100%);
+      border: 1.5px solid #efd3a7;
+      border-top: 4px solid var(--accent-primary);
+      border-radius: 16px;
+      padding: 15px;
+      gap: 11px;
+      box-shadow: 0 4px 14px rgba(200, 75, 23, 0.06);
+    }
+    .voucher-code-pill {
+      padding: 4px 10px;
+      border-radius: 7px;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+    }
+    .voucher-title {
+      font-size: 0.96rem;
+      line-height: 1.3;
+      margin: 8px 0 6px;
+    }
+    .voucher-meta-chips {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .voucher-meta-chip {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid #ead8be;
+      color: var(--espresso-700);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .voucher-meta-chip.empty-quota {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    /* Board Game Cards Polish */
+    .bg-card {
+      border-radius: 15px;
+      border: 1.5px solid #cde5cf;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fcf8 100%);
+      padding: 13px 14px;
+    }
+    .bg-card.in-use {
+      background: linear-gradient(180deg, #fffdf9 0%, #fdf5e8 100%);
+      border: 1.5px dashed #e2b878;
+    }
+    .bg-card-players {
+      display: inline-block;
+      background: var(--espresso-100);
+      color: var(--espresso-700);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.71rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    /* Temperature Banner Polish */
+    .addon-info {
+      background: linear-gradient(135deg, #1f110b 0%, #3a2016 100%);
+      border: 1px solid rgba(251, 230, 178, 0.28);
+      padding: 13px 18px;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(22, 12, 8, 0.12);
+    }
+    .addon-pill-hot {
+      background: rgba(230, 81, 0, 0.24);
+      border-color: rgba(255, 171, 145, 0.45);
+      color: #ffd8c2;
+    }
+    .addon-pill-ice {
+      background: rgba(2, 119, 189, 0.28);
+      border-color: rgba(144, 202, 249, 0.45);
+      color: #d6efff;
+    }
+
+    /* Menu Card & Direct "-" / "+" Stepper */
+    .card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1.5px solid #e7ddd0;
+      min-height: 136px;
+    }
+    .card h3 {
+      word-break: normal;
+      overflow-wrap: break-word;
+      font-size: 0.99rem;
+      letter-spacing: -0.01em;
+    }
+    .card.selected-card {
+      border-color: var(--accent-primary);
+      background: linear-gradient(180deg, #ffffff 0%, #fff7f0 100%);
+      box-shadow: 0 10px 24px rgba(200, 75, 23, 0.14);
+    }
+    .card-bottom {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 11px;
+      border-top: 1px dashed #e5d8c8;
+    }
+    .card .price {
+      white-space: nowrap;
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+    .pick-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      background: var(--accent-soft);
+      border: 1.5px solid #f7cba9;
+      color: var(--accent-primary);
+      font-family: inherit;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .menu-stepper {
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid #f1c39f;
+      border-radius: 11px;
+      padding: 2px;
+      box-shadow: 0 3px 10px rgba(200, 75, 23, 0.12);
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .step-minus-btn, .step-plus-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-transition: background-color 0.16s ease, color 0.16s ease, -webkit-transform 0.14s ease;
+      transition: background-color 0.16s ease, color 0.16s ease, transform 0.14s ease;
+    }
+    .step-minus-btn {
+      background: #f5ede3;
+      color: var(--espresso-900);
+    }
+    .step-minus-btn:hover {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+    .step-plus-btn {
+      background: linear-gradient(135deg, #e65100 0%, #c84b17 100%);
+      color: #fff;
+    }
+    .step-plus-btn:hover {
+      filter: brightness(1.08);
+    }
+    .step-qty-val {
+      min-width: 24px;
+      text-align: center;
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      padding: 0 3px;
+    }
+
+    /* Quick Table Chip Bungkus Span */
+    .quick-table-grid .table-chip[data-meja="Bungkus"] {
+      grid-column: span 2;
+    }
+
+    /* Mobile Refinement for Direct Stepper */
+    @media (max-width: 600px) {
+      .card { padding: 12px 11px; min-height: 124px; }
+      .card .price { font-size: 0.9rem; }
+      .pick-btn { width: 30px; height: 30px; border-radius: 9px; font-size: 1.02rem; }
+      .menu-stepper { border-radius: 9px; padding: 2px; }
+      .step-minus-btn, .step-plus-btn { width: 25px; height: 25px; border-radius: 7px; font-size: 0.95rem; }
+      .step-qty-val { min-width: 20px; font-size: 0.8rem; padding: 0 2px; }
+    }
+    @media (max-width: 380px) {
+      .card .price { font-size: 0.84rem; }
+      .step-minus-btn, .step-plus-btn { width: 23px; height: 23px; font-size: 0.88rem; }
+      .step-qty-val { min-width: 18px; font-size: 0.76rem; }
+    }
+    @supports not (inset: 0) {
+      .voucher-meta-chips > * { margin-right: 5px; margin-bottom: 4px; }
+      .menu-stepper > .step-qty-val { margin: 0 2px; }
+    }
+
   </style>
 </head>
 <body>
@@ -2200,7 +2500,7 @@
   </div>
   <div class="brand-hero-center">
     <div class="brand-logo-frame">
-      <img src="./logo.jpg" alt="Logo AmanLahLek Coffee Angkringan" class="brand-logo-img">
+      <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/logo.jpg" onerror="this.onerror=null;this.src='./logo.jpg';" alt="Logo AmanLahLek Coffee Angkringan" class="brand-logo-img">
     </div>
     <span class="brand-kicker">☕ Coffee &amp; Modern Angkringan</span>
     <h1>Angkringan AmanLahLek</h1>
@@ -2266,7 +2566,7 @@
 <div id="livechat-panel" class="livechat-panel" role="dialog" aria-label="Live Chat Kasir AmanLahLek">
   <div class="lc-header">
     <div class="lc-header-brand">
-      <img src="./logo.jpg" alt="Logo AmanLahLek" class="lc-header-logo">
+      <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/logo.jpg" onerror="this.onerror=null;this.src='./logo.jpg';" alt="Logo AmanLahLek" class="lc-header-logo">
       <div>
         <div class="lc-header-title">Live Chat Kasir</div>
         <div class="lc-header-sub"><span class="lc-online-dot"></span><span>AmanLahLek Coffee Angkringan</span></div>
@@ -2483,7 +2783,7 @@
 
 <footer>
   <div class="footer-brand">
-    <img src="./logo.jpg" alt="Logo AmanLahLek">
+    <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/logo.jpg" onerror="this.onerror=null;this.src='./logo.jpg';" alt="Logo AmanLahLek">
     <span>AmanLahLek Coffee Angkringan</span>
   </div>
   <div>Pilih menu, tentukan HOT / ICE untuk minuman, lalu bayar via QRIS / Bank JAGO atau Tunai di kasir.</div>
@@ -3114,6 +3414,7 @@ function renderPromoVoucher() {
     });
     var labelDiskon = v.jenis === "PERSEN" ? "Diskon ".concat(v.nilai, "%") : "Potongan Rp ".concat(Number(v.nilai).toLocaleString("id-ID"));
     var minText = v.minBelanja > 0 ? "Min. belanja Rp ".concat(Number(v.minBelanja).toLocaleString("id-ID")) : "Tanpa minimal belanja";
+    var kuotaNum = Number(v.kuota || 0);
     var btnClass = "claim-btn",
       btnText = "🎟️ Klaim Voucher",
       disabled = false;
@@ -3127,10 +3428,15 @@ function renderPromoVoucher() {
         btnText = "✓ Sudah Diklaim";
         disabled = true;
       }
+    } else if (kuotaNum <= 0) {
+      btnClass = "claim-btn used";
+      btnText = "Kuota Habis";
+      disabled = true;
     }
+    var quotaChipClass = kuotaNum <= 0 ? "voucher-meta-chip empty-quota" : "voucher-meta-chip";
     var card = document.createElement("div");
     card.className = "voucher-card";
-    card.innerHTML = "<div><span class=\"voucher-code-pill\">".concat(v.kode, "</span><div class=\"voucher-title\">").concat(v.judul, "</div><div class=\"voucher-meta\">").concat(labelDiskon, " \u2022 ").concat(minText, " \u2022 Kuota: ").concat(v.kuota, "</div></div><button type=\"button\" class=\"").concat(btnClass, "\" ").concat(disabled ? "disabled" : "", ">").concat(btnText, "</button>");
+    card.innerHTML = "<div><span class=\"voucher-code-pill\">".concat(v.kode, "</span><div class=\"voucher-title\">").concat(v.judul, "</div><div class=\"voucher-meta-chips\"><span class=\"voucher-meta-chip\">").concat(labelDiskon, "</span><span class=\"voucher-meta-chip\">").concat(minText, "</span><span class=\"").concat(quotaChipClass, "\">Kuota: ").concat(kuotaNum, "</span></div></div><button type=\"button\" class=\"").concat(btnClass, "\" ").concat(disabled ? "disabled" : "", ">").concat(btnText, "</button>");
     if (!disabled) card.querySelector("button").addEventListener("click", function () {
       return klaimVoucher(v);
     });
@@ -3252,7 +3558,7 @@ function logoutPelanggan() {
 }
 function tampilkanInfoTambahan() {
   var box = document.getElementById("addon-box");
-  box.innerHTML = "<div>\uD83C\uDF21\uFE0F <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div><span class=\"addon-pill\">\uD83D\uDD25 HOT (Gratis)</span> <span class=\"addon-pill\">\uD83E\uDDCA ICE (Gratis \u2022 Khusus Mineral +Rp 2.000)</span></div>";
+  box.innerHTML = "<div>\uD83C\uDF21\uFE0F <strong>Pilihan Suhu Minuman (Wajib):</strong> pilih varian sebelum kirim pesanan</div><div style=\"display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:6px;\"><span class=\"addon-pill addon-pill-hot\">\uD83D\uDD25 HOT (Gratis)</span><span class=\"addon-pill addon-pill-ice\">\uD83E\uDDCA ICE (Gratis \u2022 Khusus Mineral +Rp 2.000)</span></div>";
   box.style.display = "flex";
 }
 function bersihkanPesananYangHabis() {
@@ -3317,6 +3623,31 @@ function tambahKeEstimasi(item) {
       suhu: minuman ? "" : "N/A",
       addons: []
     });
+  }
+  perbaruiBarEstimasi();
+  terapkanFilter();
+}
+function kurangiDariEstimasi(item) {
+  var namaBersih = bersihkanNamaMenu(item.nama);
+  var idx = -1;
+  for (var i = catatanPesanan.length - 1; i >= 0; i--) {
+    if (catatanPesanan[i].nama === namaBersih && catatanPesanan[i].suhu === "") {
+      idx = i;
+      break;
+    }
+  }
+  if (idx === -1) {
+    for (var j = catatanPesanan.length - 1; j >= 0; j--) {
+      if (catatanPesanan[j].nama === namaBersih) {
+        idx = j;
+        break;
+      }
+    }
+  }
+  if (idx === -1) return;
+  catatanPesanan[idx].qty--;
+  if (catatanPesanan[idx].qty <= 0) {
+    catatanPesanan.splice(idx, 1);
   }
   perbaruiBarEstimasi();
   terapkanFilter();
@@ -3674,7 +4005,29 @@ function buatKartuMenu(item, ikon) {
   card.className = "card" + (habis ? " out-of-stock" : qty > 0 ? " selected-card" : "");
   var bestBadge = best ? "<span class=\"bestseller-pill\">\u2B50 BEST SELLER</span>" : "";
   var tagKartu = habis ? "Stok sedang kosong" : minuman ? (isMenuMineral(nb) ? "HOT Gratis / ICE +2rb" : "Pilihan HOT / ICE") : "Siap Saji";
-  card.innerHTML = "<div class=\"card-top\"><div>".concat(bestBadge, "<h3>").concat(nb, "</h3><span class=\"card-cat-tag\">").concat(ikon, " ").concat(tagKartu, "</span></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(habis ? "<span class=\"soldout-footer-label\">Tidak Tersedia</span>" : "<span class=\"pick-btn\">+</span>", "</div>");
+  var actionControlHTML = "";
+  if (habis) {
+    actionControlHTML = "<span class=\"soldout-footer-label\">Tidak Tersedia</span>";
+  } else if (qty > 0) {
+    actionControlHTML = "<div class=\"menu-stepper\"><button type=\"button\" class=\"step-minus-btn\" aria-label=\"Kurangi pesanan\">\u2212</button><span class=\"step-qty-val\">" + qty + "</span><button type=\"button\" class=\"step-plus-btn\" aria-label=\"Tambah pesanan\">+</button></div>";
+  } else {
+    actionControlHTML = "<button type=\"button\" class=\"pick-btn\" aria-label=\"Tambah pesanan\">+</button>";
+  }
+  card.innerHTML = "<div class=\"card-top\"><div>".concat(bestBadge, "<h3>").concat(nb, "</h3><span class=\"card-cat-tag\">").concat(ikon, " ").concat(tagKartu, "</span></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(actionControlHTML, "</div>");
+  var minusBtn = card.querySelector(".step-minus-btn");
+  if (minusBtn) {
+    minusBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      kurangiDariEstimasi(item);
+    });
+  }
+  var plusBtn = card.querySelector(".step-plus-btn") || card.querySelector(".pick-btn");
+  if (plusBtn) {
+    plusBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      tambahKeEstimasi(item);
+    });
+  }
   card.addEventListener("click", function () {
     return tambahKeEstimasi(item);
   });
