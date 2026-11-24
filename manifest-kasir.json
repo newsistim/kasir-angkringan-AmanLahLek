@@ -1,0 +1,38 @@
+{
+  "id": "./kasir.html",
+  "name": "Kasir AmanLahLek POS",
+  "short_name": "Kasir AmanLahLek",
+  "description": "Sistem Kasir POS Angkringan AmanLahLek — Kelola pesanan masuk, stok menu, board game, dan live chat pelanggan.",
+  "start_url": "./kasir.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#160c08",
+  "theme_color": "#160c08",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
