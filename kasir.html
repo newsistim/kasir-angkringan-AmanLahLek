@@ -2165,6 +2165,250 @@
       color: var(--espresso-800);
     }
 
+  
+    /* ================= UI POLISH v2 & DIRECT MENU STEPPER ("-" / "+") ================= */
+    :root {
+      --bg-main: #f6f0e8;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fbf8f3;
+      --espresso-200: #e7ddd0;
+      --shadow-sm: 0 3px 12px rgba(28, 15, 10, 0.05);
+      --shadow-md: 0 10px 28px rgba(28, 15, 10, 0.09);
+    }
+
+    /* Cleaner POS Topbar */
+    header {
+      padding: 12px 24px;
+      gap: 10px 14px;
+      border-bottom: 1px solid rgba(251, 230, 178, 0.22);
+    }
+    .header-actions {
+      gap: 6px;
+    }
+    .nav-tab-btn, .refresh-btn, .logout-btn {
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      border-radius: 10px;
+      min-height: 34px;
+    }
+    .nav-badge {
+      padding: 1px 7px;
+      font-size: 0.69rem;
+    }
+
+    /* Menu Toolbar Polish */
+    .menu-toolbar {
+      padding: 15px 17px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .toolbar-best-btn, .toolbar-stock-btn, .toolbar-boardgame-btn {
+      padding: 7px 13px;
+      font-size: 0.79rem;
+    }
+
+    /* Menu Card Layout Fix (No Price Wrapping, No Clipped "+", Dedicated Stepper & Admin Strip) */
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      padding: 15px;
+      border-radius: 17px;
+      min-height: 146px;
+      border: 1.5px solid #e7ddd0;
+    }
+    .card h3 {
+      word-break: normal;
+      overflow-wrap: break-word;
+      font-size: 0.96rem;
+      line-height: 1.28;
+      letter-spacing: -0.01em;
+    }
+    .card.in-cart {
+      border-color: var(--accent-primary);
+      background: linear-gradient(180deg, #ffffff 0%, #fff6ee 100%);
+      box-shadow: 0 10px 22px rgba(200, 75, 23, 0.13);
+    }
+    .card-price-row {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px dashed #e5d8c8;
+    }
+    .card .price {
+      white-space: nowrap;
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+    .card-add-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      border: 1.5px solid #f7cba9;
+      color: var(--accent-primary);
+      font-family: inherit;
+      font-size: 1.12rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .card-stepper {
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid #f1c39f;
+      border-radius: 10px;
+      padding: 2px;
+      box-shadow: 0 3px 10px rgba(200, 75, 23, 0.12);
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .card-step-minus, .card-step-plus {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-transition: background-color 0.16s ease, color 0.16s ease, -webkit-transform 0.14s ease;
+      transition: background-color 0.16s ease, color 0.16s ease, transform 0.14s ease;
+    }
+    .card-step-minus {
+      background: #f5ede3;
+      color: var(--espresso-900);
+    }
+    .card-step-minus:hover {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+    .card-step-plus {
+      background: linear-gradient(135deg, #e65100 0%, #c84b17 100%);
+      color: #fff;
+    }
+    .card-step-plus:hover {
+      filter: brightness(1.08);
+    }
+    .card-step-qty {
+      min-width: 22px;
+      text-align: center;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--espresso-900);
+      padding: 0 3px;
+    }
+    .card-admin-bar {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid #f2ebe1;
+    }
+    .card-best-quick-btn {
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      -webkit-flex-shrink: 0;
+      flex-shrink: 0;
+    }
+    .card-stock-quick-btn {
+      -webkit-flex: 1;
+      flex: 1;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    /* Fix Cart Panel Quick Table & Quick Cash Wrapping */
+    .quick-table-grid .table-chip[data-meja="Bungkus"],
+    .quick-table-grid .table-chip[data-emeja="Bungkus"] {
+      grid-column: span 2;
+      white-space: nowrap;
+    }
+    .quick-btn {
+      white-space: nowrap;
+      font-size: 0.74rem;
+      padding: 8px 3px;
+    }
+    .cart-section {
+      border-radius: 22px;
+      border: 1.5px solid #e5d8c8;
+      box-shadow: 0 14px 34px rgba(28, 15, 10, 0.08);
+    }
+
+    /* History Panel & KPI Cards Polish */
+    .history-panel {
+      border-radius: 22px;
+      border: 1.5px solid #e5d8c8;
+    }
+    .kpi-card {
+      border-radius: 15px;
+      border-top-width: 3px;
+    }
+    .kpi-card.review { border-top-color: var(--review-text); }
+    .kpi-card.process { border-top-color: var(--process-text); }
+    .kpi-card.done { border-top-color: var(--success-text); }
+    .kpi-card.unpaid { border-top-color: var(--danger-text); }
+
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .card { padding: 11px 10px; min-height: 136px; }
+      .card .price { font-size: 0.88rem; }
+      .card-add-icon { width: 28px; height: 28px; font-size: 1rem; border-radius: 8px; }
+      .card-step-minus, .card-step-plus { width: 23px; height: 23px; font-size: 0.9rem; border-radius: 6px; }
+      .card-step-qty { min-width: 18px; font-size: 0.78rem; padding: 0 2px; }
+      .card-admin-bar { margin-top: 7px; padding-top: 7px; gap: 5px; }
+      .card-stock-quick-btn { font-size: 0.65rem; padding: 4px 5px; }
+      .card-best-quick-btn { padding: 4px 6px; font-size: 0.68rem; }
+    }
+    @media (max-width: 380px) {
+      .card .price { font-size: 0.82rem; }
+      .card-step-minus, .card-step-plus { width: 21px; height: 21px; font-size: 0.84rem; }
+      .card-step-qty { min-width: 16px; font-size: 0.74rem; }
+    }
+    @supports not (inset: 0) {
+      .card-stepper > .card-step-qty { margin: 0 2px; }
+      .card-admin-bar > * { margin-right: 5px; }
+      .card-admin-bar > *:last-child { margin-right: 0; }
+    }
+
   </style>
 </head>
 <body>
@@ -2175,7 +2419,7 @@
 <div id="login-overlay">
   <div class="login-box">
     <div class="login-logo-frame">
-      <img src="./logo.jpg" alt="Logo AmanLahLek Coffee Angkringan">
+      <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/logo.jpg" onerror="this.onerror=null;this.src='./logo.jpg';" alt="Logo AmanLahLek Coffee Angkringan">
     </div>
     <h2>Login Kasir Admin</h2>
     <p style="margin:0 0 22px; font-size:0.88rem; color:var(--espresso-600); font-weight:600;">AmanLahLek Coffee Angkringan • POS System</p>
@@ -2483,7 +2727,7 @@
 <header>
   <div class="brand-wrap">
     <div class="brand-logo-pos">
-      <img src="./logo.jpg" alt="Logo AmanLahLek Coffee Angkringan">
+      <img src="https://newsistim.github.io/kasir-angkringan-AmanLahLek/logo.jpg" onerror="this.onerror=null;this.src='./logo.jpg';" alt="Logo AmanLahLek Coffee Angkringan">
     </div>
     <div class="brand-text">
       <h1>Kasir Angkringan AmanLahLek</h1>
@@ -4474,7 +4718,16 @@ function renderMenuTerkelompok() {
       var div = document.createElement("div");
       div.className = "card" + (habis ? " out-of-stock" : qty > 0 ? " in-cart" : "");
       var bestLabel = best ? "<span class=\"bestseller-tag\">\u2B50 BEST SELLER</span>" : "";
-      div.innerHTML = "<div class=\"card-top\"><div>".concat(bestLabel, "<h3>").concat(nb, "</h3></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB STOK HABIS</span>" : qty > 0 ? "<span class=\"card-qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-bottom\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div><div class=\"card-bottom-right\"><button type=\"button\" class=\"card-best-quick-btn ").concat(best ? 'active' : '', "\" data-toggle-best=\"").concat(nb, "\" title=\"Toggle Best Seller\">").concat(best ? '⭐' : '☆', "</button>").concat(habis ? "<button type=\"button\" class=\"card-stock-quick-btn restore\" data-toggle-stok=\"".concat(nb, "\">\u21BA Aktifkan</button>") : "<button type=\"button\" class=\"card-stock-quick-btn\" data-toggle-stok=\"".concat(nb, "\">Habiskan</button><div class=\"card-add-icon\">+</div>"), "</div></div>");
+      var orderControlHTML = "";
+      if (habis) {
+        orderControlHTML = "<span style=\"font-size:0.72rem; font-weight:800; color:var(--danger-text);\">Kosong</span>";
+      } else if (qty > 0) {
+        orderControlHTML = "<div class=\"card-stepper\"><button type=\"button\" class=\"card-step-minus\" aria-label=\"Kurangi item\">\u2212</button><span class=\"card-step-qty\">" + qty + "</span><button type=\"button\" class=\"card-step-plus\" aria-label=\"Tambah item\">+</button></div>";
+      } else {
+        orderControlHTML = "<button type=\"button\" class=\"card-add-icon\" aria-label=\"Tambah item\">+</button>";
+      }
+      var stockQuickBtnHTML = habis ? "<button type=\"button\" class=\"card-stock-quick-btn restore\" data-toggle-stok=\"".concat(nb, "\">\u21BA Aktifkan Stok</button>") : "<button type=\"button\" class=\"card-stock-quick-btn\" data-toggle-stok=\"".concat(nb, "\">Habiskan</button>");
+      div.innerHTML = "<div class=\"card-top\"><div>".concat(bestLabel, "<h3>").concat(nb, "</h3></div>").concat(habis ? "<span class=\"soldout-badge\">\uD83D\uDEAB HABIS</span>" : qty > 0 ? "<span class=\"card-qty-badge\">".concat(qty, "x</span>") : "", "</div><div class=\"card-price-row\"><div class=\"price\">Rp ").concat(Number(item.harga).toLocaleString("id-ID"), "</div>").concat(orderControlHTML, "</div><div class=\"card-admin-bar\"><button type=\"button\" class=\"card-best-quick-btn ").concat(best ? 'active' : '', "\" data-toggle-best=\"").concat(nb, "\" title=\"Toggle Best Seller\">").concat(best ? '⭐' : '☆', "</button>").concat(stockQuickBtnHTML, "</div>");
       div.querySelector("[data-toggle-best]").addEventListener("click", function (e) {
         e.stopPropagation();
         toggleBestSellerItem(nb);
@@ -4483,6 +4736,20 @@ function renderMenuTerkelompok() {
         e.stopPropagation();
         toggleStatusStokItem(nb);
       });
+      var minusEl = div.querySelector(".card-step-minus");
+      if (minusEl) {
+        minusEl.addEventListener("click", function (e) {
+          e.stopPropagation();
+          kurangiItem(item);
+        });
+      }
+      var plusEl = div.querySelector(".card-step-plus") || div.querySelector(".card-add-icon");
+      if (plusEl) {
+        plusEl.addEventListener("click", function (e) {
+          e.stopPropagation();
+          tambahItem(item);
+        });
+      }
       div.addEventListener("click", function () {
         return tambahItem(item);
       });
@@ -4514,6 +4781,31 @@ function tambahItem(item) {
       suhu: minuman ? "" : "N/A",
       addons: []
     });
+  }
+  renderKeranjang();
+  renderMenuTerkelompok();
+}
+function kurangiItem(item) {
+  var nb = bersihkanNamaMenu(item.nama);
+  var idx = -1;
+  for (var i = keranjang.length - 1; i >= 0; i--) {
+    if (keranjang[i].nama === nb && keranjang[i].suhu === "") {
+      idx = i;
+      break;
+    }
+  }
+  if (idx === -1) {
+    for (var j = keranjang.length - 1; j >= 0; j--) {
+      if (keranjang[j].nama === nb) {
+        idx = j;
+        break;
+      }
+    }
+  }
+  if (idx === -1) return;
+  keranjang[idx].qty--;
+  if (keranjang[idx].qty <= 0) {
+    keranjang.splice(idx, 1);
   }
   renderKeranjang();
   renderMenuTerkelompok();
