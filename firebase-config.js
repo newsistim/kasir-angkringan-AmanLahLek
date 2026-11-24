@@ -8,15 +8,15 @@
    ========================================================================== */
 
 self.AMANLAHLEK_FIREBASE_CONFIG = {
-  apiKey: "ISI_API_KEY_FIREBASE_ANDA",
-  authDomain: "ISI_PROJECT_ID.firebaseapp.com",
-  projectId: "ISI_PROJECT_ID",
-  storageBucket: "ISI_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "ISI_MESSAGING_SENDER_ID",
-  appId: "ISI_APP_ID"
+  apiKey: "AIzaSyDqp1jMK4loO_FXtNAJEbOP_XwgRZOQXFQ",
+  authDomain: "amanlahlekapp.firebaseapp.com",
+  projectId: "amanlahlekapp",
+  storageBucket: "amanlahlekapp.firebasestorage.app",
+  messagingSenderId: "1038963867214",
+  appId: "1:1038963867214:web:57fba9d6081798c5038d1f"
 };
 
-self.AMANLAHLEK_VAPID_KEY = "ISI_WEB_PUSH_VAPID_KEY_ANDA";
+self.AMANLAHLEK_VAPID_KEY = "BDr8vgF_0g_RyFa3Hnt3v4NKXn_C3n3QmGTH0SRvU6UXowQAlUOJwP2FIrCi7QgWqtf0ypRH_1UyNUq0zWZbWow";
 
 self.isAmanLahLekFirebaseConfigured = function () {
   var cfg = self.AMANLAHLEK_FIREBASE_CONFIG || {};
